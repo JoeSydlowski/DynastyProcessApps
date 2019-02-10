@@ -10,7 +10,7 @@ cols <- c(15,18,21:54,56:62)
 y <- x[cols]
 
 y$draft_round[is.na(y$draft_round)] <- 8
-
+#y$tgts[is.na(y$tgts)] <- 0
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
@@ -20,22 +20,14 @@ shinyServer(function(input, output) {
     
     z <- y[,input$selectcol, drop = FALSE]
     
-    threshold <- ifelse(ncol(z) <= 4, 0.1, 0.2)
+    threshold <- ifelse(ncol(z) < 4, 0.1, 0.25)
     
     z <- cbind(pos = x$pos, z)
     z <- cbind(mergename = x$mergename, z)
     
     z <- z[!rowSums(is.na(z)) > ncol(z)*threshold,]
-  })
-  
-  zsize <- reactive({
-    
-    nrow(df1())
-    
-  })
-  
-  df <- reactive({
-    z_norm <- df1() %>% mutate_at(funs(scale(.) %>% as.vector), .vars=vars(3:ncol(df1())))
+
+    z_norm <- z %>% mutate_at(funs(scale(.) %>% as.vector), .vars=vars(3:ncol(z)))
     
     z_norm$mergename <- as.character(z_norm$mergename)
     z_norm$mergename[(z_norm$mergename == "Ryan Griffin" & z_norm$pos == "QB")] <- "Ryan Griffin QB"
@@ -58,11 +50,24 @@ shinyServer(function(input, output) {
     
     merge <- merge[c("Name", "pos", "team", "dynpECR", "dynoECR", input$selectcol)]
     
-    merge <- merge[(merge$pos %in% c(input$posFilter)) | (merge$Name == playername),][1:input$numcomps,]
+    merge <- merge[(merge$pos %in% c(input$posFilter)) | (merge$Name == playername),]
+  })
+  
+  zsize <- reactive({
+    
+    nrow(df1())
+    
+  })
+  
+  df <- reactive({
+    
+    merge <- df1()[1:input$numcomps,]
     
     data.frame(merge)
     
   })
+  
+
   
   output$results <- renderDT({
     datatable( df())
