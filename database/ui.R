@@ -40,8 +40,13 @@ shinyUI(fluidPage(
   hr(),
   DTOutput("results"),
   hr(),
-  p(HTML(paste0("The data for this page is provided by ",
+  p(HTML(paste0("This app was created by ",
+                a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
+                " and you can find the code at ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github."),
+                " The data for this page is provided by ",
                 a(href = "https://dynastyprocess.com/downloads/database/", "https://dynastyprocess.com/downloads/database/"),
-                " and aggregated from FantasyPros ECR,
-                AirYards.com, Spotrac, Pro-Football-Reference, RAS Athletic Data (@MathBomb), and MFL/Sleeper APIs.")))
+                " created by ",
+                a(href = "https://twitter.com/_TanHo", "Tan Ho."),
+                " Head there to see the full documentation for the datbase.")))
 ))
