@@ -11,8 +11,6 @@ y <- x[cols]
 
 y$draft_round[is.na(y$draft_round)] <- 8
 
-
-# Define UI for application that draws a histogram
 shinyUI(fluidPage(
   theme = shinytheme("spacelab"),
   column(10, offset = 4, titlePanel("DynastyProcess.com Arbitrage App")),
@@ -40,18 +38,18 @@ shinyUI(fluidPage(
               selected = c("QB","RB","WR","TE")))),
 
   hr(),
-  textOutput("intro"),
+  uiOutput("intro"),
   hr(),
   textOutput("sampleSize"),
   hr(),
   DTOutput("results"),
+  hr(),
   p(HTML(paste0("This app was created by ",
                 a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
-                " and you can find the code at ",
-                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github."),
-                "  For more information on the app head to ",
-                a(href = "https://dynastyprocess.com/downloads/arbitrageapp", "https://dynastyprocess.com/downloads/arbitrageapp"),
-                " created by ",
-                a(href = "https://twitter.com/_TanHo", "Tan Ho.")
+                " based on data from ",
+                a(href = "https://dynastyprocess.com/downloads/database/", "DynastyProcess.com"),
+                ". You can find the code at ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github"),
+                "."
                 )))
 ))

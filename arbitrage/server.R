@@ -68,13 +68,17 @@ shinyServer(function(input, output) {
     datatable( df())
   })
   
-  output$intro <- renderText({ 
-    paste("Welcome to the Arbitrage App. This tool allows you to find the most comparable players in 2018 based on your
-          selected criteria. These comps may provide possible pivots on a player you are trying to buy or sell.")
+  output$intro <- renderUI({ 
+    HTML(paste("The Arbitrage App helps you find comparable players based on any criteria available in the ",
+                a(href = "https://dynastyprocess.com/downloads/database/", "DynastyProcess.com Database"),
+                ". These comparisons might provide possible pivots on a player you are trying to buy or sell.
+                 For more information, check out the readme on ",
+                a(href = "https://dynastyprocess.com/downloads/arbitrage", "DynastyProcess.com"),
+               "."))
   })  
   
   output$sampleSize <- renderText({ 
-    paste("Your current sample size is", zsize(), ",")
+    paste("Your current sample size is", zsize(),".")
   })  
   
 })

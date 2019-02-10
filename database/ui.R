@@ -42,11 +42,10 @@ shinyUI(fluidPage(
   hr(),
   p(HTML(paste0("This app was created by ",
                 a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
-                " and you can find the code at ",
-                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github."),
-                " The data for this page is provided by ",
-                a(href = "https://dynastyprocess.com/downloads/database/", "https://dynastyprocess.com/downloads/database/"),
-                " created by ",
-                a(href = "https://twitter.com/_TanHo", "Tan Ho."),
-                " Head there to see the full documentation for the datbase.")))
+                " based on data from ",
+                a(href = "https://dynastyprocess.com/downloads/database/", "DynastyProcess.com"),
+                ". You can find the code at ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github"),
+                "."
+  )))
 ))
