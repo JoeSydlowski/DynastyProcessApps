@@ -1,12 +1,3 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(curl)
 library(DT)
@@ -59,13 +50,15 @@ shinyServer(function(input, output) {
     
     newdata <- df[order(df[[playername]]),]
     
-    newdata <- rownames_to_column(newdata, "Name")[1:6,]
+    newdata <- rownames_to_column(newdata, "Name")
     
     newdata <- newdata[c("Name")]
     
     merge <- left_join(newdata, x, by = c("Name"="mergename"))
     
     merge <- merge[c("Name", "pos", "team", "dynpECR", "dynoECR", input$selectcol)]
+    
+    merge <- merge[(merge$pos %in% c(input$posFilter)) | (merge$Name == playername),][1:input$numcomps,]
     
     data.frame(merge)
     
@@ -75,8 +68,13 @@ shinyServer(function(input, output) {
     datatable( df())
   })
   
+  output$intro <- renderText({ 
+    paste("Welcome to the Arbitrage App. This tool allows you to find the most comparable players in 2018 based on your
+          selected criteria. These comps may provide possible pivots on a player you are trying to buy or sell.")
+  })  
+  
   output$sampleSize <- renderText({ 
-    paste("Your sample size is", zsize())
+    paste("Your current sample size is", zsize(), ",")
   })  
   
 })
