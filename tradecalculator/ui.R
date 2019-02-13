@@ -27,6 +27,14 @@ shinyUI(fluidPage(
                   choices = x["mergename"],
                   multiple = TRUE))),
   hr(),
+  column(10, offset = 4, h4(textOutput("textA"))),
+  fluidRow(column(6,
+                  #h4(textOutput("textA")),
+                  tableOutput("tableA")),
+           column(6,
+                  #h4(textOutput("textB")),
+                  tableOutput("tableB"))),
+  hr(),
   DTOutput("results")
   
            
