@@ -4,17 +4,15 @@ library(shinythemes)
 library(DT)
 library(ggplot2)
 
-options(shiny.reactlog=TRUE) 
+#x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
+x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
 
-x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols <- c(15:18, 56, 57)
+#cols <- c(15:18, 56, 57)
+cols <- c(1:4,6,7)
+
 x <- x[cols]
+names(x)[1]<-"Name"
 x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
-
-
-#ggplot(x, aes(x=team, y=dynoECR, fill=mergename)) + 
-#  geom_bar(stat="identity")
-
 
 shinyServer(function(input, output, session) {
   
@@ -33,12 +31,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$numQB,{
     currentA <- input$sideA
     updateSelectizeInput(session, 'sideA',
-                         choices = df()$mergename,
+                         choices = df()$Name,
                          selected = c(currentA)
     )
     currentB <- input$sideB
     updateSelectizeInput(session, 'sideB',
-                         choices = df()$mergename,
+                         choices = df()$Name,
                          selected = c(currentB)
     )
   })
@@ -46,14 +44,14 @@ shinyServer(function(input, output, session) {
   dfA <- reactive({
     req(input$sideA)
     
-    df()[(df()$mergename %in% c(input$sideA)), ]
+    df()[(df()$Name %in% c(input$sideA)), ]
     
   })
   
   dfB <- reactive({
     req(input$sideB)
     
-    df()[(df()$mergename %in% c(input$sideB)), ]
+    df()[(df()$Name %in% c(input$sideB)), ]
     
   })
   
@@ -93,13 +91,13 @@ shinyServer(function(input, output, session) {
   
   output$winner <- renderText({
     if (sumdfA() > sumdfB()) {
-      paste("Side A is winning the trade by",
+      paste0("Side A is winning the trade by ",
             format(sum(dfA()$value) - sum(dfB()$value), big.mark = ","),
-            "or", percentDiff(), "%")
+            " or ", percentDiff(), "%")
     } else if (sum(dfA()$value) < sum(dfB()$value)) {
-      paste("Side B is winning the trade by",
+      paste0("Side B is winning the trade by ",
             format(sum(dfB()$value) - sum(dfA()$value), big.mark = ","),
-            "or", percentDiff(), "%")
+            " or ", percentDiff(), "%")
     } else {
       "This trade is exactly even!"
     }
@@ -128,7 +126,7 @@ shinyServer(function(input, output, session) {
     dfcomp <- rbind(dfA_temp,dfB_temp)
     
 
-    ggplot(dfcomp, aes(x=Team, y=value, fill=mergename)) + 
+    ggplot(dfcomp, aes(x=Team, y=value, fill=Name)) + 
       geom_bar(stat="identity")
     
   })
