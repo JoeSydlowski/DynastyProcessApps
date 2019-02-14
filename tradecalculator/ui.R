@@ -3,8 +3,6 @@ library(curl)
 library(shinythemes)
 library(DT)
 
-
-
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 cols <- c(15:18,56,57)
 x <- x[cols]
@@ -23,16 +21,17 @@ shinyUI(fluidPage(
   hr(),
   fluidRow(column(6,
                   selectizeInput("sideA",
-                                 "Choose Assets from Team A:",
+                                 "Choose Assets to Team A:",
                                  choices = x["mergename"],
                                  multiple = TRUE)),
            column(6,
                   selectizeInput("sideB",
-                                 "Choose Assets from Team B:",
+                                 "Choose Assets to Team B:",
                                  choices = x["mergename"],
                                  multiple = TRUE))),
   hr(),
-  column(10, offset = 4, h4(textOutput("winner"))),
+  column(10, offset = 4, h3(textOutput("winner"))),
+  column(10, offset = 4, h3(textOutput("winRange"))),
   fluidRow(column(6,
                   h4(textOutput("textA")),
                   tableOutput("tableA")),
@@ -40,8 +39,10 @@ shinyUI(fluidPage(
                   h4(textOutput("textB")),
                   tableOutput("tableB"))),
   hr(),
-  DTOutput("results")
-  
-           
+  fluidRow(column(6,
+                  plotOutput("bar")),
+           column(6,
+                  h4(textOutput("tableText")),
+                  tableOutput("diffTable")))
   
 ))
