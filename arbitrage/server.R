@@ -12,11 +12,12 @@ y <- x[cols]
 y$draft_round[is.na(y$draft_round)] <- 8
 #y$tgts[is.na(y$tgts)] <- 0
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   
   
   df1 <- reactive({
+    req(input$selected)
+    req(input$selectcol)
     
     z <- y[,input$selectcol, drop = FALSE]
     
@@ -44,11 +45,17 @@ shinyServer(function(input, output) {
     
     newdata <- rownames_to_column(newdata, "Name")
     
-    newdata <- newdata[c("Name")]
+    cols <- c("Name", playername)
+    
+    newdata <- newdata[cols]
+    
+    names(newdata)[2]<-"Match"
+    
+    newdata$MatchRating <- round(100-(100/(max(newdata$Match, na.rm=TRUE))*newdata$Match))
     
     merge <- left_join(newdata, x, by = c("Name"="mergename"))
     
-    merge <- merge[c("Name", "pos", "team", "dynpECR", "dynoECR", input$selectcol)]
+    merge <- merge[unique(c("Name", "MatchRating", "pos", "team", "dynpECR", "dynoECR", input$selectcol))]
     
     merge <- merge[(merge$pos %in% c(input$posFilter)) | (merge$Name == playername),]
   })
@@ -70,7 +77,17 @@ shinyServer(function(input, output) {
 
   
   output$results <- renderDT({
-    datatable( df())
+    brks <- c("75","80","85","90","95")
+    clrs <- c("rgb(255,38,0)",
+              "rgb(255,82,51)",
+              "rgb(255,139,51)",
+              "rgb(254,255,51)",
+              "rgb(50,205,50)",
+              "rgb(34,139,34)")
+    
+    datatable( df()) %>% formatStyle(
+      'MatchRating',
+      backgroundColor = styleInterval(brks, clrs))
   })
   
   output$intro <- renderUI({ 

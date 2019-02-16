@@ -110,11 +110,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$textA <- renderText({
-    paste("Team A receives", format(sum(dfB()$value), big.mark = ","))
+    paste("Team A total", format(sum(dfB()$value), big.mark = ","))
   })
   
   output$textB <- renderText({
-    paste("Team B receives", format(sum(dfA()$value), big.mark = ","))
+    paste("Team B total", format(sum(dfA()$value), big.mark = ","))
   })
   
   output$bar <- renderPlot({
@@ -127,22 +127,21 @@ shinyServer(function(input, output, session) {
     
 
     ggplot(dfcomp, aes(x=Team, y=value, fill=Name)) + 
-      geom_bar(stat="identity")
-    
+      geom_bar(stat="identity") +
+      scale_fill_brewer(palette="Set1") +
+      theme(text = element_text(size=20))
+
   })
   
   closestObs <- reactive({
-    print(rawDiff())
-    print(df()$value)
-    
+
     which(abs(df()$value-rawDiff())==min(abs(df()$value-rawDiff())))
     
   })
   
   output$diffTable <- renderTable({
     rowObs <- closestObs()
-    print(rowObs)
-    
+
     if (rowObs <=5) {
       rowRange <- c(1:10)
     } else {

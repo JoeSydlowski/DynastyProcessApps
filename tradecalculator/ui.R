@@ -14,7 +14,8 @@ names(x)[1]<-"Name"
 x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
 
 shinyUI(fluidPage(
-  theme = shinytheme("spacelab"),
+  theme = shinytheme("readable"),
+  #shinythemes::themeSelector(),
   column(10, offset = 4, titlePanel("DynastyProcess.com Trade Calculator")),
   hr(),
   fluidRow(column(4,

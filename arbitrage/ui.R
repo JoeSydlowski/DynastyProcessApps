@@ -12,7 +12,7 @@ y <- x[cols]
 y$draft_round[is.na(y$draft_round)] <- 8
 
 shinyUI(fluidPage(
-  theme = shinytheme("spacelab"),
+  theme = shinytheme("readable"),
   column(10, offset = 4, titlePanel("DynastyProcess.com Arbitrage App")),
   hr(),
   selectizeInput("selected",
