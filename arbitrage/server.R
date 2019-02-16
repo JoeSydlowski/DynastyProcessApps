@@ -74,11 +74,9 @@ shinyServer(function(input, output) {
     
   })
   
-
-  
   output$results <- renderDT({
-    brks <- c("75","80","85","90","95")
-    clrs <- c("rgb(255,38,0)",
+    brks <- c("69","79","84","89","94")
+    clrs <- c("rgba(255, 255, 255, .4)",
               "rgb(255,82,51)",
               "rgb(255,139,51)",
               "rgb(254,255,51)",

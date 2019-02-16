@@ -50,6 +50,13 @@ shinyUI(fluidPage(
                   plotOutput("bar")),
            column(6,
                   h4(textOutput("tableText")),
-                  tableOutput("diffTable")))
-  
+                  tableOutput("diffTable"))),
+  hr(),
+  p(HTML(paste0("This app was created by ",
+                a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
+                " based on data from ",
+                a(href = "https://dynastyprocess.com/downloads/values/", "DynastyProcess.com"),
+                ". You can find the code at ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github"),
+                ".")))
 ))

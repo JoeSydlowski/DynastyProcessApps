@@ -13,6 +13,7 @@ shinyServer(function(input, output) {
   )
   
   output$results <- renderDT({
+    req(input$select)
     datatable( df(),
                filter = 'top',
                options = list(pageLength = 50,
