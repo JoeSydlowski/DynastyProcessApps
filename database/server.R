@@ -4,7 +4,6 @@ library(DT)
 library(shinythemes)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols = c(24:32,46:51)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {

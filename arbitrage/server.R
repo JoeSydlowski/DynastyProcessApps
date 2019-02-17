@@ -6,7 +6,7 @@ library(dplyr)
 library(tibble)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols <- c(15,18,21:54,56:62)
+cols <- c(15,18:27,30:78)
 y <- x[cols]
 
 y$draft_round[is.na(y$draft_round)] <- 8
@@ -83,11 +83,13 @@ shinyServer(function(input, output) {
               "rgb(50,205,50)",
               "rgb(34,139,34)")
     
-    datatable( df()) %>% formatStyle(
-      'MatchRating',
-      backgroundColor = styleInterval(brks, clrs))
+    datatable( df(),
+               options = list(pageLength = 25,
+                              scrollX =TRUE)) %>% formatStyle(
+                                'MatchRating',
+                                backgroundColor = styleInterval(brks, clrs))
   })
-  
+    
   output$intro <- renderUI({ 
     HTML(paste("The Arbitrage App helps you find comparable players based on any criteria available in the ",
                 a(href = "https://dynastyprocess.com/downloads/database/", "DynastyProcess.com Database"),

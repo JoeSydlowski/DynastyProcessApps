@@ -4,8 +4,7 @@ library(DT)
 library(shinythemes)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols = c(24:32,46:51)
-
+cols = c(12:18,28:31)
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   #shinythemes::themeSelector(),
@@ -23,12 +22,12 @@ shinyUI(fluidPage(
   selectizeInput("select",
                  "Select columns:", 
                  choices = list(
-                   PlayerVariables = names(x)[12:22],
-                   Fantasypros = names(x)[56:62],
-                   Contract = names(x)[54:55],
-                   Snaps = names(x)[52:53],
-                   Stats2018 = names(x)[cols],
-                   Vitals = names(x)[33:45],
+                   PlayerVariables = names(x)[cols],
+                   Fantasypros = names(x)[21:27],
+                   Contract = names(x)[19:20],
+                   Snaps = names(x)[45:46],
+                   Stats2018 = names(x)[47:78],
+                   Vitals = names(x)[32:44],
                    PlayerIDs = names(x)[1:11]),
                  selected = c("mergename", "pos", "team", "age", "draft_year", "draft_round",
                               "offSnaps.", "offSnaps", "dynoECR", "dynpECR", "redpECR"),
