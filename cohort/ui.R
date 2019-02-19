@@ -5,10 +5,8 @@ library(tidyr)
 library(DT)
 library(shinythemes)
 
-
-#x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess-private/master/datasets/ffstats-feb2019/QBdata.csv"))
-
-x <- read.csv("C:/Users/syd23/Documents/Fantasy Football/Excel Sheets/FFStatistics/qbdata.csv")
+#x <- read.csv("C:/Users/syd23/Documents/Fantasy Football/Excel Sheets/FFStatistics/qbdata.csv")
+x <- read.csv("qbdata.csv")
 
 cols <- c("Player", "Season", "Age", "Overall", "PosRank.4pt.TD.")
 y <- x[cols]

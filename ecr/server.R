@@ -3,7 +3,6 @@ library(curl)
 library(shinythemes)
 library(ggplot2)
 library(plotly)
-library(directlabels)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
