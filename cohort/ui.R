@@ -6,9 +6,11 @@ library(DT)
 library(shinythemes)
 
 
-x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess-private/master/datasets/ffstats-feb2019/QBdata.csv?token=AtNYwWF-d4Kr_8OGaqPbzrXLhVrwPa_yks5caP09wA%3D%3D"))
+#x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess-private/master/datasets/ffstats-feb2019/QBdata.csv"))
 
-cols <- c("Player", "Season", "Age", "Overall", "Positional.4")
+x <- read.csv("C:/Users/syd23/Documents/Fantasy Football/Excel Sheets/FFStatistics/qbdata.csv")
+
+cols <- c("Player", "Season", "Age", "Overall", "PosRank.4pt.TD.")
 y <- x[cols]
 
 

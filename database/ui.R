@@ -4,8 +4,7 @@ library(DT)
 library(shinythemes)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols = c(12:18,28:31)
-# Define UI for application that draws a histogram
+
 shinyUI(fluidPage(
   #shinythemes::themeSelector(),
   theme = shinytheme("spacelab"),
@@ -22,13 +21,18 @@ shinyUI(fluidPage(
   selectizeInput("select",
                  "Select columns:", 
                  choices = list(
-                   PlayerVariables = names(x)[cols],
-                   Fantasypros = names(x)[21:27],
-                   Contract = names(x)[19:20],
-                   Snaps = names(x)[45:46],
-                   Stats2018 = names(x)[47:78],
-                   Vitals = names(x)[32:44],
-                   PlayerIDs = names(x)[1:11]),
+                   bio = names(x)[12:18],
+                   contract = names(x)[19:20],
+                   fantasypros = names(x)[21:27],
+                   draft = names(x)[28:31],
+                   "season-stats-snaps" = names(x)[45:47],
+                   "season-stats-passing" = names(x)[48:54],
+                   "season-stats-rushing" = names(x)[55:60],
+                   "season-stats-receiving" = names(x)[61:73],
+                   "season-stats-firstdowns" = names(x)[74:76],
+                   "season-stats-fantasy" = names(x)[77:78],
+                   athletic = names(x)[32:44],
+                   ID = names(x)[1:11]),
                  selected = c("mergename", "pos", "team", "age", "draft_year", "draft_round",
                               "offSnaps.", "offSnaps", "dynoECR", "dynpECR", "redpECR"),
                  multiple = TRUE,
