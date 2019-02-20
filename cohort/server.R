@@ -5,7 +5,6 @@ library(tidyr)
 library(DT)
 library(shinythemes)
 
-#x <- read.csv("C:/Users/syd23/Documents/Fantasy Football/Excel Sheets/FFStatistics/qbdata.csv")
 x <- read.csv("qbdata.csv")
 
 cols <- c("Player", "Year", "Season", "Age", "Overall", "PosRank.4pt.TD.")
