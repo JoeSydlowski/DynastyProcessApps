@@ -7,9 +7,9 @@ library(plotly)
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
-dates <- tail(unique(x$date),4)
+unique(x$date)
 
-?scale_size_manual
+dates <- tail(unique(x$date),3)
 
 shinyServer(function(input, output) {
   
@@ -37,23 +37,21 @@ shinyServer(function(input, output) {
   })
   
   
-  output$distPlot2 <- renderPlotly({
-    plot_ly(x[(x$pos == input$posFilter) &
-                (x$date %in% dates),],
-            x = ~dynpECR,
-            y = ~rdpECR,
-            type = "scatter",
-            color = ~date,
-            colors = c("red", "yellow", "green"),
-            mode = 'markers',
-            sizes = c(5,10,20),
-            group = ~date
-            #marker = list()
-            #colors = c("#FA8072", "#FDFD71", "#32CD32")
-    )
-    
-    
-  }) 
+  # output$distPlot2 <- renderPlotly({
+  #   plot_ly(x[(x$pos == input$posFilter) &
+  #               (x$date %in% dates),],
+  #           x = ~dynpECR,
+  #           y = ~rdpECR,
+  #           type = "scatter",
+  #           color = ~date,
+  #           colors = c("red", "yellow", "green"),
+  #           mode = 'markers',
+  #           sizes = c(5,10,20),
+  #           group = ~date
+  #           #marker = list()
+  #           #colors = c("#FA8072", "#FDFD71", "#32CD32")
+  #   )
+  #}) 
   
   
 })

@@ -5,7 +5,6 @@ library(shinythemes)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   df <- reactive(
     data.frame(x[,input$select, drop = FALSE])

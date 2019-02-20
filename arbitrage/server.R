@@ -12,9 +12,26 @@ y <- x[cols]
 y$draft_round[is.na(y$draft_round)] <- 8
 #y$tgts[is.na(y$tgts)] <- 0
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
+  outVar <- reactive({
+    if (input$presets == 0) {c("age", "draft_round", "wopr", "ppr.g", "adot")}
+    else if (input$presets == 1) {c("age", "draft_round", "paATTs", "pa_aya", "ppr.g")}
+    else if (input$presets == 2) {c("draft_round", "ms_tgts", "ruATTs", "offSnapsPct")}
+    else if (input$presets == 3) {c("ruTDs", "reTDs", "ppr.g", "adot")}
+    else if (input$presets == 4) {c("age", "forty", "cone", "height")}
+    else if (input$presets == 5) {c("draft_round", "wopr", "adot", "offSnapsPct")}
+    else if (input$presets == 6) {c("racr", "reTDs", "ppr.g", "adot")}
+    else if (input$presets == 7) {c("age", "forty", "cone", "height", "shuttle")}
+    else if (input$presets == 8) {c("draft_round", "wopr", "adot", "offSnapsPct")}
+    else if (input$presets == 9) {c("racr", "reTDs", "ppr.g", "adot")}
+    else if (input$presets == 10) {c("age", "forty", "cone", "height", "broad")}
+  })
   
+  observeEvent(input$presets, {
+    updateSelectizeInput(session, "selectcol", selected = outVar())
+    })
+
   df1 <- reactive({
     req(input$selected)
     req(input$selectcol)
