@@ -7,13 +7,13 @@ library(plotly)
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
-unique(x$date)
-
-dates <- tail(unique(x$date),3)
 
 shinyServer(function(input, output) {
   
   output$distPlot <- renderPlotly({
+    
+    dates <- tail(unique(x$date), input$numWeeks)
+    
     df <- x[(x$pos == input$posFilter) & (x$date %in% dates),]
     
     sizes <- 2:(length(dates)+1)
@@ -31,8 +31,9 @@ shinyServer(function(input, output) {
       #scale_color_manual(values=c("grey","grey","blue")) +
       theme_light()
     
-    ggplotly(p, height = 700) %>% style(textposition = "bottom-right")
-    
+    ggplotly(p, tooltip = c("name", "rdpECR", "dynpECR"),
+             height = 650, dynamicTicks = TRUE) %>%
+      style(textposition = "bottom-right")
     
   })
   
