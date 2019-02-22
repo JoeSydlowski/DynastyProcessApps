@@ -9,7 +9,11 @@ x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/mas
 cols <- c(15,18:27,30:78)
 y <- x[cols]
 
+cols2 <- c(27:49, 51:60)
 y$draft_round[is.na(y$draft_round)] <- 8
+y[cols2][is.na(y[cols2])] <- 0
+
+cols3 <- c(18,30:31)
 
 shinyUI(fluidPage(
   theme = shinytheme("readable"),
@@ -26,19 +30,17 @@ shinyUI(fluidPage(
            selectizeInput("selectcol",
                           "Select Comparison Variables:",
                           choices = list(
-                            age = names(x)[18],
-                            contract = names(x)[19:20],
-                            fantasypros = names(x)[21:27],
-                            draft = names(x)[30:31],
+                            bio = names(x)[cols3],
+                            "season-stats-fantasy" = names(x)[77:78],
                             "season-stats-snaps" = names(x)[45:47],
                             "season-stats-passing" = names(x)[48:54],
                             "season-stats-rushing" = names(x)[55:60],
                             "season-stats-receiving" = names(x)[61:73],
                             "season-stats-firstdowns" = names(x)[74:76],
-                            "season-stats-fantasy" = names(x)[77:78],
-                            athletic = names(x)[32:44]),
-                          multiple = TRUE,
-                          selected = c("age", "draft_round", "tgts"))),
+                            athletic = names(x)[32:44],
+                            contract = names(x)[19:20],
+                            fantasypros = names(x)[21:27]),
+                          multiple = TRUE)),
     column(3,
            radioButtons("numcomps", "Number of Comps",
                         choices = list("5" = 6, "10" = 11), 
