@@ -8,7 +8,7 @@ library(ggplot2)
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
 
 #cols <- c(15:18, 56, 57)
-cols <- c(1:4,6,7)
+cols <- c(1:6)
 
 x <- x[cols]
 names(x)[1]<-"Name"
