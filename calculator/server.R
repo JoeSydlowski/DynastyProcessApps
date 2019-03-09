@@ -110,11 +110,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$textA <- renderText({
-    paste("Team A total", format(sum(dfB()$value), big.mark = ","))
+    paste("Team A total", format(sum(dfA()$value), big.mark = ","))
   })
   
   output$textB <- renderText({
-    paste("Team B total", format(sum(dfA()$value), big.mark = ","))
+    paste("Team B total", format(sum(dfB()$value), big.mark = ","))
   })
   
   output$bar <- renderPlot({
@@ -157,7 +157,7 @@ shinyServer(function(input, output, session) {
   output$tableText <- renderText({
     req(input$sideA)
     req(input$sideB)
-    "Here are some options to even out the trade."
+    "Here are some options to even out the trade:"
   })
   
 })
