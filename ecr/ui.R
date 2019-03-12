@@ -26,8 +26,13 @@ shinyUI(fluidPage(
                                  multiple = TRUE))),
   hr(),
   plotOutput("distPlot",
-              width = "100%",
+             height = "650px",
+              #width = "100%",
               hover = hoverOpts(id= "plot_hover",
-                                delayType = "throttle")),
-  uiOutput("hover_info")
+                                delay = "100",
+                                delayType = "throttle"),
+             click = "plot_click"),
+  uiOutput("hover_info"),
+  uiOutput("hover_info2")
+  
 ))
