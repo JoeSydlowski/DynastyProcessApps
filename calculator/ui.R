@@ -2,11 +2,10 @@ library(shiny)
 library(curl)
 library(shinythemes)
 library(DT)
+library(htmlwidgets)
 
-#x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
 
-#cols <- c(15:18, 56, 57)
 cols <- c(1:6)
 
 x <- x[cols]
@@ -22,22 +21,24 @@ shinyUI(fluidPage(
                   radioButtons("numQB", "Choose League Type",
                                choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"), 
                                selected = "dynoECR")),
-           column(4,
+           column(4, 
+                  class = "col-sm-2 col-lg-4",
                   sliderInput("slider1", "Depth Weight", min = -0.03,
                               max = -.02, value = -.024, step = 0.001,
-                              label = div(style='width:500px;', 
+                              label = div(style='width: 500px ;', 
                                           div(style='float:left;', '↓ Value of Depth'), 
                                           div(style='float:right;', '↑ Value of Depth')),
-                              width= '500px'))),
+                              width= '500px'
+                              ))),
   hr(),
   fluidRow(column(6,
                   selectizeInput("sideA",
-                                 "Choose Assets to Team A:",
+                                 "Team A:",
                                  choices = x["Name"],
                                  multiple = TRUE)),
            column(6,
                   selectizeInput("sideB",
-                                 "Choose Assets to Team B:",
+                                 "Team B:",
                                  choices = x["Name"],
                                  multiple = TRUE))),
   hr(),

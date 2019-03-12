@@ -4,10 +4,8 @@ library(shinythemes)
 library(DT)
 library(ggplot2)
 
-#x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
 
-#cols <- c(15:18, 56, 57)
 cols <- c(1:6)
 
 x <- x[cols]

@@ -23,7 +23,7 @@ shinyServer(function(input, output, session) {
     else if (input$presets == 4) {c("age", "forty", "cone", "height")}
     else if (input$presets == 5) {c("draft_round", "wopr", "adot", "offSnapsPct")}
     else if (input$presets == 6) {c("racr", "reTDs", "ppr.g", "adot")}
-    else if (input$presets == 7) {c("age", "forty", "cone", "height", "shuttle")}
+    else if (input$presets == 7) {c("age", "forty", "cone", "height", "weight", "shuttle")}
     else if (input$presets == 8) {c("draft_round", "wopr", "adot", "offSnapsPct")}
     else if (input$presets == 9) {c("racr", "reTDs", "ppr.g", "adot")}
     else if (input$presets == 10) {c("age", "forty", "cone", "height", "broad")}
