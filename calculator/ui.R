@@ -26,8 +26,8 @@ shinyUI(fluidPage(
                   sliderInput("slider1", "Depth Weight", min = -0.03,
                               max = -.02, value = -.024, step = 0.001,
                               label = div(style='width: 500px ;', 
-                                          div(style='float:left;', '↓ Value of Depth'), 
-                                          div(style='float:right;', '↑ Value of Depth')),
+                                          div(style='float:left;', 'Studs-Heavy'), 
+                                          div(style='float:right;', 'Depth-Heavy')),
                               width= '500px'
                               ))),
   hr(),
