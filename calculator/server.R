@@ -3,6 +3,7 @@ library(curl)
 library(shinythemes)
 library(DT)
 library(ggplot2)
+library(rvest)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
 

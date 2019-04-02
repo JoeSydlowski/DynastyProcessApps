@@ -2,9 +2,15 @@ library(shiny)
 library(curl)
 library(shinythemes)
 library(DT)
-library(htmlwidgets)
+library(rvest)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
+
+webpage <- read_html('https://github.com/tanho63/dynastyprocess/blob/master/files/values.csv')
+lastupdate <- webpage %>%
+  html_nodes("relative-time") %>%
+  html_text()
+
 
 cols <- c(1:6)
 
@@ -57,6 +63,7 @@ shinyUI(fluidPage(
                   h4(textOutput("tableText")),
                   tableOutput("diffTable"))),
   hr(),
+  p(paste0("Player values last updated on ", lastupdate, ".")),
   p(HTML(paste0("This app was created by ",
                 a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
                 " based on data from ",
