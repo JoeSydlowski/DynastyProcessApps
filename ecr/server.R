@@ -2,14 +2,21 @@ library(shiny)
 library(curl)
 library(shinythemes)
 library(ggplot2)
+library(ggrepel)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
 namelist <- c("Andrew Luck")
 
-
 shinyServer(function(input, output, session) {
+  
+  defaultSize <- reactive({
+    if (input$posFilter == 'QB' | input$posFilter == 'TE')
+      {30}
+    else
+      {50}
+  })
   
   df <- reactive({
     
@@ -28,6 +35,8 @@ shinyServer(function(input, output, session) {
   
   output$distPlot <- renderPlot({
     
+    defaultSizelocal <- defaultSize()
+    
     dates <- tail(unique(x$date), input$numWeeks)
 
     sizes <- 4:(length(dates)+3)
@@ -41,12 +50,15 @@ shinyServer(function(input, output, session) {
       #geom_smooth(method='lm') +
       geom_abline() +
       scale_color_brewer(palette="Set1") +
-      #scale_color_manual(values=c("#FA8072", "#FDFD71", "#32CD32")) +
-      #scale_color_manual(values=c("grey","grey","blue")) +
-      geom_text(data = df()[df()$name %in% input$playerList & df()$date == tail(dates, 1),],
-                aes(dynpECR, rdpECR, label=name), nudge_x = -1, nudge_y = 1) +
+      geom_text_repel(force = 15,
+                      data = df()[df()$date == tail(dates, 1),],
+                      aes(dynpECR, rdpECR, label=name)) +
+      #geom_text(data = df()[df()$name %in% input$playerList & df()$date == tail(dates, 1),],
+      #          aes(dynpECR, rdpECR, label=name), nudge_x = -1, nudge_y = 1) +
       #geom_point_interactive(aes(tooltip = name)) +
       #coord_fixed(ratio = 1) +
+      xlim(0, defaultSizelocal) +
+      ylim(0, defaultSizelocal) +
       coord_equal() +
       theme_light()
   })

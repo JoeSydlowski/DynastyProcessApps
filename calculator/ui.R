@@ -4,7 +4,7 @@ library(shinythemes)
 library(DT)
 library(rvest)
 
-x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
+x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
 
 webpage <- read_html('https://github.com/tanho63/dynastyprocess/blob/master/files/values.csv')
 lastupdate <- webpage %>%
@@ -28,14 +28,21 @@ shinyUI(fluidPage(
                                choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"), 
                                selected = "dynoECR")),
            column(4, 
-                  class = "col-sm-2 col-lg-4",
                   sliderInput("slider1", "Depth Weight", min = -0.03,
                               max = -.02, value = -.024, step = 0.001,
                               label = div(style='width: 500px ; max-width: 100% ;' , 
                                           div(style='float:left;', 'Studs-Heavy'), 
                                           div(style='float:right;', 'Depth-Heavy')),
                               width= '500px'
-                              ))),
+                              )),
+           column(4,
+                  sliderInput("slider2", "Pick Value", min = 0,
+                              max = 1, value = 0.5, step = 0.1,
+                              label = div(style='width: 500px ; max-width: 100% ;' , 
+                                          div(style='float:left;', 'Pick Skeptic'), 
+                                          div(style='float:right;', 'Pick Optimist')),
+                              width= '500px'
+                  ))),
   hr(),
   fluidRow(column(6,
                   selectizeInput("sideA",

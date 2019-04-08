@@ -5,17 +5,28 @@ library(DT)
 library(ggplot2)
 library(rvest)
 
-x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values.csv"))
-
-cols <- c(1:6)
-
-x <- x[cols]
-names(x)[1]<-"Name"
-x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
+playerDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
+playerDB <- playerDB[c(1:6)]
+pickDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-picks.csv"))
 
 shinyServer(function(input, output, session) {
   
+  combineddf <- reactive({
+    pickDB$dynoECR <- ((1-input$slider2)*pickDB$min_dynoECR + input$slider2*pickDB$max_dynoECR)
+    pickDB$dyno2QBECR <- ((1-input$slider2)*pickDB$min_dyno2QBECR + input$slider2*pickDB$max_dyno2QBECR)
+    pickDB <- pickDB[c(1:4)]
+    pickDB$team <- NA
+    pickDB$age <- NA
+    
+    x <- rbind(playerDB, pickDB)
+    names(x)[1]<-"Name"
+    x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
+    x
+  })
+  
   df <- reactive({
+    x <- combineddf()
+    
     if(input$numQB=="dynoECR") {
       x$dyno2QBECR <- NULL
     } else {
@@ -41,14 +52,14 @@ shinyServer(function(input, output, session) {
   })
   
   dfA <- reactive({
-    req(input$sideA)
+    #req(input$sideA)
     
     df()[(df()$Name %in% c(input$sideA)), ]
     
   })
   
   dfB <- reactive({
-    req(input$sideB)
+    #req(input$sideB)
     
     df()[(df()$Name %in% c(input$sideB)), ]
     
@@ -73,22 +84,26 @@ shinyServer(function(input, output, session) {
   })
   
   rawDiff <- reactive({
-    if (sumdfA() > sumdfB()) {
-      sum(dfA()$value) - sum(dfB()$value)
-    } else if (sum(dfA()$value) < sum(dfB()$value)) {
-      sum(dfB()$value) - sum(dfA()$value)
-    }
+    if (sumdfA() > sumdfB())
+      {sum(dfA()$value) - sum(dfB()$value)}
+    else if (sum(dfA()$value) < sum(dfB()$value))
+      {sum(dfB()$value) - sum(dfA()$value)}
+    else
+      {0}
   })
   
   percentDiff <- reactive({
-    if (sumdfA() > sumdfB()) {
-      round(100*((sum(dfA()$value) - sum(dfB()$value))/sum(dfB()$value)))
-    } else if (sum(dfA()$value) < sum(dfB()$value)) {
-      round(100*((sum(dfB()$value) - sum(dfA()$value))/sum(dfA()$value)))
-    }
+    if (sumdfA() > sumdfB())
+      {round(100*((sum(dfA()$value) - sum(dfB()$value))/sum(dfB()$value)))}
+    else if (sum(dfA()$value) < sum(dfB()$value))
+      {round(100*((sum(dfB()$value) - sum(dfA()$value))/sum(dfA()$value)))}
+    else
+      {0}
   })
   
   output$winner <- renderText({
+    req(input$sideA, input$sideB)
+    
     if (sumdfA() > sumdfB()) {
       paste0("Side A is winning the trade by ",
             format(sum(dfA()$value) - sum(dfB()$value), big.mark = ","),
@@ -103,6 +118,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$winRange <- renderText({
+    req(input$sideA, input$sideB)
+    
     if (percentDiff()<5) {
       "This trade is approximately fair!"
     }
@@ -117,6 +134,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$bar <- renderPlot({
+    req(input$sideA, input$sideB)
+    
     dfA_temp <- dfA()
     dfB_temp <- dfB()
     dfA_temp$Team <- "A"
@@ -154,8 +173,8 @@ shinyServer(function(input, output, session) {
     )
   
   output$tableText <- renderText({
-    req(input$sideA)
-    req(input$sideB)
+    #req(input$sideA)
+    #req(input$sideB)
     "Here are some options to even out the trade:"
   })
   

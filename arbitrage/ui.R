@@ -6,14 +6,14 @@ library(dplyr)
 library(tibble)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols <- c(15,18:27,30:79)
+cols <- c(15,18:27,30:80)
 y <- x[cols]
 
-cols2 <- c(28:50, 52:61)
+cols2 <- c(28:51, 53:62)
 y$draft_round[is.na(y$draft_round)] <- 8
 y[cols2][is.na(y[cols2])] <- 0
 
-cols3 <- c(18,30:32)
+cols3 <- c(18,30:33)
 
 shinyUI(fluidPage(
   theme = shinytheme("readable"),
@@ -31,13 +31,13 @@ shinyUI(fluidPage(
                           "Select Comparison Variables:",
                           choices = list(
                             bio = names(x)[cols3],
-                            "season-stats-fantasy" = names(x)[78:79],
-                            "season-stats-snaps" = names(x)[46:48],
-                            "season-stats-passing" = names(x)[49:55],
-                            "season-stats-rushing" = names(x)[56:61],
-                            "season-stats-receiving" = names(x)[62:74],
-                            "season-stats-firstdowns" = names(x)[75:77],
-                            athletic = names(x)[33:45],
+                            "season-stats-fantasy" = names(x)[79:80],
+                            "season-stats-snaps" = names(x)[47:49],
+                            "season-stats-passing" = names(x)[50:56],
+                            "season-stats-rushing" = names(x)[57:62],
+                            "season-stats-receiving" = names(x)[63:75],
+                            "season-stats-firstdowns" = names(x)[76:78],
+                            athletic = names(x)[34:46],
                             contract = names(x)[19:20],
                             fantasypros = names(x)[21:27]),
                           multiple = TRUE)),

@@ -6,10 +6,10 @@ library(dplyr)
 library(tibble)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
-cols <- c(15,18:27,30:79)
+cols <- c(15,18:27,30:80)
 y <- x[cols]
 
-cols2 <- c(28:50, 52:61)
+cols2 <- c(28:51, 53:62)
 y$draft_round[is.na(y$draft_round)] <- 8
 y[cols2][is.na(y[cols2])] <- 0
 
