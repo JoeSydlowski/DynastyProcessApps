@@ -6,6 +6,8 @@ library(ggplot2)
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
+x <- x[order(x$name, x$date),]
+
 dates <- tail(unique(x$date),3)
 
 shinyUI(fluidPage(
@@ -25,13 +27,19 @@ shinyUI(fluidPage(
                                  choices = x["name"],
                                  multiple = TRUE))),
   hr(),
-  plotOutput("distPlot",
-             height = "650px",
-              #width = "100%",
-              hover = hoverOpts(id= "plot_hover",
-                                delay = "100",
-                                delayType = "throttle"),
-             click = "plot_click"),
+  fluidRow(column(6, offset =3,
+                  plotOutput("distPlot",
+                             height = "800px",
+                             dblclick = "dblclick",
+                             brush = brushOpts(
+                               id = "plot1_brush",
+                               resetOnNew = TRUE),
+                               
+                               #width = "100%",
+                               hover = hoverOpts(id= "plot_hover",
+                                                 delay = "100",
+                                                 delayType = "throttle"),
+                               click = "plot_click"))),
   uiOutput("hover_info"),
   uiOutput("hover_info2")
   

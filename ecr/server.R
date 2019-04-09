@@ -7,16 +7,11 @@ library(ggrepel)
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
+x <- x[order(x$name, x$date),]
+
 namelist <- c("Andrew Luck")
 
 shinyServer(function(input, output, session) {
-  
-  defaultSize <- reactive({
-    if (input$posFilter == 'QB' | input$posFilter == 'TE')
-      {30}
-    else
-      {50}
-  })
   
   df <- reactive({
     
@@ -24,6 +19,10 @@ shinyServer(function(input, output, session) {
     
     x[(x$pos == input$posFilter) & (x$date %in% dates),]
   })
+  
+  ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
+  xrange <- reactiveValues(x1 = 0, x2 = 220)
+  yrange <- reactiveValues(y1 = 0, y2 = 220)
   
   observeEvent(input$posFilter,{
     #currentA <- input$sideA
@@ -34,8 +33,6 @@ shinyServer(function(input, output, session) {
   })
   
   output$distPlot <- renderPlot({
-    
-    defaultSizelocal <- defaultSize()
     
     dates <- tail(unique(x$date), input$numWeeks)
 
@@ -50,17 +47,42 @@ shinyServer(function(input, output, session) {
       #geom_smooth(method='lm') +
       geom_abline() +
       scale_color_brewer(palette="Set1") +
-      geom_text_repel(force = 15,
-                      data = df()[df()$date == tail(dates, 1),],
+      geom_text_repel(force = 5,
+                      data = df()[df()$date == tail(dates, 1) & 
+                                  xrange$x1 <= df()$dynpECR &
+                                  df()$dynpECR  <= xrange$x2 &
+                                  yrange$y1 <= df()$rdpECR &
+                                  df()$rdpECR <= yrange$y2 ,],
                       aes(dynpECR, rdpECR, label=name)) +
       #geom_text(data = df()[df()$name %in% input$playerList & df()$date == tail(dates, 1),],
       #          aes(dynpECR, rdpECR, label=name), nudge_x = -1, nudge_y = 1) +
       #geom_point_interactive(aes(tooltip = name)) +
       #coord_fixed(ratio = 1) +
-      xlim(0, defaultSizelocal) +
-      ylim(0, defaultSizelocal) +
-      coord_equal() +
+      #xlim(0, defaultSizelocal) +
+      #ylim(0, defaultSizelocal) +
+      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE) +
+      #coord_equal() +
       theme_light()
+  })
+  
+  observeEvent(input$dblclick, {
+    brush <- input$plot1_brush
+    if (!is.null(brush)) {
+      ranges$xcoord <- c(brush$xmin, brush$xmax)
+      ranges$ycoord <- c(brush$ymin, brush$ymax)
+      xrange$x1 <- brush$xmin
+      xrange$x2 <- brush$xmax
+      yrange$y1 <- brush$ymin
+      yrange$y2 <- brush$ymax
+      
+    } else {
+      ranges$xcoord <- NULL
+      ranges$ycoord <- NULL
+      xrange$x1 <- 0
+      xrange$x2 <- 220
+      yrange$y1 <- 0
+      yrange$y2 <- 220
+    }
   })
   
   
