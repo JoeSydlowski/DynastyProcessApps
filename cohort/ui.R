@@ -13,7 +13,33 @@ y <- x[cols]
 
 
 shinyUI(fluidPage(
-  theme = shinytheme("readable"),
+  theme = shinytheme("flatly"),
+  withTags(
+    nav(class="navbar navbar-default navbar-static-top", role="navigation",
+        div(class="container-fluid",
+            div(class="navbar-header",
+                span(class="navbar-brand",
+                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                )
+            ),
+            ul(class="nav navbar-nav",
+               li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
+               ),
+               li(
+                 a(href="http://apps.dynastyprocess.com/calculator",strong("Calculator"))
+               ),
+               li(class="dropdown",
+                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
+                  ul(class="dropdown-menu",
+                     li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
+                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
+                     li(class="active",a(href="#",strong("Cohort")))
+                  )
+               )
+            )
+        )
+    )
+  ),
   column(10, offset = 4, titlePanel("DynastyProcess.com Cohort App")),
   hr(),
   selectizeInput("selected",

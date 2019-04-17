@@ -16,8 +16,34 @@ y[cols2][is.na(y[cols2])] <- 0
 cols3 <- c(18,30:33)
 
 shinyUI(fluidPage(
-  theme = shinytheme("readable"),
-  column(10, offset = 4, titlePanel("DynastyProcess.com Arbitrage App")),
+  theme = shinytheme("flatly"),
+  withTags(
+    nav(class="navbar navbar-default navbar-static-top", role="navigation",
+        div(class="container-fluid",
+            div(class="navbar-header",
+                span(class="navbar-brand",
+                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                )
+            ),
+            ul(class="nav navbar-nav",
+               li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
+               ),
+               li(
+                 a(href="http://apps.dynastyprocess.com/calculator",strong("Calculator"))
+               ),
+               li(class="dropdown",
+                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
+                  ul(class="dropdown-menu",
+                     li(class="active",a(href="#",strong("Arbitrage"))),
+                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
+                     li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
+                  )
+               )
+            )
+        )
+    )
+  ),
+titlePanel("DynastyProcess.com Arbitrage App"),
   hr(),
   selectizeInput("selected",
                  "Select Player:",

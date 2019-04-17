@@ -19,9 +19,35 @@ names(x)[1]<-"Name"
 x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
 
 shinyUI(fluidPage(
-  theme = shinytheme("readable"),
+  theme = shinytheme("flatly"),
   #shinythemes::themeSelector(),
-  column(10, offset = 4, titlePanel("DynastyProcess.com Trade Calculator")),
+  withTags(
+    nav(class="navbar navbar-default navbar-static-top", role="navigation",
+        div(class="container-fluid",
+            div(class="navbar-header",
+                span(class="navbar-brand",
+                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                )
+            ),
+            ul(class="nav navbar-nav",
+               li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
+               ),
+               li(class="active",
+                 a(href="#",strong("Calculator"))
+               ),
+               li(class="dropdown",
+                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
+                  ul(class="dropdown-menu",
+                     li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
+                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
+                     li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
+                  )
+               )
+            )
+        )
+    )
+  ),
+titlePanel("DynastyProcess.com Trade Calculator"),
   hr(),
   fluidRow(column(4,
                   radioButtons("numQB", "Choose League Type",

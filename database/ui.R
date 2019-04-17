@@ -7,7 +7,7 @@ x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/mas
 
 shinyUI(fluidPage(
   #shinythemes::themeSelector(),
-  theme = shinytheme("spacelab"),
+  theme = shinytheme("flatly"),
   # h1(id = "big-heading",
   #    "DynastyProcess.com Database",
   #    align = "center"),
@@ -15,9 +15,34 @@ shinyUI(fluidPage(
   #                 background-color:blue;
   #                 height: 100px;
   #                 font-size:60px;}")),
+  withTags(
+    nav(class="navbar navbar-default navbar-static-top", role="navigation",
+        div(class="container-fluid",
+            div(class="navbar-header",
+                span(class="navbar-brand",
+                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                )
+            ),
+            ul(class="nav navbar-nav",
+               li(class="active",a(href="#",strong("Database"))
+               ),
+               li(
+                  a(href="http://apps.dynastyprocess.com/calculator",strong("Calculator"))
+               ),
+               li(class="dropdown",
+                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
+                  ul(class="dropdown-menu",
+                     li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
+                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
+                     li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
+                  )
+               )
+            )
+        )
+    )
+  ),
   
-  
-  column(10, offset = 4, titlePanel("DynastyProcess.com Database")),
+titlePanel("DynastyProcess.com Database"),
   selectizeInput("select",
                  "Select columns:", 
                  choices = list(
