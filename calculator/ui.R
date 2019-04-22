@@ -11,7 +11,6 @@ lastupdate <- webpage %>%
   html_nodes("relative-time") %>%
   html_text()
 
-
 cols <- c(1:6)
 
 x <- x[cols]
@@ -27,6 +26,21 @@ shinyUI(fluidPage(
                   radioButtons("numQB", "Choose League Type",
                                choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"), 
                                selected = "dynoECR")),
+           column(4,
+                  radioButtons("calcType", "Startup Mode",
+                               choices = list("Normal" = "normal",
+                                              "Startup (Players and 2019 Picks)" = "predraft",
+                                              "Startup (Players Only)" = "postdraft"),
+                               selected= "predraft")),
+           column(4,
+                  selectInput("leagueSize", "Number of Teams (Startup Mode only)",
+                              choices = list("8" = 8,
+                                             "10" = 10,
+                                             "12" = 12,
+                                             "14" = 14,
+                                             "16" = 16),
+                              selected = 12))),
+  fluidRow(         
            column(4, 
                   sliderInput("slider1", "Depth Weight", min = -0.03,
                               max = -.02, value = -.024, step = 0.001,
@@ -34,7 +48,7 @@ shinyUI(fluidPage(
                                           div(style='float:left;', 'Studs-Heavy'), 
                                           div(style='float:right;', 'Depth-Heavy')),
                               width= '500px'
-                              )),
+                  )),
            column(4,
                   sliderInput("slider2", "Pick Value", min = 0,
                               max = 1, value = 0.5, step = 0.1,
@@ -42,7 +56,9 @@ shinyUI(fluidPage(
                                           div(style='float:left;', 'Pick Skeptic'), 
                                           div(style='float:right;', 'Pick Optimist')),
                               width= '500px'
-                  ))),
+                  )),
+           column(4,
+                  downloadButton("downloadData", "Download Values"))),
   hr(),
   fluidRow(column(6,
                   selectizeInput("sideA",

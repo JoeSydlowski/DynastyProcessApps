@@ -43,7 +43,8 @@ shinyServer(function(input, output, session) {
       #geom_point(aes(color=date, size=date), shape = 1, color = "black") +
       scale_size_manual( values = sizes) +
       #geom_text(aes(label = ifelse(date == tail(dates,1), as.character(name), ""))) +
-      geom_line() +
+      #geom_line() +
+      geom_path() +
       #geom_smooth(method='lm') +
       geom_abline() +
       scale_color_brewer(palette="Set1") +

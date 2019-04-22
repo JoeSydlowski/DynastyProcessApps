@@ -12,14 +12,30 @@ pickDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyproces
 shinyServer(function(input, output, session) {
   
   combineddf <- reactive({
+    names(pickDB)[1]<-"Name"
+    x2020 <- dplyr::filter(pickDB, grepl('2020|2021', Name))
+    x2019 <- dplyr::filter(pickDB, grepl('2019', Name))
+
+    x2019$pickNum <- as.numeric(rownames(x2019)) %% as.numeric(input$leagueSize)
+    x2019$pickNum[x2019$pickNum == 0] <- as.numeric(input$leagueSize)
+    
+    x2019$Name <- paste0("2019 Rookie Pick ",
+                      ceiling(as.numeric(rownames(x2019))/as.numeric(input$leagueSize)),
+                      ".",
+                      sprintf("%02d", x2019$pickNum ))
+    x2019$pickNum <- NULL
+    pickDB <- rbind(x2019, x2020)
+    print(pickDB)
+    
     pickDB$dynoECR <- ((1-input$slider2)*pickDB$min_dynoECR + input$slider2*pickDB$max_dynoECR)
     pickDB$dyno2QBECR <- ((1-input$slider2)*pickDB$min_dyno2QBECR + input$slider2*pickDB$max_dyno2QBECR)
     pickDB <- pickDB[c(1:4)]
     pickDB$team <- NA
     pickDB$age <- NA
     
+    names(playerDB)[1]<-"Name"
     x <- rbind(playerDB, pickDB)
-    names(x)[1]<-"Name"
+    
     x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
     x
   })
@@ -34,11 +50,64 @@ shinyServer(function(input, output, session) {
     }
     
     x$value <- round(10500 * exp(x[,input$numQB]* input$slider1))
+    x <- x[order(-x$value),]
+    row.names(x) <- NULL
     
-    x <- x[order(-x$value),] 
+    if(input$calcType == "postdraft")
+      { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
+        x <- dplyr::filter(x, !grepl('2019|2020|2021', Name))
+        
+        x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+        x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+      
+        x$Pick <- paste0( "Startup Pick ",
+                        ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                        ".",
+                        sprintf("%02d", x$pickNum ))
+        x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+        x$Name <- x$Combined
+        x$Combined <- x$Pick <- x$pickNum <- NULL
+        #x2020$Combined <- x2020$Name
+        x <- rbind(x, x2020)
+        
+        #x <- x[c(7,1,2,3,4,5,6)]
+    }
+    
+    else if(input$calcType == "predraft")
+    { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
+      x <- dplyr::filter(x, !grepl('2020|2021', Name))
+      
+      x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+      x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+      
+      x$Pick <- paste0( "Startup Pick ",
+                        ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                        ".",
+                        sprintf("%02d", x$pickNum ))
+      x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+      x$Name <- x$Combined
+      x$Combined <- x$Pick <- x$pickNum <- NULL
+      #x2020$Combined <- x2020$Name
+      x <- rbind(x, x2020)
+      
+      #x <- x[c(7,1,2,3,4,5,6)]
+    }
+      
+    x <- x[order(-x$value),]
+    x 
   })
   
-  observeEvent(input$numQB,{
+  observeEvent({input$numQB
+               input$calcType
+               input$leagueSize
+               input$slider1
+               input$slider2},{
+    
+    # if(input$calcType != "normal")
+    #   {choiceList = df()$Combined}
+    # else {choiceList = df()$Name}
+    
+    
     currentA <- input$sideA
     updateSelectizeInput(session, 'sideA',
                          choices = df()$Name,
@@ -158,6 +227,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$diffTable <- renderTable({
+    req(input$sideA)
     rowObs <- closestObs()
 
     if (rowObs <=5) {
@@ -173,9 +243,14 @@ shinyServer(function(input, output, session) {
     )
   
   output$tableText <- renderText({
-    #req(input$sideA)
+    req(input$sideA)
     #req(input$sideB)
     "Here are some options to even out the trade:"
   })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {"DynastyProcessCalculator.csv"},
+    content = function(file) {write.csv(df(), file)}
+  )
   
 })
