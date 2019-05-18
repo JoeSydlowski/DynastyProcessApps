@@ -48,7 +48,15 @@ shinyUI(fluidPage(
                  multiple = FALSE,
                  selected = "Patrick Mahomes"),
   hr(),
-  DTOutput("results")
+  DTOutput("results"),
+  p(HTML(paste0("DynastyProcess.com Apps are created by ",
+                a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
+                " and ",
+                a(href = "https://twitter.com/_TanHo", "Tan Ho"),
+                ". You can find the code on ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "Joe's github"),
+                "."
+  )))
   
   
 ))

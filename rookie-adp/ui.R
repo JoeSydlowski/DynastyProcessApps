@@ -3,13 +3,14 @@ library(curl)
 library(DT)
 library(dplyr)
 library(anytime)
+library(shinythemes)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcess/master/rookie-adp/adp-picks.csv"))
 x$pick_timestamp <- ifelse(x$MFL_Sleeper == "Sleeper", x$pick_timestamp/1000, x$pick_timestamp)
 x$date <- anydate(x$pick_timestamp)
 
 shinyUI(fluidPage(
-  #theme = shinytheme("flatly"),
+  theme = shinytheme("flatly"),
   withTags(
     nav(class="navbar navbar-default navbar-static-top", role="navigation",
         div(class="container-fluid",
@@ -41,14 +42,16 @@ shinyUI(fluidPage(
   ),
   
   titlePanel("DynastyProcess.com Rookie ADP"),
+  tabsetPanel(
+    tabPanel("ADP",
   fluidRow(
     column(4,
            radioButtons("mode",
                         "Select Mode",
-                        choices = list("1QB_O" = "1QB_O",
-                                       "2QB_O" = "2QB_O",
-                                       "1QB_IDP" = "1QB_IDP",
-                                       "2QB_IDP" = "2QB_IDP"),
+                        choices = list("1QB Offense-Only" = "1QB_O",
+                                       "2QB/SF Offense-Only" = "2QB_O",
+                                       "1QB IDP" = "1QB_IDP",
+                                       "2QB/SF IDP" = "2QB_IDP"),
                         selected = "1QB_O")),
     column(4,
            dateRangeInput("dateRange",
@@ -62,13 +65,17 @@ shinyUI(fluidPage(
             downloadButton("downloadData", "Download"))),
   hr(),
   DTOutput("results"),
-  hr(),
-  p(HTML(paste0("This app was created by ",
+  hr()
+    ),
+  tabPanel("Add Your LeagueID Here!",
+           includeHTML("form.html")
+  )),
+  p(HTML(paste0("DynastyProcess.com Apps are created by ",
                 a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
-                " based on data from ",
-                a(href = "https://dynastyprocess.com/database", "DynastyProcess.com"),
-                ". You can find the code at ",
-                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "my github"),
+                " and ",
+                a(href = "https://twitter.com/_TanHo", "Tan Ho"),
+                ". You can find the code on ",
+                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "Joe's github"),
                 "."
   )))
 ))

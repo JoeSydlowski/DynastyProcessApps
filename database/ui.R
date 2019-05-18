@@ -64,12 +64,12 @@ shinyUI(fluidPage(
              hr(),
              DTOutput("results"),
              hr(),
-             p(HTML(paste0("This app was created by ",
+             p(HTML(paste0("DynastyProcess.com Apps are created by ",
                            a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
-                           " based on data from ",
-                           a(href = "https://dynastyprocess.com/database", "DynastyProcess.com"),
-                           ". You can find the code at ",
-                           a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "my github"),
+                           " and ",
+                           a(href = "https://twitter.com/_TanHo", "Tan Ho"),
+                           ". You can find the code on ",
+                           a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "Joe's github"),
                            "."
              )))
     ),

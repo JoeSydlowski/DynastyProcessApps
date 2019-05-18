@@ -119,11 +119,12 @@ titlePanel("DynastyProcess.com Trade Calculator"),
                   tableOutput("diffTable"))),
   hr(),
   p(paste0("Player values last updated on ", lastupdate, ".")),
-  p(HTML(paste0("This app was created by ",
-                a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
-                " based on data from ",
-                a(href = "https://dynastyprocess.com/downloads/values/", "DynastyProcess.com"),
-                ". You can find the code at ",
-                a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/arbitrage", "my github"),
-                ".")))
+p(HTML(paste0("DynastyProcess.com Apps are created by ",
+              a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
+              " and ",
+              a(href = "https://twitter.com/_TanHo", "Tan Ho"),
+              ". You can find the code on ",
+              a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "Joe's github"),
+              "."
+)))
 ))
