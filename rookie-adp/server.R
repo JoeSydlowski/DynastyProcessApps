@@ -33,10 +33,12 @@ shinyServer(function(input, output) {
                date >= input$dateRange[1]) %>%
       group_by(name, pos, tm, college) %>%
       summarise(ADP = round(mean(pick),1),
-                Count = n()) %>%
+                Count = n(),
+                Lowest = min(pick),
+                Highest = max(pick),
+                SD = round(sd(pick),1),
+                CV = round(sd(pick)/mean(pick),1)) %>%
       arrange(ADP)
-
-    print(input$dateRange[1])
     
     df1
   })  

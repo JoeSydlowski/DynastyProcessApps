@@ -9,7 +9,7 @@ x$pick_timestamp <- ifelse(x$MFL_Sleeper == "Sleeper", x$pick_timestamp/1000, x$
 x$date <- anydate(x$pick_timestamp)
 
 shinyUI(fluidPage(
-  theme = shinytheme("flatly"),
+  #theme = shinytheme("flatly"),
   withTags(
     nav(class="navbar navbar-default navbar-static-top", role="navigation",
         div(class="container-fluid",
@@ -19,13 +19,13 @@ shinyUI(fluidPage(
                 )
             ),
             ul(class="nav navbar-nav",
-               li(class="active",a(href="#",strong("Database"))
+               li(a(href = "http://apps.dynastyprocess.com/database",strong("Database"))
                ),
                li(
                  a(href="http://apps.dynastyprocess.com/calculator",strong("Calculator"))
                ),
                li(
-                 a(href="http://apps.dynastyprocess.com/rookie-adp",strong("Rookie ADP"))
+                 class="active",a(href="#",strong("Rookie ADP"))
                ),
                li(class="dropdown",
                   a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),

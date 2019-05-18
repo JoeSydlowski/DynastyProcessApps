@@ -111,11 +111,10 @@ shinyServer(function(input, output, session) {
     
   output$intro <- renderUI({ 
     HTML(paste("The Arbitrage App helps you find comparable players based on any criteria available in the ",
-                a(href = "https://dynastyprocess.com/database", "DynastyProcess.com Database"),
-                ". These comparisons might provide possible pivots on a player you are trying to buy or sell.
-                 For more information, check out the readme on ",
-                a(href = "https://dynastyprocess.com/arbitrage", "DynastyProcess.com"),
-               "."))
+                a(href = "https://apps.dynastyprocess.com/database", "Database."),
+                "These comparisons might provide possible pivots on a player you are trying to buy or sell.
+                 For more information,",
+                a(href = "https://dynastyprocess.com/arbitrage", "check out the readme.")))
   })  
   
   output$sampleSize <- renderText({ 

@@ -18,7 +18,7 @@ names(x)[1]<-"Name"
 x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
 
 shinyUI(fluidPage(
-  theme = shinytheme("flatly"),
+  theme = shinytheme("darkly"),
   #shinythemes::themeSelector(),
   withTags(
     nav(class="navbar navbar-default navbar-static-top", role="navigation",
@@ -32,10 +32,10 @@ shinyUI(fluidPage(
                li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
                ),
                li(class="dropdown active",
-                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="Calculator",`aria-expanded`="false", href="https://apps.dynastyprocess.com/calculator", strong("Calculator"),b(class="caret")),
+                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="https://apps.dynastyprocess.com/calculator", strong("Calculator"),b(class="caret")),
                   ul(class="dropdown-menu",
-                     li(class="active",a(href="#",strong("Normal Mode"))),
-                     li(a(href="https://apps.dynastyprocess.com/evil-calc",strong("Dark Mode")))
+                     li(a(href="http://apps.dynastyprocess.com/calculator",strong("Normal Mode"))),
+                     li(class="active",a(href="#",strong("Dark Mode")))
                   )
                ),
                li(class="dropdown",
