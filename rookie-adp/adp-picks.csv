@@ -717,6 +717,10 @@ TotalPark,1QB,IDP,MFL,51222,,14077,209,1558195706,RB,Mike Weber,Ohio State,3f454
 TotalPark,1QB,IDP,MFL,51222,,14177,210,1558195706,CB,Greedy Williams,LSU,54feeb01-a1d6-4313-b8b5-5663f698b5bd,CLE
 TotalPark,1QB,IDP,MFL,51222,,14292,211,1558195706,LB,Ty Summers,TCU,5203e275-5554-47de-bc0a-5b13639e5b50,GBP
 TotalPark,1QB,IDP,MFL,51222,,14225,212,1558195706,DE,Maxx Crosby,Eastern Michigan,3ae55cda-ad32-46c5-bde7-470755f37f3a,OAK
+TotalPark,1QB,IDP,MFL,51222,,14272,213,1558224935,CB,Blessuan Austin,Rutgers,57df194b-d445-4e66-af51-7b781b0f529f,NYJ
+TotalPark,1QB,IDP,MFL,51222,,14206,214,1558225438,DT,Trysten Hill,UCF,c6c5ae5d-59c6-437d-9768-34e377fddcec,DAL
+TotalPark,1QB,IDP,MFL,51222,,14095,215,1558228768,RB,Ty Johnson,Maryland,96e6687b-2b89-4dd9-98df-6e7507cd82cf,DET
+TotalPark,1QB,IDP,MFL,51222,,14242,216,1558230052,LB,Ryan Connelly,Wisconsin,598a8d06-43b3-40f2-b4e1-59e06baddf83,NYG
 demaru,2QB/SF,Offense-only,Sleeper,,420688266258300928,5850,1,1556794070640,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
 demaru,2QB/SF,Offense-only,Sleeper,,420688266258300928,5849,2,1556794070640,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
 demaru,2QB/SF,Offense-only,Sleeper,,420688266258300928,5878,3,1556794070640,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
@@ -1288,78 +1292,78 @@ yespaulyes,1QB,Offense-only,Sleeper,,412044831116767232,6126,21,1557083294382,TE
 yespaulyes,1QB,Offense-only,Sleeper,,412044831116767232,5845,22,1557083294382,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
 yespaulyes,1QB,Offense-only,Sleeper,,412044831116767232,5915,23,1557083294382,WR,Andy Isabella,UMass,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
 yespaulyes,1QB,Offense-only,Sleeper,,412044831116767232,6178,24,1557083294382,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
-jralha,1QB,Offense-only,MFL,45560,,14073,1,1556920632,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
-jralha,1QB,Offense-only,MFL,45560,,14101,2,1556936588,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
-jralha,1QB,Offense-only,MFL,45560,,14071,3,1556983010,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
-jralha,1QB,Offense-only,MFL,45560,,14106,4,1556995380,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
-jralha,1QB,Offense-only,MFL,45560,,14056,5,1557078987,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
-jralha,1QB,Offense-only,MFL,45560,,14104,6,1557103285,WR,AJ Brown,Mississippi,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
-jralha,1QB,Offense-only,MFL,45560,,14136,7,1557104350,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
-jralha,1QB,Offense-only,MFL,45560,,14087,8,1557127144,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
-jralha,1QB,Offense-only,MFL,45560,,14105,9,1557156429,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
-jralha,1QB,Offense-only,MFL,45560,,14079,10,1557157085,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
-jralha,1QB,Offense-only,MFL,45560,,14138,11,1557166777,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
-jralha,1QB,Offense-only,MFL,45560,,14112,12,1557166777,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
-jralha,1QB,Offense-only,MFL,45560,,14125,13,1557184433,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
-jralha,1QB,Offense-only,MFL,45560,,14102,14,1557190646,WR,DK Metcalf,Mississippi,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
-jralha,1QB,Offense-only,MFL,45560,,14113,15,1557191214,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
-jralha,1QB,Offense-only,MFL,45560,,14141,16,1557191308,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
-jralha,1QB,Offense-only,MFL,45560,,14284,17,1557191433,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
-jralha,1QB,Offense-only,MFL,45560,,14080,18,1557192500,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
-jralha,1QB,Offense-only,MFL,45560,,14107,19,1557234971,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
-jralha,1QB,Offense-only,MFL,45560,,14086,20,1557236962,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
-jralha,1QB,Offense-only,MFL,45560,,14137,21,1557244016,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
-jralha,1QB,Offense-only,MFL,45560,,14075,22,1557250724,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
-jralha,1QB,Offense-only,MFL,45560,,14121,23,1557267610,WR,Andy Isabella,Massachusetts,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
-jralha,1QB,Offense-only,MFL,45560,,14223,24,1557268134,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
-jralha,1QB,Offense-only,MFL,45560,,14140,25,1557269270,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
-jralha,1QB,Offense-only,MFL,45560,,14082,26,1557272711,RB,Bryce Love,Stanford,6cf9a842-dc3f-408a-887a-97b0b07d4289,WAS
-jralha,1QB,Offense-only,MFL,45560,,14208,27,1557273395,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
-jralha,1QB,Offense-only,MFL,45560,,14103,28,1557284754,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
-jralha,1QB,Offense-only,MFL,45560,,14058,29,1557325173,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
-jralha,1QB,Offense-only,MFL,45560,,14109,30,1557325256,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
-jralha,1QB,Offense-only,MFL,45560,,14116,31,1557331947,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
-jralha,1QB,Offense-only,MFL,45560,,14088,32,1557334568,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
-jralha,1QB,Offense-only,MFL,45560,,14123,33,1557349057,WR,Hunter Renfrow,Clemson,34c523c7-bc58-49f0-a9cc-f9edd91fe00f,OAK
-jralha,1QB,Offense-only,MFL,45560,,14168,34,1557355184,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
-jralha,1QB,Offense-only,MFL,45560,,14314,35,1557404465,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
-jralha,1QB,Offense-only,MFL,45560,,14062,36,1557404465,QB,Will Grier,West Virginia,7905e9be-2f66-4ff5-a6e9-dbe281bf4822,CAR
-jralha,1QB,Offense-only,MFL,45560,,14209,37,1557408165,TE,Josh Oliver,San Jose State,dc83f7af-7b30-4c4a-9c93-f67bd8db954b,JAC
-jralha,1QB,Offense-only,MFL,45560,,14147,38,1557408165,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
-jralha,1QB,Offense-only,MFL,45560,,14093,39,1557410981,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
-jralha,1QB,Offense-only,MFL,45560,,14057,40,1557410981,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
-jralha,1QB,Offense-only,MFL,45560,,14126,41,1557425880,WR,Preston Williams,Colorado State,497758de-5f0b-481f-8c68-7aa5e21df322,MIA
-jralha,1QB,Offense-only,MFL,45560,,14072,42,1557426071,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
-jralha,1QB,Offense-only,MFL,45560,,14114,43,1557426351,WR,Kelvin Harmon,North Carolina State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
-jralha,1QB,Offense-only,MFL,45560,,14239,44,1557428255,TE,Foster Moreau,LSU,9c3a67fd-5c6e-4689-9e08-9ff6d4db6c9a,OAK
-jralha,1QB,Offense-only,MFL,45560,,14170,45,1557432284,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
-jralha,1QB,Offense-only,MFL,45560,,14076,46,1557447390,RB,Trayveon Williams,Texas A&M,478fcd24-2617-41d5-a900-b272aa6ef515,CIN
-jralha,1QB,Offense-only,MFL,45560,,14191,47,1557450375,RB,Alex Barnes,Kansas State,e63d39ab-704f-40ad-9036-b8bad7ece8bb,TEN
-jralha,1QB,Offense-only,MFL,45560,,14231,48,1557450375,TE,Trevon Wesco,West Virginia,f6c34178-e063-444b-96b3-df6b3cf66419,NYJ
-jralha,1QB,Offense-only,MFL,45560,,14085,49,1557492796,RB,Tony Pollard,Memphis,33b0227d-4c21-4e71-b4cd-be35f7db9123,DAL
-jralha,1QB,Offense-only,MFL,45560,,14122,50,1557492796,WR,Darius Slayton,Auburn,82ed30a5-54a8-4ed0-b040-99c3a78fb055,NYG
-jralha,1QB,Offense-only,MFL,45560,,14120,51,1557492796,WR,Gary Jennings,West Virginia,49f9f357-e90a-45b7-9f55-fe451125149f,SEA
-jralha,1QB,Offense-only,MFL,45560,,14074,52,1557496214,RB,Dexter Williams,Notre Dame,a2e0f742-e608-4e29-99cd-e7cd765afba1,GBP
-jralha,1QB,Offense-only,MFL,45560,,14195,53,1557496214,TE,Kahale Warring,San Diego State,a96e777e-120a-4843-8bfb-59069bd1bd52,HOU
-jralha,1QB,Offense-only,MFL,45560,,14096,54,1557496214,RB,Devine Ozigbo,Nebraska,25bc08ac-8420-4340-94c6-93993ff87d6f,NOS
-jralha,1QB,Offense-only,MFL,45560,,14315,55,1557496214,WR,Ashton Dulin,Malone University,f374262b-d642-4d05-9584-5955548ee4d1,IND
-jralha,1QB,Offense-only,MFL,45560,,14313,56,1557506239,WR,Emmanuel Butler,Northern Arizona,4aea9720-d991-44be-ac3b-cd778af531a1,NOS
-jralha,1QB,Offense-only,MFL,45560,,14084,57,1557529477,RB,Elijah Holyfield,Georgia,ebae3f19-b8bb-43d6-ae78-d21e9dc08b61,CAR
-jralha,1QB,Offense-only,MFL,45560,,14267,58,1557547841,WR,Juwann Winfree,Colorado,fa7bdbe5-23b9-4cba-9015-98c5e2d09c9e,DEN
-jralha,1QB,Offense-only,MFL,45560,,14090,59,1557582407,RB,LJ Scott,Michigan State,ce185a29-d0ff-4519-9133-e01c691ead57,FA
-jralha,1QB,Offense-only,MFL,45560,,14115,60,1557582407,WR,Emanuel Hall,Missouri,d6f5ecdf-be55-430e-9370-0ea608395dad,CHI
-jralha,1QB,Offense-only,MFL,45560,,14151,61,1557583127,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
-jralha,1QB,Offense-only,MFL,45560,,14280,62,1557583127,WR,Scott Miller,Bowling Green,85e18d5f-8a3f-4b6c-88fe-dfdaaed5554e,TBB
-jralha,1QB,Offense-only,MFL,45560,,14143,63,1557583127,TE,Dawson Knox,Mississippi,5fb525c5-4e70-4ede-8c49-94ad0cf66b7d,BUF
-jralha,1QB,Offense-only,MFL,45560,,14184,64,1557583127,S,Johnathan Abram,Mississippi State,26b6ac3e-facf-48eb-ae5b-afd30b2544b2,OAK
-jralha,1QB,Offense-only,MFL,45560,,14098,65,1557585472,RB,Damarea Crockett,Missouri,d4f0aa89-6309-4977-b779-7501eb8c8508,HOU
-jralha,1QB,Offense-only,MFL,45560,,14124,66,1557585472,WR,KeeSean Johnson,Fresno State,7e8f4076-25e1-41e5-8e71-f70397a3729d,ARI
-jralha,1QB,Offense-only,MFL,45560,,14059,67,1557585472,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
-jralha,1QB,Offense-only,MFL,45560,,14200,68,1557585472,LB,Jahlani Tavai,Hawaii,dfb05fbc-7329-4893-8dc1-3d30033e49d0,DET
-jralha,1QB,Offense-only,MFL,45560,,14077,69,1557608747,RB,Mike Weber,Ohio State,3f454d05-40b8-45a8-b195-ff2565b6c79e,DAL
-jralha,1QB,Offense-only,MFL,45560,,14265,70,1557610923,WR,Travis Fulgham,Old Dominion,030f3ecf-f32f-497d-96a8-8f28d44fc311,DET
-jralha,1QB,Offense-only,MFL,45560,,14078,71,1557610923,RB,Karan Higdon,Michigan,677b17b7-a8c2-4f2b-ac73-fe086de32103,HOU
-jralha,1QB,Offense-only,MFL,45560,,14081,72,1557611263,RB,Myles Gaskin,Washington,cad49098-1523-4e52-9f50-caa3423e1bb6,MIA
+jralha,1QB,IDP,MFL,45560,,14073,1,1556920632,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
+jralha,1QB,IDP,MFL,45560,,14101,2,1556936588,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
+jralha,1QB,IDP,MFL,45560,,14071,3,1556983010,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
+jralha,1QB,IDP,MFL,45560,,14106,4,1556995380,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
+jralha,1QB,IDP,MFL,45560,,14056,5,1557078987,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
+jralha,1QB,IDP,MFL,45560,,14104,6,1557103285,WR,AJ Brown,Mississippi,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
+jralha,1QB,IDP,MFL,45560,,14136,7,1557104350,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
+jralha,1QB,IDP,MFL,45560,,14087,8,1557127144,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
+jralha,1QB,IDP,MFL,45560,,14105,9,1557156429,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
+jralha,1QB,IDP,MFL,45560,,14079,10,1557157085,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
+jralha,1QB,IDP,MFL,45560,,14138,11,1557166777,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
+jralha,1QB,IDP,MFL,45560,,14112,12,1557166777,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
+jralha,1QB,IDP,MFL,45560,,14125,13,1557184433,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
+jralha,1QB,IDP,MFL,45560,,14102,14,1557190646,WR,DK Metcalf,Mississippi,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
+jralha,1QB,IDP,MFL,45560,,14113,15,1557191214,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
+jralha,1QB,IDP,MFL,45560,,14141,16,1557191308,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
+jralha,1QB,IDP,MFL,45560,,14284,17,1557191433,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
+jralha,1QB,IDP,MFL,45560,,14080,18,1557192500,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
+jralha,1QB,IDP,MFL,45560,,14107,19,1557234971,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
+jralha,1QB,IDP,MFL,45560,,14086,20,1557236962,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
+jralha,1QB,IDP,MFL,45560,,14137,21,1557244016,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
+jralha,1QB,IDP,MFL,45560,,14075,22,1557250724,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
+jralha,1QB,IDP,MFL,45560,,14121,23,1557267610,WR,Andy Isabella,Massachusetts,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
+jralha,1QB,IDP,MFL,45560,,14223,24,1557268134,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
+jralha,1QB,IDP,MFL,45560,,14140,25,1557269270,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
+jralha,1QB,IDP,MFL,45560,,14082,26,1557272711,RB,Bryce Love,Stanford,6cf9a842-dc3f-408a-887a-97b0b07d4289,WAS
+jralha,1QB,IDP,MFL,45560,,14208,27,1557273395,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
+jralha,1QB,IDP,MFL,45560,,14103,28,1557284754,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
+jralha,1QB,IDP,MFL,45560,,14058,29,1557325173,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
+jralha,1QB,IDP,MFL,45560,,14109,30,1557325256,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
+jralha,1QB,IDP,MFL,45560,,14116,31,1557331947,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
+jralha,1QB,IDP,MFL,45560,,14088,32,1557334568,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
+jralha,1QB,IDP,MFL,45560,,14123,33,1557349057,WR,Hunter Renfrow,Clemson,34c523c7-bc58-49f0-a9cc-f9edd91fe00f,OAK
+jralha,1QB,IDP,MFL,45560,,14168,34,1557355184,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
+jralha,1QB,IDP,MFL,45560,,14314,35,1557404465,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
+jralha,1QB,IDP,MFL,45560,,14062,36,1557404465,QB,Will Grier,West Virginia,7905e9be-2f66-4ff5-a6e9-dbe281bf4822,CAR
+jralha,1QB,IDP,MFL,45560,,14209,37,1557408165,TE,Josh Oliver,San Jose State,dc83f7af-7b30-4c4a-9c93-f67bd8db954b,JAC
+jralha,1QB,IDP,MFL,45560,,14147,38,1557408165,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
+jralha,1QB,IDP,MFL,45560,,14093,39,1557410981,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
+jralha,1QB,IDP,MFL,45560,,14057,40,1557410981,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
+jralha,1QB,IDP,MFL,45560,,14126,41,1557425880,WR,Preston Williams,Colorado State,497758de-5f0b-481f-8c68-7aa5e21df322,MIA
+jralha,1QB,IDP,MFL,45560,,14072,42,1557426071,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
+jralha,1QB,IDP,MFL,45560,,14114,43,1557426351,WR,Kelvin Harmon,North Carolina State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
+jralha,1QB,IDP,MFL,45560,,14239,44,1557428255,TE,Foster Moreau,LSU,9c3a67fd-5c6e-4689-9e08-9ff6d4db6c9a,OAK
+jralha,1QB,IDP,MFL,45560,,14170,45,1557432284,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
+jralha,1QB,IDP,MFL,45560,,14076,46,1557447390,RB,Trayveon Williams,Texas A&M,478fcd24-2617-41d5-a900-b272aa6ef515,CIN
+jralha,1QB,IDP,MFL,45560,,14191,47,1557450375,RB,Alex Barnes,Kansas State,e63d39ab-704f-40ad-9036-b8bad7ece8bb,TEN
+jralha,1QB,IDP,MFL,45560,,14231,48,1557450375,TE,Trevon Wesco,West Virginia,f6c34178-e063-444b-96b3-df6b3cf66419,NYJ
+jralha,1QB,IDP,MFL,45560,,14085,49,1557492796,RB,Tony Pollard,Memphis,33b0227d-4c21-4e71-b4cd-be35f7db9123,DAL
+jralha,1QB,IDP,MFL,45560,,14122,50,1557492796,WR,Darius Slayton,Auburn,82ed30a5-54a8-4ed0-b040-99c3a78fb055,NYG
+jralha,1QB,IDP,MFL,45560,,14120,51,1557492796,WR,Gary Jennings,West Virginia,49f9f357-e90a-45b7-9f55-fe451125149f,SEA
+jralha,1QB,IDP,MFL,45560,,14074,52,1557496214,RB,Dexter Williams,Notre Dame,a2e0f742-e608-4e29-99cd-e7cd765afba1,GBP
+jralha,1QB,IDP,MFL,45560,,14195,53,1557496214,TE,Kahale Warring,San Diego State,a96e777e-120a-4843-8bfb-59069bd1bd52,HOU
+jralha,1QB,IDP,MFL,45560,,14096,54,1557496214,RB,Devine Ozigbo,Nebraska,25bc08ac-8420-4340-94c6-93993ff87d6f,NOS
+jralha,1QB,IDP,MFL,45560,,14315,55,1557496214,WR,Ashton Dulin,Malone University,f374262b-d642-4d05-9584-5955548ee4d1,IND
+jralha,1QB,IDP,MFL,45560,,14313,56,1557506239,WR,Emmanuel Butler,Northern Arizona,4aea9720-d991-44be-ac3b-cd778af531a1,NOS
+jralha,1QB,IDP,MFL,45560,,14084,57,1557529477,RB,Elijah Holyfield,Georgia,ebae3f19-b8bb-43d6-ae78-d21e9dc08b61,CAR
+jralha,1QB,IDP,MFL,45560,,14267,58,1557547841,WR,Juwann Winfree,Colorado,fa7bdbe5-23b9-4cba-9015-98c5e2d09c9e,DEN
+jralha,1QB,IDP,MFL,45560,,14090,59,1557582407,RB,LJ Scott,Michigan State,ce185a29-d0ff-4519-9133-e01c691ead57,FA
+jralha,1QB,IDP,MFL,45560,,14115,60,1557582407,WR,Emanuel Hall,Missouri,d6f5ecdf-be55-430e-9370-0ea608395dad,CHI
+jralha,1QB,IDP,MFL,45560,,14151,61,1557583127,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
+jralha,1QB,IDP,MFL,45560,,14280,62,1557583127,WR,Scott Miller,Bowling Green,85e18d5f-8a3f-4b6c-88fe-dfdaaed5554e,TBB
+jralha,1QB,IDP,MFL,45560,,14143,63,1557583127,TE,Dawson Knox,Mississippi,5fb525c5-4e70-4ede-8c49-94ad0cf66b7d,BUF
+jralha,1QB,IDP,MFL,45560,,14184,64,1557583127,S,Johnathan Abram,Mississippi State,26b6ac3e-facf-48eb-ae5b-afd30b2544b2,OAK
+jralha,1QB,IDP,MFL,45560,,14098,65,1557585472,RB,Damarea Crockett,Missouri,d4f0aa89-6309-4977-b779-7501eb8c8508,HOU
+jralha,1QB,IDP,MFL,45560,,14124,66,1557585472,WR,KeeSean Johnson,Fresno State,7e8f4076-25e1-41e5-8e71-f70397a3729d,ARI
+jralha,1QB,IDP,MFL,45560,,14059,67,1557585472,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
+jralha,1QB,IDP,MFL,45560,,14200,68,1557585472,LB,Jahlani Tavai,Hawaii,dfb05fbc-7329-4893-8dc1-3d30033e49d0,DET
+jralha,1QB,IDP,MFL,45560,,14077,69,1557608747,RB,Mike Weber,Ohio State,3f454d05-40b8-45a8-b195-ff2565b6c79e,DAL
+jralha,1QB,IDP,MFL,45560,,14265,70,1557610923,WR,Travis Fulgham,Old Dominion,030f3ecf-f32f-497d-96a8-8f28d44fc311,DET
+jralha,1QB,IDP,MFL,45560,,14078,71,1557610923,RB,Karan Higdon,Michigan,677b17b7-a8c2-4f2b-ac73-fe086de32103,HOU
+jralha,1QB,IDP,MFL,45560,,14081,72,1557611263,RB,Myles Gaskin,Washington,cad49098-1523-4e52-9f50-caa3423e1bb6,MIA
 conrod05,1QB,IDP,MFL,39519,,14073,1,1556801763,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
 conrod05,1QB,IDP,MFL,39519,,14101,2,1556802070,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
 conrod05,1QB,IDP,MFL,39519,,14136,3,1556805529,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
@@ -2088,65 +2092,65 @@ cloud2ground,2QB/SF,Offense-only,Sleeper,,394599316049661952,6068,45,15566415952
 cloud2ground,2QB/SF,Offense-only,Sleeper,,394599316049661952,6001,46,1556641595222,TE,Drew Sample,Washington,15a4f552-ecaf-45bd-9006-aa5dda93bee6,CIN
 cloud2ground,2QB/SF,Offense-only,Sleeper,,394599316049661952,5962,47,1556641595222,WR,Keesean Johnson,Fresno State,7e8f4076-25e1-41e5-8e71-f70397a3729d,ARI
 cloud2ground,2QB/SF,Offense-only,Sleeper,,394599316049661952,6072,48,1556641595222,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5850,1,1556732739056,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5878,2,1556732739056,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6119,3,1556732739056,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5859,4,1556732739056,WR,AJ Brown,Ole Miss,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6151,5,1556732739056,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5892,6,1556732739056,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5816,7,1556732739056,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5880,8,1556732739056,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5917,9,1556732739056,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5846,10,1556732739056,WR,DK Metcalf,Ole Miss,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5849,11,1556732739056,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5872,12,1556732739056,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5844,13,1556732739056,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5848,14,1556732739056,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5840,15,1556732739056,OLB,Josh Allen,Kentucky,dd7be5f3-c615-4621-92e1-2434519cb1f9,JAC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5863,16,1556732739056,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5843,17,1556732739056,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5916,18,1556732739056,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5857,19,1556732739056,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5886,20,1556732739056,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5915,21,1556732739056,WR,Andy Isabella,UMass,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6126,22,1556732739056,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6156,23,1556732739056,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5842,24,1556732739056,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6124,25,1556732739056,OLB,Montez Sweat,Mississippi State,e3601423-c3ac-4013-bbe9-3478e2b7e1dd,WAS
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5845,26,1556732739056,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5862,27,1556732739056,DE,Brian Burns,Florida State,dbf199a9-542e-4279-8764-3341b9f80910,CAR
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5884,28,1556732739056,WR,Kelvin Harmon,NC State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5841,29,1556732739056,DT,Ed Oliver,Houston,adabdc56-278f-48b9-a003-1329b7f2f663,BUF
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5839,30,1556732739056,DE,Rashan Gary,Michigan,99847f76-5bf2-4cbe-8573-9a477f7fb472,GBP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5911,31,1556732739056,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5995,32,1556732739056,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6130,33,1556732739056,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6120,34,1556732739056,DT,Christian Wilkins,Clemson,6c640668-de81-49c4-a0da-e367e1747923,MIA
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5873,35,1556732739056,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6178,36,1556732739056,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6118,38,1556732739056,DT,Quinnen Williams,Alabama,b8e0fa49-1122-4e97-9fe2-d90f6b7cb444,NYJ
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5864,39,1556732739056,CB,Byron Murphy,Washington,c025b513-9431-4097-bc25-9777bf08f846,ARI
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5854,40,1556732739056,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5890,41,1556732739056,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5889,42,1556732739056,RB,Bryce Love,Stanford,6cf9a842-dc3f-408a-887a-97b0b07d4289,WAS
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6125,43,1556732739056,DT,Jeffery Simmons,Mississippi State,dcbe3642-aa52-43e6-8f4c-4b9809377c4d,TEN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5937,44,1556732739056,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5927,45,1556732739056,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5987,46,1556732739056,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5918,47,1556732739056,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6139,48,1556732739056,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5965,49,1556732739056,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6129,50,1556732739056,DT,Jerry Tillery,Notre Dame,9da6119d-b135-4b90-9f9d-7d08ab00b15d,LAC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6007,51,1556732739056,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5861,52,1556732739056,DE,LJ Collier,TCU,9d546e3b-0eb3-4926-a5ef-eb5e48b9330e,SEA
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6131,53,1556732739056,LB,Mack Wilson,Alabama,0790a8d6-5316-4204-91a6-8508ca48973b,CLE
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5919,54,1556732739056,RB,Elijah Holyfield,Georgia,ebae3f19-b8bb-43d6-ae78-d21e9dc08b61,CAR
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5870,55,1556732739056,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6210,56,1556732739056,S,Darnell Savage,Maryland,e1b066fb-d077-42a3-9f5d-4ed560c9d777,GBP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6133,57,1556732739056,DE,Chase Winovich,Michigan,5d235c9b-8d01-44a7-a3ec-b5c7bd4491ee,NEP
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6159,58,1556732739056,RB,Mike Weber,Ohio State,3f454d05-40b8-45a8-b195-ff2565b6c79e,DAL
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,5973,59,1556732739056,TE,Josh Oliver,San Jose State,dc83f7af-7b30-4c4a-9c93-f67bd8db954b,JAC
-cloud2ground,2QB/SF,Offense-only,Sleeper,,392133527883288576,6072,60,1556732739056,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5850,1,1556732739056,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5878,2,1556732739056,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6119,3,1556732739056,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5859,4,1556732739056,WR,AJ Brown,Ole Miss,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6151,5,1556732739056,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5892,6,1556732739056,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5816,7,1556732739056,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5880,8,1556732739056,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5917,9,1556732739056,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5846,10,1556732739056,WR,DK Metcalf,Ole Miss,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5849,11,1556732739056,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5872,12,1556732739056,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5844,13,1556732739056,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5848,14,1556732739056,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5840,15,1556732739056,OLB,Josh Allen,Kentucky,dd7be5f3-c615-4621-92e1-2434519cb1f9,JAC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5863,16,1556732739056,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5843,17,1556732739056,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5916,18,1556732739056,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5857,19,1556732739056,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5886,20,1556732739056,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5915,21,1556732739056,WR,Andy Isabella,UMass,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6126,22,1556732739056,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6156,23,1556732739056,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5842,24,1556732739056,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6124,25,1556732739056,OLB,Montez Sweat,Mississippi State,e3601423-c3ac-4013-bbe9-3478e2b7e1dd,WAS
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5845,26,1556732739056,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5862,27,1556732739056,DE,Brian Burns,Florida State,dbf199a9-542e-4279-8764-3341b9f80910,CAR
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5884,28,1556732739056,WR,Kelvin Harmon,NC State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5841,29,1556732739056,DT,Ed Oliver,Houston,adabdc56-278f-48b9-a003-1329b7f2f663,BUF
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5839,30,1556732739056,DE,Rashan Gary,Michigan,99847f76-5bf2-4cbe-8573-9a477f7fb472,GBP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5911,31,1556732739056,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5995,32,1556732739056,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6130,33,1556732739056,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6120,34,1556732739056,DT,Christian Wilkins,Clemson,6c640668-de81-49c4-a0da-e367e1747923,MIA
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5873,35,1556732739056,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6178,36,1556732739056,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6118,38,1556732739056,DT,Quinnen Williams,Alabama,b8e0fa49-1122-4e97-9fe2-d90f6b7cb444,NYJ
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5864,39,1556732739056,CB,Byron Murphy,Washington,c025b513-9431-4097-bc25-9777bf08f846,ARI
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5854,40,1556732739056,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5890,41,1556732739056,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5889,42,1556732739056,RB,Bryce Love,Stanford,6cf9a842-dc3f-408a-887a-97b0b07d4289,WAS
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6125,43,1556732739056,DT,Jeffery Simmons,Mississippi State,dcbe3642-aa52-43e6-8f4c-4b9809377c4d,TEN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5937,44,1556732739056,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5927,45,1556732739056,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5987,46,1556732739056,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5918,47,1556732739056,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6139,48,1556732739056,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5965,49,1556732739056,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6129,50,1556732739056,DT,Jerry Tillery,Notre Dame,9da6119d-b135-4b90-9f9d-7d08ab00b15d,LAC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6007,51,1556732739056,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5861,52,1556732739056,DE,LJ Collier,TCU,9d546e3b-0eb3-4926-a5ef-eb5e48b9330e,SEA
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6131,53,1556732739056,LB,Mack Wilson,Alabama,0790a8d6-5316-4204-91a6-8508ca48973b,CLE
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5919,54,1556732739056,RB,Elijah Holyfield,Georgia,ebae3f19-b8bb-43d6-ae78-d21e9dc08b61,CAR
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5870,55,1556732739056,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6210,56,1556732739056,S,Darnell Savage,Maryland,e1b066fb-d077-42a3-9f5d-4ed560c9d777,GBP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6133,57,1556732739056,DE,Chase Winovich,Michigan,5d235c9b-8d01-44a7-a3ec-b5c7bd4491ee,NEP
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6159,58,1556732739056,RB,Mike Weber,Ohio State,3f454d05-40b8-45a8-b195-ff2565b6c79e,DAL
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,5973,59,1556732739056,TE,Josh Oliver,San Jose State,dc83f7af-7b30-4c4a-9c93-f67bd8db954b,JAC
+cloud2ground,2QB/SF,IDP,Sleeper,,392133527883288576,6072,60,1556732739056,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
 meta_franko,2QB/SF,Offense-only,MFL,58054,,14056,1,1556902970,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
 meta_franko,2QB/SF,Offense-only,MFL,58054,,14073,2,1556903027,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
 meta_franko,2QB/SF,Offense-only,MFL,58054,,14101,3,1556903277,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
@@ -2493,79 +2497,79 @@ spaas12397,2QB/SF,Offense-only,MFL,72719,,14068,53,1558142005,QB,Ryan Finley,Nor
 spaas12397,2QB/SF,Offense-only,MFL,72719,,14192,54,1558142534,RB,James Williams,Washington State,495651ef-1a14-42be-9f6a-40385a428dd8,KCC
 spaas12397,2QB/SF,Offense-only,MFL,72719,,14145,55,1558146156,TE,Caleb Wilson,UCLA,a195e517-f732-4e55-a84c-2ce132a73c65,ARI
 spaas12397,2QB/SF,Offense-only,MFL,72719,,14115,56,1558146156,WR,Emanuel Hall,Missouri,d6f5ecdf-be55-430e-9370-0ea608395dad,CHI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5850,1,1557606533047,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5892,2,1557606533047,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5846,3,1557606533047,WR,DK Metcalf,Ole Miss,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5878,4,1557606533047,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6151,5,1557606533047,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5880,6,1557606533047,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5890,7,1557606533047,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5859,8,1557606533047,WR,AJ Brown,Ole Miss,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5848,9,1557606533047,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5849,10,1557606533047,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5917,11,1557606533047,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5844,12,1557606533047,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5915,13,1557606533047,WR,Andy Isabella,UMass,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6130,14,1557606533047,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5872,15,1557606533047,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5857,16,1557606533047,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5916,17,1557606533047,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5886,18,1557606533047,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5863,19,1557606533047,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6178,20,1557606533047,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5918,21,1557606533047,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6007,22,1557606533047,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5995,23,1557606533047,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5987,24,1557606533047,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5843,25,1557606533047,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6139,26,1557606533047,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6126,27,1557606533047,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6169,28,1557606533047,RB,James Williams,Washington State,495651ef-1a14-42be-9f6a-40385a428dd8,KCC
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5873,29,1557606533047,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6156,30,1557606533047,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5985,31,1557606533047,TE,Foster Moreau,LSU,9c3a67fd-5c6e-4689-9e08-9ff6d4db6c9a,OAK
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6031,32,1557606533047,RB,Alex Barnes,Kansas State,e63d39ab-704f-40ad-9036-b8bad7ece8bb,TEN
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5884,33,1557606533047,WR,Kelvin Harmon,NC State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5937,34,1557606533047,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,5965,35,1557606533047,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
-djohms,1QB,Offense-only,Sleeper,,413490840162287617,6072,36,1557606533047,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
-solaprool,2QB/SF,IDP,MFL,22627,,14056,1,1557844789,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
-solaprool,2QB/SF,IDP,MFL,22627,,14073,2,1557846500,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
-solaprool,2QB/SF,IDP,MFL,22627,,14101,3,1557935160,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
-solaprool,2QB/SF,IDP,MFL,22627,,14071,4,1557935972,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
-solaprool,2QB/SF,IDP,MFL,22627,,14058,5,1557952052,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
-solaprool,2QB/SF,IDP,MFL,22627,,14079,6,1557952532,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
-solaprool,2QB/SF,IDP,MFL,22627,,14136,7,1557963857,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
-solaprool,2QB/SF,IDP,MFL,22627,,14112,8,1557964792,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
-solaprool,2QB/SF,IDP,MFL,22627,,14138,9,1557964842,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
-solaprool,2QB/SF,IDP,MFL,22627,,14102,10,1557966015,WR,DK Metcalf,Mississippi,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
-solaprool,2QB/SF,IDP,MFL,22627,,14104,11,1557968659,WR,AJ Brown,Mississippi,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
-solaprool,2QB/SF,IDP,MFL,22627,,14168,12,1557968680,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
-solaprool,2QB/SF,IDP,MFL,22627,,14121,13,1558009892,WR,Andy Isabella,Massachusetts,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
-solaprool,2QB/SF,IDP,MFL,22627,,14087,14,1558013528,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
-solaprool,2QB/SF,IDP,MFL,22627,,14137,15,1558023150,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
-solaprool,2QB/SF,IDP,MFL,22627,,14105,16,1558030903,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
-solaprool,2QB/SF,IDP,MFL,22627,,14106,17,1558039258,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
-solaprool,2QB/SF,IDP,MFL,22627,,14059,18,1558040835,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
-solaprool,2QB/SF,IDP,MFL,22627,,14170,19,1558041245,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
-solaprool,2QB/SF,IDP,MFL,22627,,14147,20,1558041263,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
-solaprool,2QB/SF,IDP,MFL,22627,,14107,21,1558041999,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
-solaprool,2QB/SF,IDP,MFL,22627,,14113,22,1558042031,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
-solaprool,2QB/SF,IDP,MFL,22627,,14141,23,1558048078,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
-solaprool,2QB/SF,IDP,MFL,22627,,14086,24,1558058803,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
-solaprool,2QB/SF,IDP,MFL,22627,,14075,25,1558060430,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
-solaprool,2QB/SF,IDP,MFL,22627,,14057,26,1558066733,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
-solaprool,2QB/SF,IDP,MFL,22627,,14167,27,1558102509,DE,Josh Allen,Kentucky,,JAC
-solaprool,2QB/SF,IDP,MFL,22627,,14080,28,1558108310,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
-solaprool,2QB/SF,IDP,MFL,22627,,14158,29,1558119619,DT,Ed Oliver,Houston,adabdc56-278f-48b9-a003-1329b7f2f663,BUF
-solaprool,2QB/SF,IDP,MFL,22627,,14184,30,1558134238,S,Johnathan Abram,Mississippi State,26b6ac3e-facf-48eb-ae5b-afd30b2544b2,OAK
-solaprool,2QB/SF,IDP,MFL,22627,,14208,31,1558134366,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
-solaprool,2QB/SF,IDP,MFL,22627,,14284,32,1558140072,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
-solaprool,2QB/SF,IDP,MFL,22627,,14157,33,1558140395,DT,Quinnen Williams,Alabama,b8e0fa49-1122-4e97-9fe2-d90f6b7cb444,NYJ
-solaprool,2QB/SF,IDP,MFL,22627,,14223,34,1558150028,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
-solaprool,2QB/SF,IDP,MFL,22627,,14125,35,1558180188,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
-solaprool,2QB/SF,IDP,MFL,22627,,14116,36,1558198062,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
-solaprool,2QB/SF,IDP,MFL,22627,,14151,37,1558198080,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
-solaprool,2QB/SF,IDP,MFL,22627,,14114,38,1558200463,WR,Kelvin Harmon,North Carolina State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
-solaprool,2QB/SF,IDP,MFL,22627,,14140,39,1558200517,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
-solaprool,2QB/SF,IDP,MFL,22627,,14109,40,1558201502,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
+djohms,1QB,IDP,Sleeper,,413490840162287617,5850,1,1557606533047,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
+djohms,1QB,IDP,Sleeper,,413490840162287617,5892,2,1557606533047,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
+djohms,1QB,IDP,Sleeper,,413490840162287617,5846,3,1557606533047,WR,DK Metcalf,Ole Miss,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
+djohms,1QB,IDP,Sleeper,,413490840162287617,5878,4,1557606533047,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
+djohms,1QB,IDP,Sleeper,,413490840162287617,6151,5,1557606533047,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
+djohms,1QB,IDP,Sleeper,,413490840162287617,5880,6,1557606533047,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
+djohms,1QB,IDP,Sleeper,,413490840162287617,5890,7,1557606533047,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
+djohms,1QB,IDP,Sleeper,,413490840162287617,5859,8,1557606533047,WR,AJ Brown,Ole Miss,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
+djohms,1QB,IDP,Sleeper,,413490840162287617,5848,9,1557606533047,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
+djohms,1QB,IDP,Sleeper,,413490840162287617,5849,10,1557606533047,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
+djohms,1QB,IDP,Sleeper,,413490840162287617,5917,11,1557606533047,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
+djohms,1QB,IDP,Sleeper,,413490840162287617,5844,12,1557606533047,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
+djohms,1QB,IDP,Sleeper,,413490840162287617,5915,13,1557606533047,WR,Andy Isabella,UMass,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
+djohms,1QB,IDP,Sleeper,,413490840162287617,6130,14,1557606533047,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
+djohms,1QB,IDP,Sleeper,,413490840162287617,5872,15,1557606533047,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
+djohms,1QB,IDP,Sleeper,,413490840162287617,5857,16,1557606533047,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
+djohms,1QB,IDP,Sleeper,,413490840162287617,5916,17,1557606533047,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
+djohms,1QB,IDP,Sleeper,,413490840162287617,5886,18,1557606533047,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
+djohms,1QB,IDP,Sleeper,,413490840162287617,5863,19,1557606533047,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
+djohms,1QB,IDP,Sleeper,,413490840162287617,6178,20,1557606533047,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
+djohms,1QB,IDP,Sleeper,,413490840162287617,5918,21,1557606533047,RB,Rodney Anderson,Oklahoma,f3c3c5ba-2788-4708-bbc5-4ea525d06a81,CIN
+djohms,1QB,IDP,Sleeper,,413490840162287617,6007,22,1557606533047,RB,Ryquell Armstead,Temple,ce079a73-5884-4184-909a-8feafd4645d9,JAC
+djohms,1QB,IDP,Sleeper,,413490840162287617,5995,23,1557606533047,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
+djohms,1QB,IDP,Sleeper,,413490840162287617,5987,24,1557606533047,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
+djohms,1QB,IDP,Sleeper,,413490840162287617,5843,25,1557606533047,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
+djohms,1QB,IDP,Sleeper,,413490840162287617,6139,26,1557606533047,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
+djohms,1QB,IDP,Sleeper,,413490840162287617,6126,27,1557606533047,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
+djohms,1QB,IDP,Sleeper,,413490840162287617,6169,28,1557606533047,RB,James Williams,Washington State,495651ef-1a14-42be-9f6a-40385a428dd8,KCC
+djohms,1QB,IDP,Sleeper,,413490840162287617,5873,29,1557606533047,WR,Riley Ridley,Georgia,9c04ad60-9726-42d3-9836-7d95723f8eb6,CHI
+djohms,1QB,IDP,Sleeper,,413490840162287617,6156,30,1557606533047,RB,Benny Snell,Kentucky,74af3906-083e-49d1-b8c6-556101390381,PIT
+djohms,1QB,IDP,Sleeper,,413490840162287617,5985,31,1557606533047,TE,Foster Moreau,LSU,9c3a67fd-5c6e-4689-9e08-9ff6d4db6c9a,OAK
+djohms,1QB,IDP,Sleeper,,413490840162287617,6031,32,1557606533047,RB,Alex Barnes,Kansas State,e63d39ab-704f-40ad-9036-b8bad7ece8bb,TEN
+djohms,1QB,IDP,Sleeper,,413490840162287617,5884,33,1557606533047,WR,Kelvin Harmon,NC State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
+djohms,1QB,IDP,Sleeper,,413490840162287617,5937,34,1557606533047,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
+djohms,1QB,IDP,Sleeper,,413490840162287617,5965,35,1557606533047,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
+djohms,1QB,IDP,Sleeper,,413490840162287617,6072,36,1557606533047,RB,Bruce Anderson,North Dakota State,60acd19b-4197-4b04-ab5b-c287ca5a0b56,TBB
+solarpool,2QB/SF,IDP,MFL,22627,,14056,1,1557844789,QB,Kyler Murray,Oklahoma,dd5a6b6e-ffae-45a5-b8e6-718a9251f374,ARI
+solarpool,2QB/SF,IDP,MFL,22627,,14073,2,1557846500,RB,Josh Jacobs,Alabama,61694ab9-b099-408e-b48d-6a643dd069ec,OAK
+solarpool,2QB/SF,IDP,MFL,22627,,14101,3,1557935160,WR,NKeal Harry,Arizona State,3e6e15ce-1c81-408e-9a94-b0a2924d0b8c,NEP
+solarpool,2QB/SF,IDP,MFL,22627,,14071,4,1557935972,RB,David Montgomery,Iowa State,1c9e1cd5-8cb1-4a15-a2c8-3a0c0fd5423c,CHI
+solarpool,2QB/SF,IDP,MFL,22627,,14058,5,1557952052,QB,Dwayne Haskins,Ohio State,6e4eda90-2656-434f-a262-4e5e9fde3946,WAS
+solarpool,2QB/SF,IDP,MFL,22627,,14079,6,1557952532,RB,Miles Sanders,Penn State,ef3ceaf4-b733-4e06-a7f4-a94fc67361c1,PHI
+solarpool,2QB/SF,IDP,MFL,22627,,14136,7,1557963857,WR,Deebo Samuel,South Carolina,628a6a0a-4fde-4024-8d7c-28674953d5af,SFO
+solarpool,2QB/SF,IDP,MFL,22627,,14112,8,1557964792,WR,Parris Campbell,Ohio State,db0c3b1c-8d18-435a-864a-cdd696f963b6,IND
+solarpool,2QB/SF,IDP,MFL,22627,,14138,9,1557964842,TE,TJ Hockenson,Iowa,bd1120b6-38b3-4225-a4b0-20660a149d0d,DET
+solarpool,2QB/SF,IDP,MFL,22627,,14102,10,1557966015,WR,DK Metcalf,Mississippi,754faf0f-40f7-45f0-b23b-6ce990ecaf26,SEA
+solarpool,2QB/SF,IDP,MFL,22627,,14104,11,1557968659,WR,AJ Brown,Mississippi,a9e580f2-1fbe-46fb-887c-c84089b507e4,TEN
+solarpool,2QB/SF,IDP,MFL,22627,,14168,12,1557968680,LB,Devin White,LSU,37849d01-7d7e-4a35-8840-e17cacd73d85,TBB
+solarpool,2QB/SF,IDP,MFL,22627,,14121,13,1558009892,WR,Andy Isabella,Massachusetts,04f9a4be-b236-4eed-9bc4-794f615ccd13,ARI
+solarpool,2QB/SF,IDP,MFL,22627,,14087,14,1558013528,RB,Darrell Henderson,Memphis,380c4d9b-d4c8-456c-ba50-25519edde899,LAR
+solarpool,2QB/SF,IDP,MFL,22627,,14137,15,1558023150,TE,Noah Fant,Iowa,cdc98acc-9eb6-4b44-81bb-61d7b8a3b55f,DEN
+solarpool,2QB/SF,IDP,MFL,22627,,14105,16,1558030903,WR,Marquise Brown,Oklahoma,feeee40a-dd63-41a7-89cd-6c95b5456833,BAL
+solarpool,2QB/SF,IDP,MFL,22627,,14106,17,1558039258,WR,Hakeem Butler,Iowa State,472945d8-0062-417b-9967-430d381c80ae,ARI
+solarpool,2QB/SF,IDP,MFL,22627,,14059,18,1558040835,QB,Daniel Jones,Duke,0042266b-cb28-4012-bfd2-06650badad97,NYG
+solarpool,2QB/SF,IDP,MFL,22627,,14170,19,1558041245,LB,Devin Bush,Michigan,ab5d4d72-fb1c-4aeb-887b-f6ca35f679bf,PIT
+solarpool,2QB/SF,IDP,MFL,22627,,14147,20,1558041263,DE,Nick Bosa,Ohio State,987c5e68-21d5-4bcb-a5f3-2e09cc512374,SFO
+solarpool,2QB/SF,IDP,MFL,22627,,14107,21,1558041999,WR,JJ Arcega-Whiteside,Stanford,0cc1a941-1a6d-4a4a-8c7c-88157165c126,PHI
+solarpool,2QB/SF,IDP,MFL,22627,,14113,22,1558042031,WR,Mecole Hardman,Georgia,fe6dc768-d576-476c-b150-53b85af2a1d1,KCC
+solarpool,2QB/SF,IDP,MFL,22627,,14141,23,1558048078,TE,Irv Smith,Alabama,ed0e6a30-83d5-4f4b-bf49-f7ff80e21304,MIN
+solarpool,2QB/SF,IDP,MFL,22627,,14086,24,1558058803,RB,Justice Hill,Oklahoma State,528e71ec-8fb3-4928-ace5-fc5ffbf26eb3,BAL
+solarpool,2QB/SF,IDP,MFL,22627,,14075,25,1558060430,RB,Damien Harris,Alabama,59482736-ce42-4058-b68e-0f9f66eac2d9,NEP
+solarpool,2QB/SF,IDP,MFL,22627,,14057,26,1558066733,QB,Drew Lock,Missouri,94325301-e0ad-4a9f-a0e5-ffec0f529be3,DEN
+solarpool,2QB/SF,IDP,MFL,22627,,14167,27,1558102509,DE,Josh Allen,Kentucky,,JAC
+solarpool,2QB/SF,IDP,MFL,22627,,14080,28,1558108310,RB,Devin Singletary,Florida Atlantic,a961b0d4-5d7c-438e-90f0-2e1fa09f6c89,BUF
+solarpool,2QB/SF,IDP,MFL,22627,,14158,29,1558119619,DT,Ed Oliver,Houston,adabdc56-278f-48b9-a003-1329b7f2f663,BUF
+solarpool,2QB/SF,IDP,MFL,22627,,14184,30,1558134238,S,Johnathan Abram,Mississippi State,26b6ac3e-facf-48eb-ae5b-afd30b2544b2,OAK
+solarpool,2QB/SF,IDP,MFL,22627,,14208,31,1558134366,WR,Diontae Johnson,Toledo,244c00c7-fe9a-4f4f-adff-1d5b9c8877e7,PIT
+solarpool,2QB/SF,IDP,MFL,22627,,14284,32,1558140072,RB,Darwin Thompson,Utah State,a1a73c32-c409-4ee0-8a7b-0ae589db85c8,KCC
+solarpool,2QB/SF,IDP,MFL,22627,,14157,33,1558140395,DT,Quinnen Williams,Alabama,b8e0fa49-1122-4e97-9fe2-d90f6b7cb444,NYJ
+solarpool,2QB/SF,IDP,MFL,22627,,14223,34,1558150028,RB,Alexander Mattison,Boise State,ae4faec0-509d-4080-b5cb-d1a44d062858,MIN
+solarpool,2QB/SF,IDP,MFL,22627,,14125,35,1558180188,WR,Miles Boykin,Notre Dame,d1ed6f8c-1611-4695-8b48-5adce0de50dd,BAL
+solarpool,2QB/SF,IDP,MFL,22627,,14116,36,1558198062,WR,Jalen Hurd,Baylor,917d4304-d039-42a9-9c43-84e3786f105c,SFO
+solarpool,2QB/SF,IDP,MFL,22627,,14151,37,1558198080,DE,Clelin Ferrell,Clemson,108759bf-8c78-41c6-a409-b87c63985c21,OAK
+solarpool,2QB/SF,IDP,MFL,22627,,14114,38,1558200463,WR,Kelvin Harmon,North Carolina State,d3cc6f89-56d8-45e9-87f0-3a1a56f97bc6,WAS
+solarpool,2QB/SF,IDP,MFL,22627,,14140,39,1558200517,TE,Jace Sternberger,Texas A&M,f808794b-3135-4f75-b46a-ba90bf6b8502,GBP
+solarpool,2QB/SF,IDP,MFL,22627,,14109,40,1558201502,WR,Terry McLaurin,Ohio State,7e8c4641-2beb-4213-ba22-69fe0307005f,WAS
