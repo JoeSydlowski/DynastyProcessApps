@@ -38,6 +38,9 @@ shinyUI(fluidPage(
                      li(class="active",a(href="#",strong("Dark Mode")))
                   )
                ),
+               li(
+                 a(href="http://apps.dynastyprocess.com/rookie-adp",strong("Rookie ADP"))
+               ),
                li(class="dropdown",
                   a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
                   ul(class="dropdown-menu",
