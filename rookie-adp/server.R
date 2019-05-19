@@ -30,7 +30,8 @@ shinyServer(function(input, output) {
       filter(QB_type == QBs() &
                IDP %in% OffDef() &
                date <= input$dateRange[2] &
-               date >= input$dateRange[1]) %>%
+               date >= input$dateRange[1] &
+               name != "") %>%
       group_by(name, pos, tm) %>%
       summarise(ADP = round(mean(pick),1),
                 Count = n(),
@@ -46,8 +47,9 @@ shinyServer(function(input, output) {
   output$results <- renderDT({
     datatable( df(),
                filter = 'top',
+               rowname = FALSE,
                options = list(pageLength = 50,
-                              scrollX =TRUE,
+                              scrollX = TRUE,
                               columnDefs = list(list(className = 'dt-head-left', targets = "_all"))),
                class = 'compact stripe')
   })
