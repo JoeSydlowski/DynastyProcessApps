@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   
   OffDef <- reactive({
     if(substring(input$mode, 5, 5) == "I")
-      {c("IDP","Offense-only")}
+      {"IDP"}
     else if (substring(input$mode, 5, 5) == "O")
       {"Offense-only"}
   })
@@ -30,12 +30,13 @@ shinyServer(function(input, output) {
       filter(QB_type == QBs() &
                IDP %in% OffDef() &
                date <= input$dateRange[2] &
-               date >= input$dateRange[1]) %>%
-      group_by(name, pos, tm, college) %>%
+               date >= input$dateRange[1] &
+               name != "") %>%
+      group_by(name, pos, tm) %>%
       summarise(ADP = round(mean(pick),1),
                 Count = n(),
-                Lowest = min(pick),
-                Highest = max(pick),
+                High = min(pick),
+                Low = max(pick),
                 SD = round(sd(pick),1),
                 CV = round(sd(pick)/mean(pick),1)) %>%
       arrange(ADP)
@@ -48,8 +49,9 @@ shinyServer(function(input, output) {
   output$results <- renderDT({
     datatable( df(),
                filter = 'top',
+               rowname = FALSE,
                options = list(pageLength = 50,
-                              scrollX =TRUE,
+                              scrollX = TRUE,
                               columnDefs = list(list(className = 'dt-head-left', targets = "_all"))),
                class = 'compact stripe')
   })
