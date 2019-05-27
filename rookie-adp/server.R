@@ -40,6 +40,8 @@ shinyServer(function(input, output) {
                 CV = round(sd(pick)/mean(pick),1)) %>%
       arrange(ADP)
     
+    print(sapply(df1$ADP, typeof))
+    
     df1
   })  
 
