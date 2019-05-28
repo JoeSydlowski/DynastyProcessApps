@@ -29,6 +29,7 @@ for page in list_of_pages:
 ```
 
 ```{r}
+setwd("/srv/data")
 system("git add *.csv")
 system("git commit -m 'Weekly FP Scrape'")
 system("git push origin master")
