@@ -1,0 +1,37 @@
+
+```{r}
+setwd("/srv/data/files/fp-weekly-scrapes-data")
+```
+
+```{python}
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import csv
+from datetime import datetime
+
+list_of_pages = ["dynasty-overall", "dynasty-qb", "dynasty-rb", "dynasty-wr",
+                 "dynasty-te", "dynasty-k", "dynasty-dst", "rookies",
+                 "ppr-cheatsheets", "qb-cheatsheets", "ppr-rb-cheatsheets",
+                 "ppr-wr-cheatsheets", "ppr-te-cheatsheets", "k-cheatsheets",
+                 "dst-cheatsheets"]
+
+for page in list_of_pages:
+    url = "https://www.fantasypros.com/nfl/rankings/" + page + ".php"
+    html = urlopen(url)
+    soup = BeautifulSoup(html, "lxml")
+    table = soup.find("table")
+    with open(page + '-' + str(datetime.now().year) + '{:02d}'.format(datetime.now().month)
+              + '{:02d}'.format(datetime.now().day) + '.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',')
+        for table_row in table.find_all("tr"):
+            player = [i.text.strip() for i in table_row.find_all(["th","td"])]
+            spamwriter.writerow(player)
+```
+
+```{r}
+setwd("/srv/data")
+system("git add *.csv")
+system("git commit -m 'Weekly FP Scrape'")
+system("git push origin master")
+```
+
