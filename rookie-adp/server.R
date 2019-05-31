@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
   output$results <- renderDT({
     datatable( df(),
                filter = 'top',
-               rowname = FALSE,
+               #rowname = FALSE,
                options = list(pageLength = 50,
                               scrollX = TRUE,
                               columnDefs = list(list(className = 'dt-head-left', targets = "_all"))),
