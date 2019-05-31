@@ -41,7 +41,8 @@ shinyUI(fluidPage(
     )
   ),
   
-  titlePanel("DynastyProcess.com Rookie ADP"),
+  titlePanel("r/DynastyFF Community Rookie ADP"),
+  p("This is a rookie ADP compilation based on contributions from the r/DynastyFF community. If interested in adding your league, please submit it in the form below!"),
   tabsetPanel(
     tabPanel("ADP",
   fluidRow(
