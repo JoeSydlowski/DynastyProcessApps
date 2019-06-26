@@ -5,7 +5,9 @@ library(dplyr)
 library(anytime)
 library(shinythemes)
 
+#setwd("/home/ubuntu/DynastyProcess/rookie-adp")
 x <- read.csv(curl("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcess/master/rookie-adp/adp-picks.csv"))
+#x < read.csv(file="adp-picks.csv")
 x$pick_timestamp <- ifelse(x$MFL_Sleeper == "Sleeper", x$pick_timestamp/1000, x$pick_timestamp)
 x$date <- anydate(x$pick_timestamp)
 
