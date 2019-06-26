@@ -4,7 +4,9 @@ library(DT)
 library(dplyr)
 library(anytime)
 
+
 x <- read.csv(curl("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcess/master/rookie-adp/adp-picks.csv"))
+#x <- read.csv(file="adp-picks.csv")
 x$pick_timestamp <- ifelse(x$MFL_Sleeper == "Sleeper", x$pick_timestamp/1000, x$pick_timestamp)
 x$date <- anydate(x$pick_timestamp)
 min(x$date)
