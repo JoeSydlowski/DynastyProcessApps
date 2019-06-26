@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
     currentA <- input$playerList
     updateSelectizeInput(session, 'playerList',
                          choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
-                                        "Players" = df()["name"]),
+                                        "Players" = df2()["name"]),
                          selected = c(currentA)
     )
   })
@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
     
     updateSelectizeInput(session, 'playerList',
                          choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
-                                        "Players" = df()["name"]),
+                                        "Players" = df2()["name"]),
                          selected = c(currentA)
     )
   })
@@ -49,15 +49,17 @@ shinyServer(function(input, output, session) {
   dateList <- reactive({
     allDates <- rev(unique(x$date))
     dates <- c(input$DateRange)
-    minDate <- which(allDates == dates[1])
-    maxDate <- which(allDates == dates[2])
-    allDates[c(minDate:maxDate)]
+    minDate <<- which(allDates == dates[1])
+    maxDate <<- which(allDates == dates[2])
+    allDates[c(minDate,ceiling(mean(c(minDate,maxDate))),maxDate)]
   })
   
   df <- reactive({
+    #req(input$playerList)
+    
     maxDate <- max(as.Date(dateList()))
     
-    if (input$playerList == "All")
+    if (input$playerList[1] == "All")
     {x[(x$pos == input$posFilter) & (x$date %in% dateList()),]}
     
     else if ("1-24" %in% input$playerList & "25-48" %in% input$playerList)
@@ -66,36 +68,36 @@ shinyServer(function(input, output, session) {
     x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
     }
     
-    else if (input$playerList == "1-24")
+    else if (input$playerList[1] == "1-24")
     {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
      players <- df1 %>% slice(1:24)
      x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
     }
     
-    else if (input$playerList == "25-48")
+    else if (input$playerList[1] == "25-48")
     {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
     players <- df1 %>% slice(25:48)
     x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
     }
     
-    else if (input$playerList == "49+")
+    else if (input$playerList[1] == "49+")
     {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
     players <- df1 %>% slice(49:nrow(df1))
     x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
     }
     
-    else {x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% input$playerList)),]}
+    else
+    {x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% input$playerList)),]}
     
   })
-  
   
   df2 <- reactive({
     
     #dates <- tail(unique(x$date), 3)#input$numWeeks)
     
     dates <- dateList()
-    
-    x[(x$pos == input$posFilter) & (x$date %in% dates),]
+
+    x[(x$pos == input$posFilter) & (x$date %in% dates) & !(x$name %in% df()$name),]
   })
   
   ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
@@ -115,28 +117,34 @@ shinyServer(function(input, output, session) {
       geom_point(aes(color=date, size=date)) +
       #geom_point(aes(color=date, size=date), shape = 1, color = "black") +
       scale_size_manual( values = sizes) +
-      #geom_text(aes(label = ifelse(date == tail(dates,1), as.character(name), ""))) +
-      #geom_line() +
       geom_path() +
-      #geom_smooth(method='lm') +
       geom_abline() +
       scale_color_brewer(palette="Set1") +
-      geom_text_repel(force = 5,
-                      data = df()[df()$date == tail(dates, 1) & 
+      geom_text_repel(force = 10,
+                      data = . %>% 
+                        mutate(label = ifelse(df()$date == tail(dates, 1) & 
                                   xrange$x1 <= df()$dynpECR &
                                   df()$dynpECR  <= xrange$x2 &
                                   yrange$y1 <= df()$rdpECR &
-                                  df()$rdpECR <= yrange$y2 ,],
-                      aes(dynpECR, rdpECR, label=name)) +
-      #geom_text(data = df()[df()$name %in% input$playerList & df()$date == tail(dates, 1),],
-      #          aes(dynpECR, rdpECR, label=name), nudge_x = -1, nudge_y = 1) +
+                                  df()$rdpECR <= yrange$y2,
+                                  as.character(df()$name), "")),
+                      aes(label = label), 
+                      box.padding = 0.5,
+                      segment.color = "grey50") +
+      theme_light() + 
+      theme(axis.text=element_text(size=16),
+            axis.title=element_text(size=16,face="bold")) +
+      xlab("Dynasty ECR") +
+      ylab("Redraft ECR")+
+      expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
+
       #geom_point_interactive(aes(tooltip = name)) +
       #coord_fixed(ratio = 1) +
       #xlim(0, defaultSizelocal) +
       #ylim(0, defaultSizelocal) +
-      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE) +
+      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #coord_equal() +
-      theme_light()
+      
   })
   
   observeEvent(input$dblclick, {
