@@ -3,19 +3,97 @@ library(curl)
 library(shinythemes)
 library(ggplot2)
 library(ggrepel)
+library(dplyr)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
 
-x <- x[order(x$name, x$date),]
+x <- x[order(x$date, x$dynpECR),]
+
+#x <- x[order(x$name, x$date),]
 
 namelist <- c("Andrew Luck")
 
 shinyServer(function(input, output, session) {
   
-  df <- reactive({
+  #Update Player list based on position filter
+  observeEvent(input$posFilter,{
+    currentA <- input$playerList
+    updateSelectizeInput(session, 'playerList',
+                         choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
+                                        "Players" = df()["name"]),
+                         selected = c(currentA)
+    )
+  })
+  
+  #Update Player list based on player ranges
+  observeEvent(input$playerList,{
+    currentA <- input$playerList
     
-    dates <- tail(unique(x$date), input$numWeeks)
+    if (currentA[1] == "All" & length(currentA) > 1)
+    {currentA <- currentA[!currentA %in% "All"]}
+    
+    if("All" %in% currentA & currentA[1] != "All")
+    {currentA <- c("All")}
+    
+    if ("1-24" %in% currentA & "25-48" %in% currentA & "49+" %in% currentA)
+    {currentA <- c("All")}
+    
+    updateSelectizeInput(session, 'playerList',
+                         choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
+                                        "Players" = df()["name"]),
+                         selected = c(currentA)
+    )
+  })
+  
+  dateList <- reactive({
+    allDates <- rev(unique(x$date))
+    dates <- c(input$DateRange)
+    minDate <- which(allDates == dates[1])
+    maxDate <- which(allDates == dates[2])
+    allDates[c(minDate:maxDate)]
+  })
+  
+  df <- reactive({
+    maxDate <- max(as.Date(dateList()))
+    
+    if (input$playerList == "All")
+    {x[(x$pos == input$posFilter) & (x$date %in% dateList()),]}
+    
+    else if ("1-24" %in% input$playerList & "25-48" %in% input$playerList)
+    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
+    players <- df1 %>% slice(1:48)
+    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
+    }
+    
+    else if (input$playerList == "1-24")
+    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
+     players <- df1 %>% slice(1:24)
+     x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
+    }
+    
+    else if (input$playerList == "25-48")
+    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
+    players <- df1 %>% slice(25:48)
+    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
+    }
+    
+    else if (input$playerList == "49+")
+    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
+    players <- df1 %>% slice(49:nrow(df1))
+    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
+    }
+    
+    else {x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% input$playerList)),]}
+    
+  })
+  
+  
+  df2 <- reactive({
+    
+    #dates <- tail(unique(x$date), 3)#input$numWeeks)
+    
+    dates <- dateList()
     
     x[(x$pos == input$posFilter) & (x$date %in% dates),]
   })
@@ -24,18 +102,13 @@ shinyServer(function(input, output, session) {
   xrange <- reactiveValues(x1 = 0, x2 = 220)
   yrange <- reactiveValues(y1 = 0, y2 = 220)
   
-  observeEvent(input$posFilter,{
-    #currentA <- input$sideA
-    updateSelectizeInput(session, 'playerList',
-                         choices = df()$name
-                         #selected = c(currentA)
-    )
-  })
-  
   output$distPlot <- renderPlot({
+    req(input$playerList)
     
-    dates <- tail(unique(x$date), input$numWeeks)
+    #dates <- tail(unique(x$date), 3) #input$numWeeks)
 
+    dates <- dateList()
+    
     sizes <- 4:(length(dates)+3)
     
     ggplot(df(), aes(dynpECR, rdpECR, group=name)) + 

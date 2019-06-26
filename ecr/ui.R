@@ -2,11 +2,12 @@ library(shiny)
 library(curl)
 library(shinythemes)
 library(ggplot2)
+library(shinyWidgets)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
-
-x <- x[order(x$name, x$date),]
+x <- x[order(x$date, x$dynpECR),]
+#x <- x[order(x$name, x$date),]
 
 dates <- tail(unique(x$date),3)
 
@@ -48,13 +49,22 @@ titlePanel("DynastyProcess.com ECR Explorer"),
                                choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
                                selected = "QB")),
            column(4,
-                  numericInput("numWeeks", "Choose how many weeks of data", value = 3,
-                               min = 1, max = length(unique(x$date)), step = 1)),
-           column(4,
                   selectizeInput("playerList",
-                                 "Label Players",
-                                 choices = x["name"],
-                                 multiple = TRUE))),
+                                 "Select Players/Ranges",
+                                 choices = c("All", "1-24", "25-48", "49+", x["name"]),
+                                 selected = "1-24",
+                                 multiple = TRUE)),
+           column(4,
+                  sliderTextInput("DateRange",
+                                  "Select Date Range:",
+                                  choices = unique(x$date),
+                                  selected = unique(x$date)[c(length(unique(x$date)) - 2,length(unique(x$date)))]
+                                  )
+                  )
+           ),
+           # column(4,
+           #        numericInput("numWeeks", "Choose how many weeks of data", value = 3,
+           #                     min = 1, max = length(unique(x$date)), step = 1))),
   hr(),
   fluidRow(column(6, offset =3,
                   plotOutput("distPlot",
