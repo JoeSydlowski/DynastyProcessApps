@@ -16,6 +16,9 @@ namelist <- c("Andrew Luck")
 
 shinyServer(function(input, output, session) {
   
+  # in server.R create reactiveVal
+  previousInput <- reactiveVal(NULL)
+  
   #Update Player list based on position filter
   observeEvent(input$posFilter,{
     currentA <- input$playerList
@@ -28,22 +31,40 @@ shinyServer(function(input, output, session) {
   
   #Update Player list based on player ranges
   observeEvent(input$playerList,{
+    newInput <- NULL
+    
+    if (length(input$playerList) > length(previousInput()))
+    {newInput <- subset(input$playerList, !(input$playerList %in% previousInput()))}
+    else if (length(input$playerList) < length(previousInput()))
+    {newInput <- subset(previousInput(), !(previousInput() %in% input$playerList))}
+    print(newInput)
+    
     currentA <- input$playerList
     
-    if (currentA[1] == "All" & length(currentA) > 1)
+    if (newInput[1] == "All")
+    {currentA <- c("All")}
+    
+    else if ("All" %in% currentA & newInput[1] != "All" )
     {currentA <- currentA[!currentA %in% "All"]}
     
-    if("All" %in% currentA & currentA[1] != "All")
-    {currentA <- c("All")}
-    
-    if ("1-24" %in% currentA & "25-48" %in% currentA & "49+" %in% currentA)
-    {currentA <- c("All")}
+    # if (currentA[1] == "All" & length(currentA) > 1)
+    # {currentA <- currentA[!currentA %in% "All"]}
+    # 
+    # if("All" %in% currentA & currentA[1] != "All")
+    # {currentA <- c("All")}
+    # 
+    # if ("1-24" %in% currentA & "25-48" %in% currentA & "49+" %in% currentA)
+    # {currentA <- c("All")}
     
     updateSelectizeInput(session, 'playerList',
                          choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
                                         "Players" = df2()["name"]),
                          selected = c(currentA)
     )
+    
+    previousInput(input$playerList)
+
+
   })
   
   dateList <- reactive({
@@ -97,7 +118,7 @@ shinyServer(function(input, output, session) {
     
     dates <- dateList()
 
-    x[(x$pos == input$posFilter) & (x$date %in% dates) & !(x$name %in% df()$name),]
+    x[(x$pos == input$posFilter) & (x$date %in% dates),] #& !(x$name %in% df()$name),]
   })
   
   ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
