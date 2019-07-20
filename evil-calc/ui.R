@@ -55,6 +55,8 @@ shinyUI(fluidPage(
   ),
 titlePanel("DynastyProcess.com Trade Calculator"),
   hr(),
+  p(HTML(paste0("DynastyProcess.com is solar-powered and recommends ",a(href="https://dynastyprocess.com/calculator","Light Mode"), ". Proceed at your own risk."))),
+  hr(),
   fluidRow(column(4,
                   radioButtons("numQB", "Choose League Type",
                                choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"), 
