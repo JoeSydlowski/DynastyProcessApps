@@ -3,6 +3,7 @@ library(curl)
 library(shinythemes)
 library(ggplot2)
 library(shinyWidgets)
+library(shinyjs)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -43,28 +44,34 @@ shinyUI(fluidPage(
   )
   ),
 titlePanel("DynastyProcess.com ECR Explorer"),
+  shinyjs::useShinyjs(),
+  id = "options",
   hr(),
   fluidRow(column(4,
                   radioButtons("posFilter", "Choose a Position:",
                                choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
                                selected = "QB")),
            column(4,
-                  selectizeInput("playerList",
-                                 "Select Players/Ranges",
-                                 choices = c("All", "1-24", "25-48", "49+", x["name"]),
-                                 selected = "1-24",
-                                 multiple = TRUE)),
-           column(4,
+                  sliderInput("playerRange",
+                                  "Select ECR Range:",
+                                  min = 1,
+                                  max = 60,
+                                  value = c(1,24)
+                  ),
                   sliderTextInput("DateRange",
                                   "Select Date Range:",
                                   choices = unique(x$date),
                                   selected = unique(x$date)[c(length(unique(x$date)) - 2,length(unique(x$date)))]
                                   )
-                  )
+                  ),
+           column(4,
+                  selectizeInput("playerList",
+                                 "Select Players",
+                                 choices = c(x["name"]),
+                                 selected = NULL,
+                                 multiple = TRUE),
+                  actionButton("clear1", "Reset To Defaults"))
            ),
-           # column(4,
-           #        numericInput("numWeeks", "Choose how many weeks of data", value = 3,
-           #                     min = 1, max = length(unique(x$date)), step = 1))),
   hr(),
   p("The ECR Explorer app is designed to compare trends in FantasyPros redraft and dynasty positional ranks. Players above the trendline are ranked higher in dynasty than in redraft, and below are ranked higher in redraft than dynasty. To zoom in on a specific area, click and drag to select the area and then double click to focus on that area."),
   hr(),

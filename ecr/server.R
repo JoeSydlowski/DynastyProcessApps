@@ -4,6 +4,7 @@ library(shinythemes)
 library(ggplot2)
 library(ggrepel)
 library(dplyr)
+library(shinyjs)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -12,39 +13,7 @@ x <- x[order(x$date, x$dynpECR),]
 
 #x <- x[order(x$name, x$date),]
 
-namelist <- c("Andrew Luck")
-
 shinyServer(function(input, output, session) {
-  
-  #Update Player list based on position filter
-  observeEvent(input$posFilter,{
-    currentA <- input$playerList
-    updateSelectizeInput(session, 'playerList',
-                         choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
-                                        "Players" = df2()["name"]),
-                         selected = c(currentA)
-    )
-  })
-  
-  #Update Player list based on player ranges
-  observeEvent(input$playerList,{
-    currentA <- input$playerList
-    
-    if (currentA[1] == "All" & length(currentA) > 1)
-    {currentA <- currentA[!currentA %in% "All"]}
-    
-    if("All" %in% currentA & currentA[1] != "All")
-    {currentA <- c("All")}
-    
-    if ("1-24" %in% currentA & "25-48" %in% currentA & "49+" %in% currentA)
-    {currentA <- c("All")}
-    
-    updateSelectizeInput(session, 'playerList',
-                         choices = list("Presets" = c("All", "1-24", "25-48", "49+"),
-                                        "Players" = df2()["name"]),
-                         selected = c(currentA)
-    )
-  })
   
   dateList <- reactive({
     allDates <- rev(unique(x$date))
@@ -54,50 +23,41 @@ shinyServer(function(input, output, session) {
     allDates[c(minDate,ceiling(mean(c(minDate,maxDate))),maxDate)]
   })
   
-  df <- reactive({
-    #req(input$playerList)
-    
-    maxDate <- max(as.Date(dateList()))
-    
-    if (input$playerList[1] == "All")
-    {x[(x$pos == input$posFilter) & (x$date %in% dateList()),]}
-    
-    else if ("1-24" %in% input$playerList & "25-48" %in% input$playerList)
-    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
-    players <- df1 %>% slice(1:48)
-    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
-    }
-    
-    else if (input$playerList[1] == "1-24")
-    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
-     players <- df1 %>% slice(1:24)
-     x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
-    }
-    
-    else if (input$playerList[1] == "25-48")
-    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
-    players <- df1 %>% slice(25:48)
-    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
-    }
-    
-    else if (input$playerList[1] == "49+")
-    {df1 <- x[(x$pos == input$posFilter) & (x$date == as.character(maxDate)),]
-    players <- df1 %>% slice(49:nrow(df1))
-    x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% players$name)),]
-    }
-    
-    else
-    {x[(x$pos == input$posFilter) & (x$date %in% dateList() & (x$name %in% input$playerList)),]}
-    
+  dfNames <- reactive({
+    dates <- dateList()
+    x[(x$pos == input$posFilter) & (x$date %in% dates),]
   })
   
-  df2 <- reactive({
-    
-    #dates <- tail(unique(x$date), 3)#input$numWeeks)
-    
+  observeEvent({input$posFilter
+                input$DateRange},
+    {
+    currentA <- input$playerList
     dates <- dateList()
-
-    x[(x$pos == input$posFilter) & (x$date %in% dates) & !(x$name %in% df()$name),]
+    updateSelectizeInput(session, 'playerList',
+                         choices = unique(dfNames()["name"]),
+                         selected = currentA)
+  })
+  
+  observeEvent({input$posFilter
+    input$DateRange},
+    {
+    names <- unique(dfNames()["name"])
+      dates <- dateList()
+      updateSliderInput(session, 'playerRange',
+                           max = nrow(names))
+    })
+  
+  df <- reactive({
+    playerNames <- dfNames()[input$playerRange[1]:input$playerRange[2],]
+    
+    if(is.null(input$playerList))
+    {dfNames()[dfNames()$name %in% playerNames$name,]}
+    else
+    {dfNames()[dfNames()$name %in% input$playerList,]}
+  })
+  
+  observeEvent(input$clear1, {
+    shinyjs::reset("options")
   })
   
   ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
@@ -105,9 +65,11 @@ shinyServer(function(input, output, session) {
   yrange <- reactiveValues(y1 = 0, y2 = 220)
   
   output$distPlot <- renderPlot({
-    req(input$playerList)
+    #req(input$playerList)
     
     #dates <- tail(unique(x$date), 3) #input$numWeeks)
+    
+    print(ranges$xcoord)
 
     dates <- dateList()
     
