@@ -126,7 +126,7 @@ shinyServer(function(input, output, session) {
       scale_size_manual( values = sizes) +
       geom_path() +
       geom_abline() +
-      scale_color_brewer(palette="Dark2") +
+      scale_color_brewer(palette="Set1") +
       geom_text_repel(force = 10,
                       data = . %>% 
                         mutate(label = ifelse(df()$date == tail(dates, 1) & 
@@ -186,23 +186,19 @@ shinyServer(function(input, output, session) {
     
     # calculate point position INSIDE the image as percent of total dimensions
     # from left (horizontal) and from top (vertical)
-    left_pct <- ((hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left)) - 0.3
-    top_pct <- ((hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom)) + 0.28
+    left_pct <- ((hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left))# - 0.3
+    top_pct <- ((hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom))# + 0.28
     
     # calculate distance from left and bottom side of the picture in pixels
     left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
     top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
     
-    print(left_pct)
-    print(left_px)
-    print(top_pct)
-    print(top_px)
-    
     # create style property fot tooltip
     # background color is set so tooltip is a bit transparent
     # z-index is set so we are sure are tooltip will be on top
-    style <- paste0("position:absolute; background-color: rgba(245, 245, 245, 0.85); ",
-                    "left:", left_px, "px; top:", top_px, "px; padding: 0;")
+    style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                    "left:", left_px + 2, "px; top:", top_px + 2, "px; padding: 0;")
+    
     
     # actual tooltip created as wellPanel
     wellPanel(
@@ -220,8 +216,8 @@ shinyServer(function(input, output, session) {
     
     # calculate point position INSIDE the image as percent of total dimensions
     # from left (horizontal) and from top (vertical)
-    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left) - 0.25
-    top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom) + 0.20
+    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left)
+    top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom)
     
     # calculate distance from left and bottom side of the picture in pixels
     left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
@@ -230,8 +226,8 @@ shinyServer(function(input, output, session) {
     # create style property fot tooltip
     # background color is set so tooltip is a bit transparent
     # z-index is set so we are sure are tooltip will be on top
-    style <- paste0("position:absolute; background-color: rgba(245, 245, 245, 0.85); ",
-                    "left:", left_px, "px; top:", top_px, "px; padding: 0;")
+    style <- paste0("position:absolute; ; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                    "left:", left_px +2, "px; top:", top_px +2 , "px; padding: 0;")
     
     # actual tooltip created as wellPanel
     wellPanel(

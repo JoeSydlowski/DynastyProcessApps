@@ -84,54 +84,58 @@ shinyUI(fluidPage(
   p("The ECR Explorer app is designed to compare trends in FantasyPros redraft and dynasty positional ranks. Players above the trendline are ranked higher in dynasty than in redraft, and below are ranked higher in redraft than dynasty. To zoom in on a specific area, click and drag to select the area and then double click to focus on that area."),
   hr(),
   #mainPanel(
-  tabsetPanel(type = "tabs",
-                tabPanel("Plot",
-                         fluidRow(column(6,
-                                          #offset=1,
-                                         plotOutput("distPlot",
-                                                    height = "600px",
-                                                    # width = "100%",
-                                                    dblclick = "dblclick",
-                                                    brush = brushOpts(
-                                                      id = "plot1_brush",
-                                                      resetOnNew = TRUE),
-                                                    
-                                                    #width = "100%",
-                                                    hover = hoverOpts(id= "plot_hover",
-                                                                      delay = "100",
-                                                                      delayType = "throttle"),
-                                                    click = "plot_click")),
-                                  column(6,#offset=1,
-                                         div(DTOutput("printData")),class='font-size: small',
-                                  #DTOutput("printData")),
-                                  
-                                  br(),
-                                  downloadButton("downloadData1", "Download"))
-                         ),
-                         uiOutput("hover_info"),
-                         uiOutput("hover_info2"))
-                ,
-                # tabPanel("Plot Data",
-                #          br(),
-                #          #downloadButton("downloadData1", "Download"),
-                #          #br(),
-                #          #br(),
-                #          #fluidRow(
-                #            column(9, DTOutput("printData")),
-                #            column(2, downloadButton("downloadData1", "Download"),offset=1)
-                #          #)
-                # ),
-                tabPanel("All Data",
-                         br(),
-                         #downloadButton("downloadData2", "Download"),
-                         #br(),
-                         #br(),
-                         #fluidRow(
+  tags$head(
+    tags$style(type='text/css', 
+               ".nav-tabs {font-size: x-large} ")),
+      tabsetPanel(type = "tabs",
+                  tabPanel("Plot",
+                           fluidRow(column(6,
+                                           #offset=1,
+                                           plotOutput("distPlot",
+                                                      height = "600px",
+                                                      # width = "100%",
+                                                      dblclick = "dblclick",
+                                                      brush = brushOpts(
+                                                        id = "plot1_brush",
+                                                        resetOnNew = TRUE),
+                                                      
+                                                      #width = "100%",
+                                                      hover = hoverOpts(id= "plot_hover",
+                                                                        delay = "100",
+                                                                        delayType = "throttle"),
+                                                      click = "plot_click"),
+                                           uiOutput("hover_info"),
+                                           uiOutput("hover_info2")),
+                                    column(6,#offset=1,
+                                           div(DTOutput("printData")), class='font-size: small',
+                                           #DTOutput("printData")),
+                                           
+                                           br(),
+                                           downloadButton("downloadData1", "Download"))
+                           ))
+                  ,
+                  # tabPanel("Plot Data",
+                  #          br(),
+                  #          #downloadButton("downloadData1", "Download"),
+                  #          #br(),
+                  #          #br(),
+                  #          #fluidRow(
+                  #            column(9, DTOutput("printData")),
+                  #            column(2, downloadButton("downloadData1", "Download"),offset=1)
+                  #          #)
+                  # ),
+                  tabPanel("All Data",
+                           br(),
+                           #downloadButton("downloadData2", "Download"),
+                           #br(),
+                           #br(),
+                           #fluidRow(
                            column(9, DTOutput("printData2")),
                            column(2, downloadButton("downloadData2", "Download"),offset=1)
-                         #)
-                )
-    ))
-  )
+                           #)
+                  )
+  ) 
+)
+)
 #)
 #)
