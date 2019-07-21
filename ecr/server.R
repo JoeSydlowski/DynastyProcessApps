@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$printData <- renderDT({ dfwide1() },
-    options = list(pageLength = 25,
+    options = list(pageLength = 12,
                    autoWidth = TRUE
                    #columnDefs = list(list(width = '200px', targets = "_all"))
     ),
@@ -87,8 +87,8 @@ shinyServer(function(input, output, session) {
   
   output$printData2 <- renderDT({ x },
                                options = list(pageLength = 25,
-                                              autoWidth = TRUE,
-                                              scrollX = TRUE
+                                              autoWidth = TRUE#,
+                                              #scrollX = TRUE
                                               #columnDefs = list(list(width = '200px', targets = "_all"))
                                ),
                                class = 'compact stripe',

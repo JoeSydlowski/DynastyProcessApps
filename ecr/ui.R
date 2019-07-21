@@ -67,7 +67,7 @@ shinyUI(fluidPage(
                   sliderTextInput("DateRange",
                                   "Select Date Range:",
                                   choices = unique(x$date),
-                                  selected = unique(x$date)[c(length(unique(x$date)) - 2,length(unique(x$date)))]
+                                  selected = unique(x$date)[c(length(unique(x$date)) - 5,length(unique(x$date)))]
                   )
            ),
            column(3,
@@ -81,13 +81,14 @@ shinyUI(fluidPage(
   hr(),
   p("The ECR Explorer app is designed to compare trends in FantasyPros redraft and dynasty positional ranks. Players above the trendline are ranked higher in dynasty than in redraft, and below are ranked higher in redraft than dynasty. To zoom in on a specific area, click and drag to select the area and then double click to focus on that area."),
   hr(),
-  mainPanel(
-    tabsetPanel(type = "tabs",
+  #mainPanel(
+  tabsetPanel(type = "tabs",
                 tabPanel("Plot",
-                         fluidRow(column(12,
-                                         offset =3,
+                         fluidRow(column(6,
+                                          #offset=1,
                                          plotOutput("distPlot",
-                                                    height = "750px",
+                                                    height = "600px",
+                                                    # width = "100%",
                                                     dblclick = "dblclick",
                                                     brush = brushOpts(
                                                       id = "plot1_brush",
@@ -97,25 +98,34 @@ shinyUI(fluidPage(
                                                     hover = hoverOpts(id= "plot_hover",
                                                                       delay = "100",
                                                                       delayType = "throttle"),
-                                                    click = "plot_click"))),
+                                                    click = "plot_click")),
+                                  column(6,#offset=1,
+                                         div(DTOutput("printData")),class='font-size: small')
+                                  ),
                          uiOutput("hover_info"),
                          uiOutput("hover_info2"))
                 ,
-                tabPanel("Plot Data",
-                         hr(),
-                         fluidRow(
-                           column(10, DTOutput("printData")),
-                           column(2, downloadButton("downloadData1", "Download"))
-                         )
-                ),
+                # tabPanel("Plot Data",
+                #          br(),
+                #          #downloadButton("downloadData1", "Download"),
+                #          #br(),
+                #          #br(),
+                #          #fluidRow(
+                #            column(9, DTOutput("printData")),
+                #            column(2, downloadButton("downloadData1", "Download"),offset=1)
+                #          #)
+                # ),
                 tabPanel("All Data",
-                         hr(),
-                         fluidRow(
-                           column(10, DTOutput("printData2")),
-                           column(2, downloadButton("downloadData2", "Download"))
-                         )
+                         br(),
+                         #downloadButton("downloadData2", "Download"),
+                         #br(),
+                         #br(),
+                         #fluidRow(
+                           column(9, DTOutput("printData2")),
+                           column(2, downloadButton("downloadData2", "Download"),offset=1)
+                         #)
                 )
-    )
+    ))
   )
-)
-)
+#)
+#)
