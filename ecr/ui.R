@@ -7,6 +7,8 @@ library(dplyr)
 library(shinyjs)
 library(DT)
 library(tidyr)
+library(shinyWidgets)
+library(grid)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -100,10 +102,12 @@ shinyUI(fluidPage(
                                                                       delayType = "throttle"),
                                                     click = "plot_click")),
                                   column(6,#offset=1,
-                                         div(DTOutput("printData")),class='font-size: small'),
+                                         div(DTOutput("printData")),class='font-size: small',
+                                  #DTOutput("printData")),
+                                  
                                   br(),
-                                  downloadButton("downloadData1", "Download")
-                                  ),
+                                  downloadButton("downloadData1", "Download"))
+                         ),
                          uiOutput("hover_info"),
                          uiOutput("hover_info2"))
                 ,

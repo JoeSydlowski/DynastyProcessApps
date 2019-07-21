@@ -7,6 +7,9 @@ library(dplyr)
 library(shinyjs)
 library(DT)
 library(tidyr)
+library(shinyWidgets)
+library(grid)
+
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -63,10 +66,14 @@ shinyServer(function(input, output, session) {
   })
   
   dfwide1 <- reactive({
-    df() %>%
-      select(name, date, dynpECR, rdpECR) %>%
+    data <- df()
+    colnames(data)[colnames(data)=="dynpECR"] <- "D"
+    colnames(data)[colnames(data)=="rdpECR"] <- "R"
+    
+    data %>%
+      select(name, date, D, R) %>%
       group_by(name) %>%
-      gather(variable, value, dynpECR, rdpECR) %>%
+      gather(variable, value, D, R) %>%
       unite(temp, variable, date) %>%
       spread(temp, value)
   })
@@ -138,7 +145,10 @@ shinyServer(function(input, output, session) {
       xlab("Dynasty ECR") +
       ylab("Redraft ECR")+
       expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
-
+      annotation_custom(textGrob("Win Now",x=0.95, y=0.1, hjust=1, vjust=0,
+                                 gp=gpar(col="black", fontsize=50, fontface="bold", alpha = 0.15))) +
+      annotation_custom(textGrob("Dynasty Darlings",x=0.05, y=0.9, hjust=0, vjust=1,
+                                 gp=gpar(col="black", fontsize=50, fontface="bold", alpha = 0.15))) +
       #geom_point_interactive(aes(tooltip = name)) +
       #coord_fixed(ratio = 1) +
       #xlim(0, defaultSizelocal) +
