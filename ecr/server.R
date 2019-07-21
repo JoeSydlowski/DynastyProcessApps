@@ -85,16 +85,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {write.csv(dfwide1(), file)}
   )
   
-  dfwide2 <- reactive({
-    x %>%
-      select(name, pos, date, dynpECR, rdpECR) %>%
-      group_by(name, pos) %>%
-      gather(variable, value, dynpECR, rdpECR) %>%
-      unite(temp, variable, date) %>%
-      spread(temp, value)
-  })
-  
-  output$printData2 <- renderDT({ dfwide2() },
+  output$printData2 <- renderDT({ x },
                                options = list(pageLength = 25,
                                               autoWidth = TRUE,
                                               scrollX = TRUE
@@ -105,8 +96,8 @@ shinyServer(function(input, output, session) {
   )
   
   output$downloadData2 <- downloadHandler(
-    filename = function() {"DynastyProcessECR.csv"},
-    content = function(file) {write.csv(dfwide2(), file)}
+    filename = function() {"DynastyProcessAllECR.csv"},
+    content = function(file) {write.csv(x, file)}
   )
   
   ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
