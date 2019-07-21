@@ -5,6 +5,8 @@ library(ggplot2)
 library(ggrepel)
 library(dplyr)
 library(shinyjs)
+library(DT)
+library(tidyr)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -60,6 +62,53 @@ shinyServer(function(input, output, session) {
     shinyjs::reset("options")
   })
   
+  dfwide1 <- reactive({
+    df() %>%
+      select(name, date, dynpECR, rdpECR) %>%
+      group_by(name) %>%
+      gather(variable, value, dynpECR, rdpECR) %>%
+      unite(temp, variable, date) %>%
+      spread(temp, value)
+  })
+  
+  output$printData <- renderDT({ dfwide1() },
+    options = list(pageLength = 25,
+                   autoWidth = TRUE
+                   #columnDefs = list(list(width = '200px', targets = "_all"))
+    ),
+    class = 'compact stripe',
+    rownames= FALSE
+    )
+  
+  output$downloadData1 <- downloadHandler(
+    filename = function() {"DynastyProcessECR.csv"},
+    content = function(file) {write.csv(dfwide1(), file)}
+  )
+  
+  dfwide2 <- reactive({
+    x %>%
+      select(name, pos, date, dynpECR, rdpECR) %>%
+      group_by(name, pos) %>%
+      gather(variable, value, dynpECR, rdpECR) %>%
+      unite(temp, variable, date) %>%
+      spread(temp, value)
+  })
+  
+  output$printData2 <- renderDT({ dfwide2() },
+                               options = list(pageLength = 25,
+                                              autoWidth = TRUE,
+                                              scrollX = TRUE
+                                              #columnDefs = list(list(width = '200px', targets = "_all"))
+                               ),
+                               class = 'compact stripe',
+                               rownames= FALSE
+  )
+  
+  output$downloadData2 <- downloadHandler(
+    filename = function() {"DynastyProcessECR.csv"},
+    content = function(file) {write.csv(dfwide2(), file)}
+  )
+  
   ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
   xrange <- reactiveValues(x1 = 0, x2 = 220)
   yrange <- reactiveValues(y1 = 0, y2 = 220)
@@ -68,8 +117,6 @@ shinyServer(function(input, output, session) {
     #req(input$playerList)
     
     #dates <- tail(unique(x$date), 3) #input$numWeeks)
-    
-    print(ranges$xcoord)
 
     dates <- dateList()
     
