@@ -56,7 +56,7 @@ shinyUI(fluidPage(
                   radioGroupButtons("posFilter", "Choose a Position:",
                                     choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
                                     selected = "QB",
-                                    status = "primary",
+                                    status = "secondary",
                                     justified = TRUE)),
            column(3,
                   sliderInput("playerRange",
@@ -69,7 +69,7 @@ shinyUI(fluidPage(
                   sliderTextInput("DateRange",
                                   "Select Date Range:",
                                   choices = unique(x$date),
-                                  selected = unique(x$date)[c(length(unique(x$date)) - 5,length(unique(x$date)))]
+                                  selected = unique(x$date)[c(length(unique(x$date)) - 7,length(unique(x$date)))]
                   )
            ),
            column(3,
@@ -78,15 +78,17 @@ shinyUI(fluidPage(
                                  choices = c(x["name"]),
                                  selected = NULL,
                                  multiple = TRUE),
-                  actionButton("clear1", "Reset To Defaults"))
+                  actionButton("clear1", "Reset"))
   ),
   hr(),
-  p("The ECR Explorer app is designed to compare trends in FantasyPros redraft and dynasty positional ranks. Players above the trendline are ranked higher in dynasty than in redraft, and below are ranked higher in redraft than dynasty. To zoom in on a specific area, click and drag to select the area and then double click to focus on that area."),
+  fluidRow(
+    column(1,h4("About"),style='text-align:center'),
+    column(10,p("Use the ECR Explorer to examine trends in FantasyPros redraft and dynasty positional ranks, and to identify win-now or rebuild targets. To zoom in on a specific area, click & drag to select the area, then double-click to focus. Double-click to reset."))),
   hr(),
   #mainPanel(
   tags$head(
     tags$style(type='text/css', 
-               ".nav-tabs {font-size: x-large} ")),
+               ".nav-tabs {font-size: large; font-weight: bold} ")),
       tabsetPanel(type = "tabs",
                   tabPanel("Plot",
                            fluidRow(column(6,
