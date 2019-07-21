@@ -50,7 +50,7 @@ shinyUI(fluidPage(
   shinyjs::useShinyjs(),
   id = "options",
   hr(),
-  fluidRow(column(2,
+  fluidRow(column(3,
                   radioGroupButtons("posFilter", "Choose a Position:",
                                     choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
                                     selected = "QB",
@@ -70,7 +70,7 @@ shinyUI(fluidPage(
                                   selected = unique(x$date)[c(length(unique(x$date)) - 2,length(unique(x$date)))]
                   )
            ),
-           column(4,
+           column(3,
                   selectizeInput("playerList",
                                  "Select Players",
                                  choices = c(x["name"]),
