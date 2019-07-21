@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$printData <- renderDT({ dfwide1() },
-    options = list(pageLength = 12,
+    options = list(pageLength = 15,
                    autoWidth = TRUE
                    #columnDefs = list(list(width = '200px', targets = "_all"))
     ),
@@ -119,7 +119,7 @@ shinyServer(function(input, output, session) {
       scale_size_manual( values = sizes) +
       geom_path() +
       geom_abline() +
-      scale_color_brewer(palette="Set1") +
+      scale_color_brewer(palette="Dark2") +
       geom_text_repel(force = 10,
                       data = . %>% 
                         mutate(label = ifelse(df()$date == tail(dates, 1) & 
@@ -133,7 +133,8 @@ shinyServer(function(input, output, session) {
                       segment.color = "grey50") +
       theme_light() + 
       theme(axis.text=element_text(size=16),
-            axis.title=element_text(size=16,face="bold")) +
+            axis.title=element_text(size=16,face="bold"),
+            legend.position="bottom") +
       xlab("Dynasty ECR") +
       ylab("Redraft ECR")+
       expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +

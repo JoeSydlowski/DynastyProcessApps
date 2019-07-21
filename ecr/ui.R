@@ -100,7 +100,9 @@ shinyUI(fluidPage(
                                                                       delayType = "throttle"),
                                                     click = "plot_click")),
                                   column(6,#offset=1,
-                                         div(DTOutput("printData")),class='font-size: small')
+                                         div(DTOutput("printData")),class='font-size: small'),
+                                  br(),
+                                  downloadButton("downloadData1", "Download")
                                   ),
                          uiOutput("hover_info"),
                          uiOutput("hover_info2"))
