@@ -52,15 +52,19 @@ shinyUI(fluidPage(
   shinyjs::useShinyjs(),
   id = "options",
   hr(),
+  fluidRow(
+    column(1,h4("About"),style='text-align:center'),
+    column(10,p("Use the ECR Explorer to examine trends in FantasyPros redraft and dynasty positional ranks, and to identify win-now or rebuild targets. To zoom in on a specific area, click & drag to select the area, then double-click to focus. Double-click to reset."))),
+  hr(),
   fluidRow(column(3,
-                  radioGroupButtons("posFilter", "Choose a Position:",
+                  radioGroupButtons("posFilter", "Position:",
                                     choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
                                     selected = "QB",
-                                    status = "secondary",
+                                    status = "success",
                                     justified = TRUE)),
            column(3,
                   sliderInput("playerRange",
-                              "Select ECR Range:",
+                              "Filter ECR Range:",
                               min = 1,
                               max = 64,
                               value = c(1,24)
@@ -78,19 +82,16 @@ shinyUI(fluidPage(
                                  choices = c(x["name"]),
                                  selected = NULL,
                                  multiple = TRUE),
-                  actionButton("clear1", "Reset"))
+                  actionButton("clear1", "Clear Selected Players", icon = icon("trash")))
   ),
   hr(),
-  fluidRow(
-    column(1,h4("About"),style='text-align:center'),
-    column(10,p("Use the ECR Explorer to examine trends in FantasyPros redraft and dynasty positional ranks, and to identify win-now or rebuild targets. To zoom in on a specific area, click & drag to select the area, then double-click to focus. Double-click to reset."))),
-  hr(),
+  # hr(),
   #mainPanel(
   tags$head(
     tags$style(type='text/css', 
                ".nav-tabs {font-size: large; font-weight: bold} ")),
       tabsetPanel(type = "tabs",
-                  tabPanel("Plot",
+                  tabPanel("Plot", icon=icon("chart-line"),
                            fluidRow(column(6,
                                            #offset=1,
                                            plotOutput("distPlot",
@@ -126,7 +127,7 @@ shinyUI(fluidPage(
                   #            column(2, downloadButton("downloadData1", "Download"),offset=1)
                   #          #)
                   # ),
-                  tabPanel("All Data",
+                  tabPanel("All Data", icon=icon("table"),
                            br(),
                            #downloadButton("downloadData2", "Download"),
                            #br(),

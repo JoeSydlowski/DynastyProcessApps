@@ -216,8 +216,8 @@ shinyServer(function(input, output, session) {
     
     # calculate point position INSIDE the image as percent of total dimensions
     # from left (horizontal) and from top (vertical)
-    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left) - 0.05
-    top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom) + 0.05
+    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left) #- 0.05
+    top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom) #+ 0.05
     
     # calculate distance from left and bottom side of the picture in pixels
     left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
