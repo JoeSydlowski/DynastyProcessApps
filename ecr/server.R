@@ -16,7 +16,25 @@ x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/mas
 
 x <- x[order(x$date, x$dynpECR),]
 
-#x <- x[order(x$name, x$date),]
+#Custom Table Container
+createContainer <- function(dates){
+  sketch = htmltools::withTags(table(
+    class = 'display',
+    thead(
+      tr(
+        th(rowspan = 2, 'Player'),
+        th(colspan = 2, dates[1], style="text-align:center"),
+        th(colspan = 2, dates[2], style="text-align:center"),
+        th(colspan = 2, dates[3], style="text-align:center")
+        
+      ),
+      tr(
+        lapply(rep(c('Dynasty', 'Redraft'), 3), th)
+      )
+    )
+  ))
+  return(sketch);
+}
 
 shinyServer(function(input, output, session) {
   
@@ -70,25 +88,27 @@ shinyServer(function(input, output, session) {
     colnames(data)[colnames(data)=="dynpECR"] <- "D"
     colnames(data)[colnames(data)=="rdpECR"] <- "R"
     
-    data %>%
+    wide <- data %>%
       select(name, date, D, R) %>%
       group_by(name) %>%
       gather(variable, value, D, R) %>%
       unite(temp, variable, date) %>%
       spread(temp, value)
+    
+    wide[,c(1,2,5,3,6,4,7)]
   })
   
-  output$printData <- renderDT({ dfwide1() },
-                               #filter='top',
+  output$printData <- renderDT({ 
+    DT::datatable(dfwide1() ,
                                 options = list(
                                   pageLength = 15,
-                                  order = list(3,'asc'),
+                                  order = list(5,'asc'),
                                   autoWidth = TRUE
-                   #columnDefs = list(list(width = '200px', targets = "_all"))
                                   ),
     class = 'compact stripe',
-    rownames= FALSE
-    )
+    rownames= FALSE,
+    container = createContainer( dateList()))
+    })
   
   output$downloadData1 <- downloadHandler(
     filename = function() {"DynastyProcessECR.csv"},
@@ -99,9 +119,7 @@ shinyServer(function(input, output, session) {
                                 filter='top',
                                options = list(pageLength = 25,
                                               order=list(list(3,'desc'),list(4,'asc')),
-                                              autoWidth = TRUE#,
-                                              #scrollX = TRUE
-                                              #columnDefs = list(list(width = '200px', targets = "_all"))
+                                              autoWidth = TRUE
                                ),
                                class = 'compact stripe',
                                rownames= FALSE
@@ -117,10 +135,6 @@ shinyServer(function(input, output, session) {
   yrange <- reactiveValues(y1 = 0, y2 = 220)
   
   output$distPlot <- renderPlot({
-    #req(input$playerList)
-    
-    #dates <- tail(unique(x$date), 3) #input$numWeeks)
-
     dates <- dateList()
     
     sizes <- 4:(length(dates)+3)
