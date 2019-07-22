@@ -25,31 +25,37 @@ shinyUI(fluidPage(
         div(class="container-fluid",
             div(class="navbar-header",
                 span(class="navbar-brand",
-                     a(href="https://dynastyprocess.com", strong("DynastyProcess.com"))
+                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                ),
+                button(type="button", class="navbar-toggle", `data-toggle`="collapse", `data-target`="#myNavbar",
+                       span(class="icon-bar"),
+                       span(class="icon-bar"),
+                       span(class="icon-bar")
                 )
             ),
-            ul(class="nav navbar-nav",
-               li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
-               ),
-               li(class="dropdown active",
-                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="https://apps.dynastyprocess.com/calculator", strong("Calculator"),b(class="caret")),
-                  ul(class="dropdown-menu",
-                     li(a(href="http://apps.dynastyprocess.com/calculator",strong("Normal Mode"))),
-                     li(class="active",a(href="#",strong("Dark Mode")))
-                  )
-               ),
-               li(
-                 a(href="http://apps.dynastyprocess.com/rookie-adp",strong("Rookie ADP"))
-               ),
-               li(class="dropdown",
-                  a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
-                  ul(class="dropdown-menu",
-                     li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
-                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
-                     li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
-                  )
-               )
-            )
+            div(class="collapse navbar-collapse", id="myNavbar",
+                ul(class="nav navbar-nav",
+                   li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
+                   ),
+                   li(class="dropdown active",
+                      a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="Calculator",`aria-expanded`="false", href="https://apps.dynastyprocess.com/calculator", strong("Calculator"),b(class="caret")),
+                      ul(class="dropdown-menu",
+                         li(a(href="https://apps.dynastyprocess.com/calculator",strong("Normal Mode"))),
+                         li(class="active",a(href="#",strong("Dark Mode")))
+                      )
+                   ),
+                   li(
+                     a(href="http://apps.dynastyprocess.com/rookie-adp",strong("Rookie ADP"))
+                   ),
+                   li(class="dropdown",
+                      a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
+                      ul(class="dropdown-menu",
+                         li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
+                         li(a(href="http://apps.dynastyprocess.com/ecr",strong("ECR Explorer"))),
+                         li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
+                      )
+                   )
+                ))
         )
     )
   ),
@@ -59,10 +65,12 @@ titlePanel("DynastyProcess.com Trade Calculator"),
   hr(),
   fluidRow(column(4,
                   radioButtons("numQB", "Choose League Type",
-                               choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"), 
+                               choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"),
+                               inline=TRUE,
                                selected = "dynoECR")),
            column(4,
                   radioButtons("calcType", "Startup Mode",
+                               inline=TRUE,
                                choices = list("Normal" = "normal",
                                               "Startup (Players and 2019 Picks)" = "predraft",
                                               "Startup (Players Only)" = "postdraft"),
@@ -101,11 +109,13 @@ titlePanel("DynastyProcess.com Trade Calculator"),
                   selectizeInput("sideA",
                                  "Team A:",
                                  choices = x["Name"],
-                                 multiple = TRUE)),
+                                 multiple = TRUE,
+                                 width='80%')),
            column(6,
                   selectizeInput("sideB",
                                  "Team B:",
                                  choices = x["Name"],
+                                 width='80%',
                                  multiple = TRUE))),
   hr(),
   column(10, offset = 4, h3(textOutput("winner"))),

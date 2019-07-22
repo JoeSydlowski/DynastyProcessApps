@@ -25,8 +25,14 @@ shinyUI(fluidPage(
             div(class="navbar-header",
                 span(class="navbar-brand",
                      a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
-                )
+                ),
+                button(type="button", class="navbar-toggle", `data-toggle`="collapse", `data-target`="#myNavbar",
+                       span(class="icon-bar"),
+                       span(class="icon-bar"),
+                       span(class="icon-bar")
+                       )
             ),
+            div(class="collapse navbar-collapse", id="myNavbar",
             ul(class="nav navbar-nav",
                li(a(href="http://apps.dynastyprocess.com/database",strong("Database"))
                ),
@@ -39,12 +45,12 @@ shinyUI(fluidPage(
                li(class="dropdown",
                   a(class="dropdown-toggle",`data-toggle`="dropdown", `data-value`="More Awesome Apps",`aria-expanded`="false", href="#", strong("More Awesome Apps"),b(class="caret")),
                   ul(class="dropdown-menu",
-                     li(a(href="http://apps.dynastyprocess.com/ecr",strong("Arbitrage"))),
+                     li(a(href="http://apps.dynastyprocess.com/arbitrage",strong("Arbitrage"))),
                      li(class="active",a(href="#",strong("ECR Explorer"))),
                      li(a(href="http://apps.dynastyprocess.com/cohort",strong("Cohort")))
                   )
                )
-            )
+            ))
         )
     )
   ),
@@ -67,11 +73,13 @@ shinyUI(fluidPage(
                               "Filter ECR Range:",
                               min = 1,
                               max = 64,
+                              width = '100%',
                               value = c(1,24)
                   )),
            column(3,
                   sliderTextInput("DateRange",
                                   "Select Date Range:",
+                                  width = '100%',
                                   choices = unique(x$date),
                                   selected = unique(x$date)[c(length(unique(x$date)) - 7,length(unique(x$date)))]
                   )
@@ -81,6 +89,7 @@ shinyUI(fluidPage(
                                  "Select Players",
                                  choices = c(x["name"]),
                                  selected = NULL,
+                                 width = '100%',
                                  multiple = TRUE),
                   actionButton("clear1", "Clear Selected Players", icon = icon("trash")))
   ),
@@ -95,7 +104,7 @@ shinyUI(fluidPage(
                ".form-control {height: 30px; padding: 0px 15px} ")),
       tabsetPanel(type = "tabs",
                   tabPanel("Plot", icon=icon("chart-line"),
-                           fluidRow(column(6,
+                           fluidRow(column(8,
                                            #offset=1,
                                            plotOutput("distPlot",
                                                       height = "600px",
@@ -112,8 +121,8 @@ shinyUI(fluidPage(
                                                       click = "plot_click"),
                                            uiOutput("hover_info"),
                                            uiOutput("hover_info2")),
-                                    column(6,#offset=1,
-                                           div(DTOutput("printData")), class='font-size: small',
+                                    column(4,#offset=1,
+                                           div(DTOutput("printData")), style='font-size: x-small',
                                            #DTOutput("printData")),
                                            
                                            br(),
