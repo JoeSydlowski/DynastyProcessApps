@@ -79,10 +79,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$printData <- renderDT({ dfwide1() },
-    options = list(pageLength = 15,
-                   autoWidth = TRUE
+                               #filter='top',
+                                options = list(
+                                  pageLength = 15,
+                                  order = list(3,'asc'),
+                                  autoWidth = TRUE
                    #columnDefs = list(list(width = '200px', targets = "_all"))
-    ),
+                                  ),
     class = 'compact stripe',
     rownames= FALSE
     )
@@ -93,7 +96,9 @@ shinyServer(function(input, output, session) {
   )
   
   output$printData2 <- renderDT({ x },
+                                filter='top',
                                options = list(pageLength = 25,
+                                              order=list(list(3,'desc'),list(4,'asc')),
                                               autoWidth = TRUE#,
                                               #scrollX = TRUE
                                               #columnDefs = list(list(width = '200px', targets = "_all"))
@@ -197,7 +202,7 @@ shinyServer(function(input, output, session) {
     # background color is set so tooltip is a bit transparent
     # z-index is set so we are sure are tooltip will be on top
     style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
-                    "left:", left_px + 2, "px; top:", top_px + 2, "px; padding: 0;")
+                    "left:", left_px +2, "px; top:", top_px +2, "px; padding: 0;")
     
     
     # actual tooltip created as wellPanel

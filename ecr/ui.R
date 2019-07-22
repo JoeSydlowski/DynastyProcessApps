@@ -51,11 +51,11 @@ shinyUI(fluidPage(
   titlePanel("DynastyProcess.com ECR Explorer"),
   shinyjs::useShinyjs(),
   id = "options",
-  hr(),
+  br(),
   fluidRow(
     column(1,h4("About"),style='text-align:center'),
     column(10,p("Use the ECR Explorer to examine trends in FantasyPros redraft and dynasty positional ranks, and to identify win-now or rebuild targets. To zoom in on a specific area, click & drag to select the area, then double-click to focus. Double-click to reset."))),
-  hr(),
+  br(),
   fluidRow(column(3,
                   radioGroupButtons("posFilter", "Position:",
                                     choices = list("QB" = "QB", "RB" = "RB", "WR" = "WR", "TE" = "TE"), 
@@ -90,6 +90,9 @@ shinyUI(fluidPage(
   tags$head(
     tags$style(type='text/css', 
                ".nav-tabs {font-size: large; font-weight: bold} ")),
+  tags$head(
+    tags$style(type='text/css', 
+               ".form-control {height: 30px; padding: 0px 15px} ")),
       tabsetPanel(type = "tabs",
                   tabPanel("Plot", icon=icon("chart-line"),
                            fluidRow(column(6,
