@@ -61,8 +61,14 @@ shinyUI(fluidPage(
     )
   ),
   titlePanel("DynastyProcess.com Trade Calculator"),
+  div(
+    hr(),
+    fluidRow(
+    column(1,h3("About", style="text-align: center")),
+    column(10, includeMarkdown("about.md"))
+  ),class="hidden-xs"),
   hr(),
-  fluidRow(column(2,
+  fluidRow(div(class="text-center",column(2,
                   radioGroupButtons(
                     inputId = "calcType",
                     label = NULL,
@@ -71,10 +77,10 @@ shinyUI(fluidPage(
                                    "Startup Mode (Players Only)" = "postdraft"),
                     direction = "vertical",
                     status ="success"
-                  )
+                  ))
                   
   ),
-  column(2,
+  column(2,div(class="text-center",
          switchInput(
            inputId = "numQB",
            label = "Mode",
@@ -98,7 +104,7 @@ shinyUI(fluidPage(
                      width = '100%'
          ),
          downloadButton("downloadData", "Download Values", class="btn radiobtn btn-primary btn-block")
-         ),
+         )),
   column(4,
          br(),
          sliderInput("slider1", "Depth Weight", min = -0.03,
@@ -148,6 +154,11 @@ shinyUI(fluidPage(
                   h4(textOutput("tableText")),
                   tableOutput("diffTable"))),
   hr(),
+  div(fluidRow(
+    column(1,h3("About", style="text-align: center")),
+    column(10, includeMarkdown("about.md")),
+    hr()
+  ),class="visible-xs",id="About"),
   p(paste0("Player values last updated on ", lastupdate, ".")),
 p(HTML(paste0("DynastyProcess.com Apps are created by ",
               a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
