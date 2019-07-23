@@ -1,260 +1,268 @@
 library(shiny)
 library(curl)
 library(shinythemes)
-library(ggplot2)
-library(ggrepel)
-library(dplyr)
-library(shinyjs)
 library(DT)
-library(tidyr)
-library(shinyWidgets)
-library(grid)
+library(ggplot2)
+library(rvest)
+library(dplyr)
 
-
-x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
-              encoding = "unknown")
-
-x <- x[order(x$date, x$dynpECR),]
-
-#Custom Table Container
-createContainer <- function(dates){
-  sketch = htmltools::withTags(table(
-    class = 'display',
-    thead(
-      tr(
-        th(rowspan = 2, 'Player'),
-        th(colspan = 2, dates[1], style="text-align:center"),
-        th(colspan = 2, dates[2], style="text-align:center"),
-        th(colspan = 2, dates[3], style="text-align:center")
-        
-      ),
-      tr(
-        lapply(rep(c('Dynasty', 'Redraft'), 3), th)
-      )
-    )
-  ))
-  return(sketch);
-}
+playerDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
+playerDB <- playerDB[c(1:6)]
+pickDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-picks.csv"))
 
 shinyServer(function(input, output, session) {
   
-  dateList <- reactive({
-    allDates <- rev(unique(x$date))
-    dates <- c(input$DateRange)
-    minDate <<- which(allDates == dates[1])
-    maxDate <<- which(allDates == dates[2])
-    allDates[c(minDate,ceiling(mean(c(minDate,maxDate))),maxDate)]
+  combineddf <- reactive({
+    names(pickDB)[1]<-"Name"
+    x2020 <- dplyr::filter(pickDB, grepl('2020|2021', Name))
+    x2019 <- dplyr::filter(pickDB, grepl('2019', Name))
+    
+    x2019$pickNum <- as.numeric(rownames(x2019)) %% as.numeric(input$leagueSize)
+    x2019$pickNum[x2019$pickNum == 0] <- as.numeric(input$leagueSize)
+    
+    x2019$Name <- paste0("2019 Rookie Pick ",
+                         ceiling(as.numeric(rownames(x2019))/as.numeric(input$leagueSize)),
+                         ".",
+                         sprintf("%02d", x2019$pickNum ))
+    x2019$pickNum <- NULL
+    pickDB <- rbind(x2019, x2020)
+    #print(pickDB)
+    
+    pickDB$dynoECR <- ((1-input$slider2)*pickDB$min_dynoECR + input$slider2*pickDB$max_dynoECR)
+    pickDB$dyno2QBECR <- ((1-input$slider2)*pickDB$min_dyno2QBECR + input$slider2*pickDB$max_dyno2QBECR)
+    pickDB <- pickDB[c(1:4)]
+    pickDB$team <- NA
+    pickDB$age <- NA
+    
+    names(playerDB)[1]<-"Name"
+    x <- rbind(playerDB, pickDB)
+    
+    x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
+    x
   })
-  
-  dfNames <- reactive({
-    dates <- dateList()
-    x[(x$pos == input$posFilter) & (x$date %in% dates),]
-  })
-  
-  observeEvent({input$posFilter
-    input$DateRange},
-    {
-      currentA <- input$playerList
-      dates <- dateList()
-      updateSelectizeInput(session, 'playerList',
-                           choices = unique(dfNames()["name"]),
-                           selected = currentA)
-    })
-  
-  observeEvent({input$posFilter
-    input$DateRange},
-    {
-      names <- unique(dfNames()["name"])
-      dates <- dateList()
-      updateSliderInput(session, 'playerRange',
-                        max = nrow(names))
-    })
   
   df <- reactive({
-    playerNames <- dfNames()[input$playerRange[1]:input$playerRange[2],]
+    x <- combineddf()
     
-    if(is.null(input$playerList))
-    {dfNames()[dfNames()$name %in% playerNames$name,]}
-    else
-    {dfNames()[dfNames()$name %in% input$playerList,]}
-  })
-  
-  observeEvent(input$clear1, {
-    shinyjs::reset("options")
-  })
-  
-  dfwide1 <- reactive({
-    data <- df()
-    colnames(data)[colnames(data)=="dynpECR"] <- "D"
-    colnames(data)[colnames(data)=="rdpECR"] <- "R"
-    
-    wide <- data %>%
-      select(name, date, D, R) %>%
-      group_by(name) %>%
-      gather(variable, value, D, R) %>%
-      unite(temp, variable, date) %>%
-      spread(temp, value)
-    
-    wide[,c(1,2,5,3,6,4,7)]
-  })
-  
-  output$printData <- renderDT({ 
-    DT::datatable(dfwide1() ,
-                  options = list(
-                    pageLength = 25,
-                    order = list(5,'asc'),
-                    autoWidth = TRUE
-                  ),
-                  class = 'compact stripe',
-                  rownames= FALSE,
-                  container = createContainer( dateList()))
-  })
-  
-  output$downloadData1 <- downloadHandler(
-    filename = function() {"DynastyProcessECR.csv"},
-    content = function(file) {write.csv(dfwide1(), file)}
-  )
-  
-  output$printData2 <- renderDT({ x },
-                                filter='top',
-                                options = list(pageLength = 25,
-                                               order=list(list(3,'desc'),list(4,'asc')),
-                                               autoWidth = TRUE
-                                ),
-                                class = 'compact stripe',
-                                rownames= FALSE
-  )
-  
-  output$downloadData2 <- downloadHandler(
-    filename = function() {"DynastyProcessAllECR.csv"},
-    content = function(file) {write.csv(x, file)}
-  )
-  
-  ranges <- reactiveValues(xcoord = NULL, ycoord = NULL)
-  xrange <- reactiveValues(x1 = 0, x2 = 220)
-  yrange <- reactiveValues(y1 = 0, y2 = 220)
-  
-  output$distPlot <- renderPlot({
-    dates <- dateList()
-    
-    sizes <- 4:(length(dates)+3)
-    
-    ggplot(df(), aes(dynpECR, rdpECR, group=name)) + 
-      geom_point(aes(color=date, size=date)) +
-      #geom_point(aes(color=date, size=date), shape = 1, color = "black") +
-      scale_size_manual( values = sizes) +
-      geom_path() +
-      geom_abline() +
-      scale_color_brewer(palette="Set1") +
-      geom_text_repel(force = 10,
-                      data = . %>% 
-                        mutate(label = ifelse(df()$date == tail(dates, 1) & 
-                                                xrange$x1 <= df()$dynpECR &
-                                                df()$dynpECR  <= xrange$x2 &
-                                                yrange$y1 <= df()$rdpECR &
-                                                df()$rdpECR <= yrange$y2,
-                                              as.character(df()$name), "")),
-                      aes(label = label), 
-                      box.padding = 0.5,
-                      segment.color = "grey50") +
-      theme_light() + 
-      theme(axis.text=element_text(size=16),
-            axis.title=element_text(size=16,face="bold"),
-            legend.position="bottom") +
-      xlab("Dynasty ECR") +
-      ylab("Redraft ECR")+
-      expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
-      annotation_custom(textGrob("Win Now",x=0.95, y=0.1, hjust=1, vjust=0,
-                                 gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
-      annotation_custom(textGrob("Dynasty Darlings",x=0.05, y=0.9, hjust=0, vjust=1,
-                                 gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
-      #geom_point_interactive(aes(tooltip = name)) +
-      coord_fixed(ratio = 1,xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
-    #xlim(0, defaultSizelocal) +
-    #ylim(0, defaultSizelocal) +
-    #coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
-    #coord_equal() +
-    
-  })
-  
-  observeEvent(input$dblclick, {
-    brush <- input$plot1_brush
-    if (!is.null(brush)) {
-      ranges$xcoord <- c(brush$xmin, brush$xmax)
-      ranges$ycoord <- c(brush$ymin, brush$ymax)
-      xrange$x1 <- brush$xmin
-      xrange$x2 <- brush$xmax
-      yrange$y1 <- brush$ymin
-      yrange$y2 <- brush$ymax
-      
+    if(input$numQB==TRUE) {
+      x$dyno2QBECR <- NULL
+      dftext <- "dynoECR"
     } else {
-      ranges$xcoord <- NULL
-      ranges$ycoord <- NULL
-      xrange$x1 <- 0
-      xrange$x2 <- 220
-      yrange$y1 <- 0
-      yrange$y2 <- 220
+      x$dynoECR <- NULL
+      dftext <- "dyno2QBECR"
+    }
+    
+    
+    x$value <- round(10500 * exp(x[,dftext]* input$slider1))
+    x <- x[order(-x$value),]
+    row.names(x) <- NULL
+    
+    if(input$calcType == "postdraft")
+    { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
+    x <- dplyr::filter(x, !grepl('2019|2020|2021', Name))
+    
+    x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+    x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+    
+    x$Pick <- paste0( "Startup Pick ",
+                      ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                      ".",
+                      sprintf("%02d", x$pickNum ))
+    x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+    x$Name <- x$Combined
+    x$Combined <- x$Pick <- x$pickNum <- NULL
+    #x2020$Combined <- x2020$Name
+    x <- rbind(x, x2020)
+    
+    #x <- x[c(7,1,2,3,4,5,6)]
+    }
+    
+    else if(input$calcType == "predraft")
+    { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
+    x <- dplyr::filter(x, !grepl('2020|2021', Name))
+    
+    x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+    x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+    
+    x$Pick <- paste0( "Startup Pick ",
+                      ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                      ".",
+                      sprintf("%02d", x$pickNum ))
+    x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+    x$Name <- x$Combined
+    x$Combined <- x$Pick <- x$pickNum <- NULL
+    #x2020$Combined <- x2020$Name
+    x <- rbind(x, x2020)
+    
+    #x <- x[c(7,1,2,3,4,5,6)]
+    }
+    
+    x <- x[order(-x$value),]
+    x 
+  })
+  
+  observeEvent({input$numQB
+    input$calcType
+    input$leagueSize
+    input$slider1
+    input$slider2},{
+      
+      # if(input$calcType != "normal")
+      #   {choiceList = df()$Combined}
+      # else {choiceList = df()$Name}
+      
+      
+      currentA <- input$sideA
+      updateSelectizeInput(session, 'sideA',
+                           choices = df()$Name,
+                           selected = c(currentA)
+      )
+      currentB <- input$sideB
+      updateSelectizeInput(session, 'sideB',
+                           choices = df()$Name,
+                           selected = c(currentB)
+      )
+    })
+  
+  dfA <- reactive({
+    #req(input$sideA)
+    
+    df()[(df()$Name %in% c(input$sideA)), ]
+    
+  })
+  
+  dfB <- reactive({
+    #req(input$sideB)
+    
+    df()[(df()$Name %in% c(input$sideB)), ]
+    
+  })
+  
+  output$tableA <- renderTable({
+    req(input$sideA)
+    dftemp <- dfA()
+    dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
+    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp
+  })
+  
+  output$tableB <- renderTable({
+    req(input$sideB)
+    dftemp <- dfB()
+    dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
+    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp
+  })
+  
+  sumdfA <- reactive({
+    sum(dfA()$value)
+  })
+  
+  sumdfB <- reactive({
+    sum(dfB()$value)
+  })
+  
+  rawDiff <- reactive({
+    if (sumdfA() > sumdfB())
+    {sum(dfA()$value) - sum(dfB()$value)}
+    else if (sum(dfA()$value) < sum(dfB()$value))
+    {sum(dfB()$value) - sum(dfA()$value)}
+    else
+    {0}
+  })
+  
+  percentDiff <- reactive({
+    if (sumdfA() > sumdfB())
+    {round(100*((sum(dfA()$value) - sum(dfB()$value))/sum(dfB()$value)))}
+    else if (sum(dfA()$value) < sum(dfB()$value))
+    {round(100*((sum(dfB()$value) - sum(dfA()$value))/sum(dfA()$value)))}
+    else
+    {0}
+  })
+  
+  output$winner <- renderText({
+    req(input$sideA, input$sideB)
+    
+    if (sumdfA() > sumdfB()) {
+      paste0("Side A is winning the trade by ",
+             format(sum(dfA()$value) - sum(dfB()$value), big.mark = ","),
+             " or ", percentDiff(), "%")
+    } else if (sum(dfA()$value) < sum(dfB()$value)) {
+      paste0("Side B is winning the trade by ",
+             format(sum(dfB()$value) - sum(dfA()$value), big.mark = ","),
+             " or ", percentDiff(), "%")
+    } else {
+      "This trade is exactly even!"
     }
   })
   
-  
-  output$hover_info <- renderUI({
-    hover <- input$plot_hover
-    point <- nearPoints(df(), hover, threshold = 10, maxpoints = 1, addDist = TRUE)
-    if (nrow(point) == 0) return(NULL)
+  output$winRange <- renderText({
+    req(input$sideA, input$sideB)
     
-    # calculate point position INSIDE the image as percent of total dimensions
-    # from left (horizontal) and from top (vertical)
-    left_pct <- ((hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left))# - 0.3
-    top_pct <- ((hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom))# + 0.28
-    
-    # calculate distance from left and bottom side of the picture in pixels
-    left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
-    top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
-    
-    # create style property fot tooltip
-    # background color is set so tooltip is a bit transparent
-    # z-index is set so we are sure are tooltip will be on top
-    style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
-                    "left:", left_px +2, "px; top:", top_px +2, "px; padding: 0;")
-    
-    
-    # actual tooltip created as wellPanel
-    wellPanel(
-      style = style,
-      p(HTML(paste0("<b> Name: </b>", point$name, "<br/>",
-                    "<b> dynpECR: </b>", point$dynpECR, "<br/>",
-                    "<b> rdpECR: </b>", point$rdpECR, "<br/>")))
-    )
+    if (percentDiff()<5) {
+      "This trade is approximately fair!"
+    }
   })
   
-  output$hover_info2 <- renderUI({
-    hover <- input$plot_click
-    point <- nearPoints(df(), hover, threshold = 10, maxpoints = 1, addDist = TRUE)
-    if (nrow(point) == 0) return(NULL)
-    
-    # calculate point position INSIDE the image as percent of total dimensions
-    # from left (horizontal) and from top (vertical)
-    left_pct <- (hover$x - hover$domain$left) / (hover$domain$right - hover$domain$left) #- 0.05
-    top_pct <- (hover$domain$top - hover$y) / (hover$domain$top - hover$domain$bottom) #+ 0.05
-    
-    # calculate distance from left and bottom side of the picture in pixels
-    left_px <- hover$range$left + left_pct * (hover$range$right - hover$range$left)
-    top_px <- hover$range$top + top_pct * (hover$range$bottom - hover$range$top)
-    
-    # create style property fot tooltip
-    # background color is set so tooltip is a bit transparent
-    # z-index is set so we are sure are tooltip will be on top
-    style <- paste0("position:absolute; ; z-index:75; background-color: rgba(245, 245, 245, 0.70); ",
-                    "left:", left_px +2, "px; top:", top_px +2 , "px; padding: 0;")
-    
-    # actual tooltip created as wellPanel
-    wellPanel(
-      style = style,
-      p(HTML(paste0("<b> Name: </b>", point$name, "<br/>",
-                    "<b> dynpECR: </b>", point$dynpECR, "<br/>",
-                    "<b> rdpECR: </b>", point$rdpECR, "<br/>")))
-    )
+  output$textA <- renderText({
+    paste("Team A total", format(sum(dfA()$value), big.mark = ","))
   })
+  
+  output$textB <- renderText({
+    paste("Team B total", format(sum(dfB()$value), big.mark = ","))
+  })
+  
+  output$bar <- renderPlot({
+    req(input$sideA, input$sideB)
+    
+    dfA_temp <- dfA()
+    dfB_temp <- dfB()
+    dfA_temp$Team <- "A"
+    dfB_temp$Team <- "B"
+    
+    dfcomp <- rbind(dfA_temp,dfB_temp)
+    
+    
+    ggplot(dfcomp, aes(x=Team, y=value, fill=Name)) + 
+      geom_bar(stat="identity") +
+      scale_fill_brewer(palette="Set1") +
+      theme_light() +
+      theme(text = element_text(size=20),
+            legend.position="bottom")
+    
+  })
+  
+  closestObs <- reactive({
+    
+    which(abs(df()$value-rawDiff())==min(abs(df()$value-rawDiff())))
+    
+  })
+  
+  output$diffTable <- renderTable({
+    req(input$sideA)
+    rowObs <- closestObs()
+    
+    if (rowObs <=5) {
+      rowRange <- c(1:10)
+    } else {
+      upper <- rowObs-4
+      lower <- rowObs+5
+      rowRange <- c(upper:lower)
+    }
+    
+    df()[rowRange,]},
+    digits = 0
+  )
+  
+  output$tableText <- renderText({
+    req(input$sideA)
+    #req(input$sideB)
+    "Here are some options to even out the trade:"
+  })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {"DynastyProcessCalculator.csv"},
+    content = function(file) {write.csv(df(), file)}
+  )
   
 })
