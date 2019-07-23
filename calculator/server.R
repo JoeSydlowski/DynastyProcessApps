@@ -4,6 +4,7 @@ library(shinythemes)
 library(DT)
 library(ggplot2)
 library(rvest)
+library(dplyr)
 
 playerDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
 playerDB <- playerDB[c(1:6)]
@@ -43,13 +44,16 @@ shinyServer(function(input, output, session) {
   df <- reactive({
     x <- combineddf()
     
-    if(input$numQB=="dynoECR") {
+    if(input$numQB==TRUE) {
       x$dyno2QBECR <- NULL
+      dftext <- "dynoECR"
     } else {
       x$dynoECR <- NULL
+      dftext <- "dyno2QBECR"
     }
     
-    x$value <- round(10500 * exp(x[,input$numQB]* input$slider1))
+    
+    x$value <- round(10500 * exp(x[,dftext]* input$slider1))
     x <- x[order(-x$value),]
     row.names(x) <- NULL
     
@@ -135,14 +139,20 @@ shinyServer(function(input, output, session) {
   })
   
   output$tableA <- renderTable({
-    dfA()},
-    digits = 0
-  )
+    req(input$sideA)
+    dftemp <- dfA()
+    dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
+    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp
+  })
   
   output$tableB <- renderTable({
-    dfB()},
-    digits = 0
-  )
+    req(input$sideB)
+    dftemp <- dfB()
+    dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
+    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp
+  })
   
   sumdfA <- reactive({
     sum(dfA()$value)
@@ -216,7 +226,9 @@ shinyServer(function(input, output, session) {
     ggplot(dfcomp, aes(x=Team, y=value, fill=Name)) + 
       geom_bar(stat="identity") +
       scale_fill_brewer(palette="Set1") +
-      theme(text = element_text(size=20))
+      theme_light() +
+      theme(text = element_text(size=20),
+            legend.position="bottom")
 
   })
   
