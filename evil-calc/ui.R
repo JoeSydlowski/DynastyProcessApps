@@ -3,6 +3,7 @@ library(curl)
 library(shinythemes)
 library(DT)
 library(rvest)
+library(shinyWidgets)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
 
@@ -61,19 +62,21 @@ shinyUI(fluidPage(
   ),
 titlePanel("DynastyProcess.com Trade Calculator"),
   hr(),
-  p(HTML(paste0("DynastyProcess.com is solar-powered and recommends ",a(href="https://dynastyprocess.com/calculator","Light Mode"), ". Proceed at your own risk."))),
+  p(HTML(paste0("DynastyProcess.com is solar-powered and recommends ",a(href="https://apps.dynastyprocess.com/calculator","Light Mode"), ". Proceed at your own risk."))),
   hr(),
   fluidRow(column(4,
-                  radioButtons("numQB", "Choose League Type",
+                  radioGroupButtons("numQB", "Choose League Type",
                                choices = list("1QB" = "dynoECR", "2QB / Superflex" = "dyno2QBECR"),
-                               inline=TRUE,
+                               status = "success",
+                               justified = TRUE,
                                selected = "dynoECR")),
            column(4,
-                  radioButtons("calcType", "Startup Mode",
-                               inline=TRUE,
+                  radioGroupButtons("calcType", "Startup Mode",
+                               #justified = TRUE,
+                               status = "success",
                                choices = list("Normal" = "normal",
-                                              "Startup (Players and 2019 Picks)" = "predraft",
-                                              "Startup (Players Only)" = "postdraft"),
+                                              "Startup: Include Rookie Picks" = "predraft",
+                                              "Startup: Players-Only" = "postdraft"),
                                selected= "normal")),
            column(4,
                   selectInput("leagueSize", "Number of Teams",

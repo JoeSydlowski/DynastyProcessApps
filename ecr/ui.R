@@ -91,7 +91,7 @@ shinyUI(fluidPage(
                                  selected = NULL,
                                  width = '100%',
                                  multiple = TRUE),
-                  actionButton("clear1", "Clear Selected Players", icon = icon("trash")))
+                  actionButton("clear1", "Clear Selected Players", icon = icon("trash"), class="btn radiobtn btn-success"))
   ),
   hr(),
   # hr(),
@@ -104,10 +104,10 @@ shinyUI(fluidPage(
                ".form-control {height: 30px; padding: 0px 15px} ")),
       tabsetPanel(type = "tabs",
                   tabPanel("Plot", icon=icon("chart-line"),
-                           fluidRow(column(8,
+                           fluidRow(column(6,
                                            #offset=1,
                                            plotOutput("distPlot",
-                                                      height = "600px",
+                                                      height = "800px",
                                                       # width = "100%",
                                                       dblclick = "dblclick",
                                                       brush = brushOpts(
@@ -121,12 +121,12 @@ shinyUI(fluidPage(
                                                       click = "plot_click"),
                                            uiOutput("hover_info"),
                                            uiOutput("hover_info2")),
-                                    column(4,#offset=1,
-                                           div(DTOutput("printData")), style='font-size: x-small',
+                                    column(6,#offset=1,
+                                           div(DTOutput("printData")), style='font-size: small',
                                            #DTOutput("printData")),
                                            
                                            br(),
-                                           downloadButton("downloadData1", "Download"))
+                                           downloadButton("downloadData1", "Download", class="btn radiobtn btn-success"))
                            ))
                   ,
                   # tabPanel("Plot Data",
@@ -145,8 +145,8 @@ shinyUI(fluidPage(
                            #br(),
                            #br(),
                            #fluidRow(
-                           column(9, DTOutput("printData2")),
-                           column(2, downloadButton("downloadData2", "Download"),offset=1)
+                           div(column(9, DTOutput("printData2")),style="font-size: small"),
+                           column(2, downloadButton("downloadData2", "Download",class="btn radiobtn btn-success"),offset=1)
                            #)
                   )
   ) 

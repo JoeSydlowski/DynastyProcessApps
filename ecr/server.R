@@ -101,7 +101,7 @@ shinyServer(function(input, output, session) {
   output$printData <- renderDT({ 
     DT::datatable(dfwide1() ,
                                 options = list(
-                                  pageLength = 15,
+                                  pageLength = 25,
                                   order = list(5,'asc'),
                                   autoWidth = TRUE
                                   ),
@@ -165,14 +165,14 @@ shinyServer(function(input, output, session) {
       ylab("Redraft ECR")+
       expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
       annotation_custom(textGrob("Win Now",x=0.95, y=0.1, hjust=1, vjust=0,
-                                 gp=gpar(col="black", fontsize=50, fontface="bold", alpha = 0.15))) +
+                                 gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
       annotation_custom(textGrob("Dynasty Darlings",x=0.05, y=0.9, hjust=0, vjust=1,
-                                 gp=gpar(col="black", fontsize=50, fontface="bold", alpha = 0.15))) +
+                                 gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
       #geom_point_interactive(aes(tooltip = name)) +
-      #coord_fixed(ratio = 1) +
+      coord_fixed(ratio = 1,xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #xlim(0, defaultSizelocal) +
       #ylim(0, defaultSizelocal) +
-      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
+      #coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #coord_equal() +
       
   })
