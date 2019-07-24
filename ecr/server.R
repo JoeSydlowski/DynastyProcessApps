@@ -169,10 +169,10 @@ shinyServer(function(input, output, session) {
       annotation_custom(textGrob("Dynasty Darlings",x=0.05, y=0.9, hjust=0, vjust=1,
                                  gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
       #geom_point_interactive(aes(tooltip = name)) +
-      coord_fixed(ratio = 1,xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
+      #coord_fixed(ratio = 1,xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #xlim(0, defaultSizelocal) +
       #ylim(0, defaultSizelocal) +
-      #coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
+      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #coord_equal() +
       
   })

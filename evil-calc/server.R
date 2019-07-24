@@ -16,14 +16,14 @@ shinyServer(function(input, output, session) {
     names(pickDB)[1]<-"Name"
     x2020 <- dplyr::filter(pickDB, grepl('2020|2021', Name))
     x2019 <- dplyr::filter(pickDB, grepl('2019', Name))
-    
+
     x2019$pickNum <- as.numeric(rownames(x2019)) %% as.numeric(input$leagueSize)
     x2019$pickNum[x2019$pickNum == 0] <- as.numeric(input$leagueSize)
     
     x2019$Name <- paste0("2019 Rookie Pick ",
-                         ceiling(as.numeric(rownames(x2019))/as.numeric(input$leagueSize)),
-                         ".",
-                         sprintf("%02d", x2019$pickNum ))
+                      ceiling(as.numeric(rownames(x2019))/as.numeric(input$leagueSize)),
+                      ".",
+                      sprintf("%02d", x2019$pickNum ))
     x2019$pickNum <- NULL
     pickDB <- rbind(x2019, x2020)
     #print(pickDB)
@@ -58,71 +58,71 @@ shinyServer(function(input, output, session) {
     row.names(x) <- NULL
     
     if(input$calcType == "postdraft")
-    { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
-    x <- dplyr::filter(x, !grepl('2019|2020|2021', Name))
-    
-    x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
-    x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
-    
-    x$Pick <- paste0( "Startup Pick ",
-                      ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
-                      ".",
-                      sprintf("%02d", x$pickNum ))
-    x$Combined <- paste(x$Pick, x$Name, sep=" | ")
-    x$Name <- x$Combined
-    x$Combined <- x$Pick <- x$pickNum <- NULL
-    #x2020$Combined <- x2020$Name
-    x <- rbind(x, x2020)
-    
-    #x <- x[c(7,1,2,3,4,5,6)]
+      { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
+        x <- dplyr::filter(x, !grepl('2019|2020|2021', Name))
+        
+        x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+        x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+      
+        x$Pick <- paste0( "Startup Pick ",
+                        ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                        ".",
+                        sprintf("%02d", x$pickNum ))
+        x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+        x$Name <- x$Combined
+        x$Combined <- x$Pick <- x$pickNum <- NULL
+        #x2020$Combined <- x2020$Name
+        x <- rbind(x, x2020)
+        
+        #x <- x[c(7,1,2,3,4,5,6)]
     }
     
     else if(input$calcType == "predraft")
     { x2020 <- dplyr::filter(x, grepl('2020|2021', Name))
-    x <- dplyr::filter(x, !grepl('2020|2021', Name))
-    
-    x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
-    x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
-    
-    x$Pick <- paste0( "Startup Pick ",
-                      ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
-                      ".",
-                      sprintf("%02d", x$pickNum ))
-    x$Combined <- paste(x$Pick, x$Name, sep=" | ")
-    x$Name <- x$Combined
-    x$Combined <- x$Pick <- x$pickNum <- NULL
-    #x2020$Combined <- x2020$Name
-    x <- rbind(x, x2020)
-    
-    #x <- x[c(7,1,2,3,4,5,6)]
+      x <- dplyr::filter(x, !grepl('2020|2021', Name))
+      
+      x$pickNum <- as.numeric(rownames(x)) %% as.numeric(input$leagueSize)
+      x$pickNum[x$pickNum == 0] <- as.numeric(input$leagueSize)
+      
+      x$Pick <- paste0( "Startup Pick ",
+                        ceiling(as.numeric(rownames(x))/as.numeric(input$leagueSize)),
+                        ".",
+                        sprintf("%02d", x$pickNum ))
+      x$Combined <- paste(x$Pick, x$Name, sep=" | ")
+      x$Name <- x$Combined
+      x$Combined <- x$Pick <- x$pickNum <- NULL
+      #x2020$Combined <- x2020$Name
+      x <- rbind(x, x2020)
+      
+      #x <- x[c(7,1,2,3,4,5,6)]
     }
-    
+      
     x <- x[order(-x$value),]
     x 
   })
   
   observeEvent({input$numQB
-    input$calcType
-    input$leagueSize
-    input$slider1
-    input$slider2},{
-      
-      # if(input$calcType != "normal")
-      #   {choiceList = df()$Combined}
-      # else {choiceList = df()$Name}
-      
-      
-      currentA <- input$sideA
-      updateSelectizeInput(session, 'sideA',
-                           choices = df()$Name,
-                           selected = c(currentA)
-      )
-      currentB <- input$sideB
-      updateSelectizeInput(session, 'sideB',
-                           choices = df()$Name,
-                           selected = c(currentB)
-      )
-    })
+               input$calcType
+               input$leagueSize
+               input$slider1
+               input$slider2},{
+    
+    # if(input$calcType != "normal")
+    #   {choiceList = df()$Combined}
+    # else {choiceList = df()$Name}
+    
+    
+    currentA <- input$sideA
+    updateSelectizeInput(session, 'sideA',
+                         choices = df()$Name,
+                         selected = c(currentA)
+    )
+    currentB <- input$sideB
+    updateSelectizeInput(session, 'sideB',
+                         choices = df()$Name,
+                         selected = c(currentB)
+    )
+  })
   
   dfA <- reactive({
     #req(input$sideA)
@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
     req(input$sideA)
     dftemp <- dfA()
     dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
-    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp$value <- lapply(dftemp$value, sprintf, fmt = "%4.0f")
     dftemp
   })
   
@@ -150,7 +150,7 @@ shinyServer(function(input, output, session) {
     req(input$sideB)
     dftemp <- dfB()
     dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
-    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp$value <- lapply(dftemp$value, sprintf, fmt = "%4.0f")
     dftemp
   })
   
@@ -164,20 +164,20 @@ shinyServer(function(input, output, session) {
   
   rawDiff <- reactive({
     if (sumdfA() > sumdfB())
-    {sum(dfA()$value) - sum(dfB()$value)}
+      {sum(dfA()$value) - sum(dfB()$value)}
     else if (sum(dfA()$value) < sum(dfB()$value))
-    {sum(dfB()$value) - sum(dfA()$value)}
+      {sum(dfB()$value) - sum(dfA()$value)}
     else
-    {0}
+      {0}
   })
   
   percentDiff <- reactive({
     if (sumdfA() > sumdfB())
-    {round(100*((sum(dfA()$value) - sum(dfB()$value))/sum(dfB()$value)))}
+      {round(100*((sum(dfA()$value) - sum(dfB()$value))/sum(dfB()$value)))}
     else if (sum(dfA()$value) < sum(dfB()$value))
-    {round(100*((sum(dfB()$value) - sum(dfA()$value))/sum(dfA()$value)))}
+      {round(100*((sum(dfB()$value) - sum(dfA()$value))/sum(dfA()$value)))}
     else
-    {0}
+      {0}
   })
   
   output$winner <- renderText({
@@ -185,12 +185,12 @@ shinyServer(function(input, output, session) {
     
     if (sumdfA() > sumdfB()) {
       paste0("Side A is winning the trade by ",
-             format(sum(dfA()$value) - sum(dfB()$value), big.mark = ","),
-             " or ", percentDiff(), "%")
+            format(sum(dfA()$value) - sum(dfB()$value), big.mark = ","),
+            " or ", percentDiff(), "%")
     } else if (sum(dfA()$value) < sum(dfB()$value)) {
       paste0("Side B is winning the trade by ",
-             format(sum(dfB()$value) - sum(dfA()$value), big.mark = ","),
-             " or ", percentDiff(), "%")
+            format(sum(dfB()$value) - sum(dfA()$value), big.mark = ","),
+            " or ", percentDiff(), "%")
     } else {
       "This trade is exactly even!"
     }
@@ -222,18 +222,18 @@ shinyServer(function(input, output, session) {
     
     dfcomp <- rbind(dfA_temp,dfB_temp)
     
-    
+
     ggplot(dfcomp, aes(x=Team, y=value, fill=Name)) + 
       geom_bar(stat="identity") +
       scale_fill_brewer(palette="Set1") +
       theme_light() +
       theme(text = element_text(size=20),
             legend.position="bottom")
-    
+
   })
   
   closestObs <- reactive({
-    
+
     which(abs(df()$value-rawDiff())==min(abs(df()$value-rawDiff())))
     
   })
@@ -241,7 +241,7 @@ shinyServer(function(input, output, session) {
   output$diffTable <- renderTable({
     req(input$sideA)
     rowObs <- closestObs()
-    
+
     if (rowObs <=5) {
       rowRange <- c(1:10)
     } else {
@@ -252,7 +252,7 @@ shinyServer(function(input, output, session) {
     
     df()[rowRange,]},
     digits = 0
-  )
+    )
   
   output$tableText <- renderText({
     req(input$sideA)
