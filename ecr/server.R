@@ -46,37 +46,44 @@ shinyServer(function(input, output, session) {
     allDates[c(minDate,ceiling(mean(c(minDate,maxDate))),maxDate)]
   })
   
-  dfNames <- reactive({
-    dates <- dateList()
-    x[(x$pos == input$posFilter) & (x$date %in% dates),]
-  })
-  
   observeEvent({input$posFilter
-                input$DateRange},
+    input$DateRange},
     {
-    currentA <- input$playerList
-    dates <- dateList()
-    updateSelectizeInput(session, 'playerList',
-                         choices = unique(dfNames()["name"]),
-                         selected = currentA)
-  })
+      currentA <- input$playerList
+      dates <- dateList()
+      updateSelectizeInput(session, 'playerList',
+                           choices = unique(dfPos()["name"]),
+                           selected = currentA
+      )
+    })
   
   observeEvent({input$posFilter
     input$DateRange},
     {
-    names <- unique(dfNames()["name"])
+    names <- unique(dfPos()["name"])
       dates <- dateList()
       updateSliderInput(session, 'playerRange',
                            max = nrow(names))
     })
   
-  df <- reactive({
-    playerNames <- dfNames()[input$playerRange[1]:input$playerRange[2],]
+  dfPos <- reactive({
+    dates <- dateList()
+    x[(x$pos == input$posFilter) & (x$date %in% dates),]
     
+  })
+  
+  dfNames <- reactive({
+    dfOrder <- dfPos()[rev(order(as.Date(dfPos()$date), -dfPos()$dynpECR)),]
+    dfOrder[input$playerRange[1]:input$playerRange[2],]
+  })
+  
+  df <- reactive({
+    dates <- dateList()
     if(is.null(input$playerList))
-    {dfNames()[dfNames()$name %in% playerNames$name,]}
+    {x[(x$name %in% dfNames()$name) & (x$date %in% dates),]}
     else
-    {dfNames()[dfNames()$name %in% input$playerList,]}
+    {x[(x$name %in% input$playerList) & (x$date %in% dates),]}
+    
   })
   
   observeEvent(input$clear1, {
@@ -135,13 +142,24 @@ shinyServer(function(input, output, session) {
   yrange <- reactiveValues(y1 = 0, y2 = 220)
   
   output$distPlot <- renderPlot({
+    if (is.infinite(max(ranges$xcoord,ranges$ycoord)))
+    {rangeVec <- c(min(df()$dynpECR,df()$rdpECR),max(df()$dynpECR,df()$rdpECR))}
+    else {rangeVec <- c(min(ranges$xcoord,ranges$ycoord),max(ranges$xcoord,ranges$ycoord))}
+    
+    while(rangeVec[2] - rangeVec[1] < 15)
+    {if(rangeVec[1] <= 8)
+        {rangeVec <- c(0,16)}
+      else {
+        rangeVec[1] <- rangeVec[1] - 1 
+        rangeVec[2] <- rangeVec[2] + 1 }
+    }
+
     dates <- dateList()
     
     sizes <- 4:(length(dates)+3)
     
     ggplot(df(), aes(dynpECR, rdpECR, group=name)) + 
       geom_point(aes(color=date, size=date)) +
-      #geom_point(aes(color=date, size=date), shape = 1, color = "black") +
       scale_size_manual( values = sizes) +
       geom_path() +
       geom_abline() +
@@ -163,16 +181,16 @@ shinyServer(function(input, output, session) {
             legend.position="bottom") +
       xlab("Dynasty ECR") +
       ylab("Redraft ECR")+
-      expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
+      #expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
       annotation_custom(textGrob("Win Now",x=0.95, y=0.1, hjust=1, vjust=0,
                                  gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
       annotation_custom(textGrob("Dynasty Darlings",x=0.05, y=0.9, hjust=0, vjust=1,
                                  gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
       #geom_point_interactive(aes(tooltip = name)) +
-      #coord_fixed(ratio = 1,xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
+      coord_fixed(ratio = 1, xlim = rangeVec, ylim = rangeVec, expand = TRUE)
       #xlim(0, defaultSizelocal) +
       #ylim(0, defaultSizelocal) +
-      coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
+      #coord_cartesian(xlim = ranges$xcoord, ylim = ranges$ycoord, expand = TRUE)
       #coord_equal() +
       
   })
