@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
     req(input$sideA)
     dftemp <- dfA()
     dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
-    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp$value <- lapply(dftemp$value, sprintf, fmt = "%4.0f")
     dftemp
   })
   
@@ -150,7 +150,7 @@ shinyServer(function(input, output, session) {
     req(input$sideB)
     dftemp <- dfB()
     dftemp[,c(4,5)] <- lapply(dftemp[,c(4,5)], sprintf, fmt = "%4.1f")
-    dftemp[,c(6)] <- lapply(dftemp[,c(6)], sprintf, fmt = "%4.0f")
+    dftemp$value <- lapply(dftemp$value, sprintf, fmt = "%4.0f")
     dftemp
   })
   
