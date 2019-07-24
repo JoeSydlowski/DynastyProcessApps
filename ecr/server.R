@@ -178,9 +178,12 @@ shinyServer(function(input, output, session) {
       theme_light() + 
       theme(axis.text=element_text(size=16),
             axis.title=element_text(size=16,face="bold"),
+            legend.title = element_text(size=16),
+            legend.text = element_text(size=14),
             legend.position="bottom") +
       xlab("Dynasty ECR") +
-      ylab("Redraft ECR")+
+      ylab("Redraft ECR") +
+      labs(color = "Dates", size = "Dates") +
       #expand_limits(x = c(0, max(16, ranges$xcoord)), y = c(0, max(16, ranges$ycoord))) +
       annotation_custom(textGrob("Win Now",x=0.95, y=0.1, hjust=1, vjust=0,
                                  gp=gpar(col="black", fontsize=40, fontface="bold", alpha = 0.15))) +
