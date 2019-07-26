@@ -3,6 +3,7 @@ library(curl)
 library(DT)
 library(dplyr)
 library(anytime)
+library(shinylogs)
 
 
 x <- read.csv(curl("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcess/master/rookie-adp/adp-picks.csv"))
@@ -12,6 +13,7 @@ x$date <- anydate(x$pick_timestamp)
 min(x$date)
 
 shinyServer(function(input, output) {
+  track_usage(storage_mode = store_json(path = "logs/"))
   QBs <- reactive({
     if(substring(input$mode, 1, 1) == "1")
       {"1QB"}

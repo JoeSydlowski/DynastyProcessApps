@@ -4,6 +4,7 @@ library(tibble)
 library(tidyr)
 library(DT)
 library(shinythemes)
+library(shinylogs)
 
 #x <- read.csv("C:/Users/syd23/Documents/Fantasy Football/Excel Sheets/FFStatistics/qbdata.csv")
 x <- read.csv("qbdata.csv")
@@ -13,6 +14,8 @@ y <- x[cols]
 
 
 shinyServer(function(input, output) {
+  
+  track_usage(storage_mode = store_json(path = "logs/"))
   
   season <- reactive({
     y$Season[which(y$Player == input$selected & y$Year == 2018)]

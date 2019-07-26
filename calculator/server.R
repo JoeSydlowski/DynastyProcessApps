@@ -5,12 +5,15 @@ library(DT)
 library(ggplot2)
 library(rvest)
 library(dplyr)
+library(shinylogs)
 
 playerDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-players.csv"))
 playerDB <- playerDB[c(1:6)]
 pickDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/values-picks.csv"))
 
 shinyServer(function(input, output, session) {
+  
+  track_usage(storage_mode = store_json(path = "logs/"))
   
   combineddf <- reactive({
     names(pickDB)[1]<-"Name"

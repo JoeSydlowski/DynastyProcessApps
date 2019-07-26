@@ -2,10 +2,14 @@ library(shiny)
 library(curl)
 library(DT)
 library(shinythemes)
+library(shinylogs)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 
 shinyServer(function(input, output) {
+  
+  track_usage(storage_mode = store_json(path = "logs/"))
+  
   df <- reactive(
     data.frame(x[,input$select, drop = FALSE])
   )
