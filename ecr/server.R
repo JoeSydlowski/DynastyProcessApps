@@ -9,7 +9,7 @@ library(DT)
 library(tidyr)
 library(shinyWidgets)
 library(grid)
-
+library(shinylogs)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fp_dynastyvsredraft.csv"),
               encoding = "unknown")
@@ -41,6 +41,8 @@ createContainer <- function(dates){
 }
 
 shinyServer(function(input, output, session) {
+  
+  track_usage(storage_mode = store_json(path = "logs/"))
   
   dateList <- reactive({
     allDates <- rev(unique(x$date))

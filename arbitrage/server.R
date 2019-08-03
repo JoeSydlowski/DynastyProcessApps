@@ -4,6 +4,7 @@ library(DT)
 library(shinythemes)
 library(dplyr)
 library(tibble)
+library(shinylogs)
 
 x <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv"))
 cols <- c(15,18:27,30:80)
@@ -14,6 +15,8 @@ y$draft_round[is.na(y$draft_round)] <- 8
 y[cols2][is.na(y[cols2])] <- 0
 
 shinyServer(function(input, output, session) {
+  
+  track_usage(storage_mode = store_json(path = "logs/"))
   
   outVar <- reactive({
     if (input$presets == 0) {c("age", "draft_round", "wopr", "ppr.g", "adot")}

@@ -76,7 +76,8 @@ shinyUI(fluidPage(
                                    "Startup Mode (Players and Picks)" = "predraft",
                                    "Startup Mode (Players Only)" = "postdraft"),
                     direction = "vertical",
-                    status ="success"
+                    status ="success",
+                    justified = TRUE
                   ))
                   
   ),
