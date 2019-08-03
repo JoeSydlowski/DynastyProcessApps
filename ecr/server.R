@@ -18,6 +18,10 @@ x <- x[order(x$date, x$dynpECR),]
 
 #Custom Table Container
 createContainer <- function(dates){
+  
+  for (i in length(dates))
+  {thString <- 'th(colspan = 2, dates[',i,'], style="text-align:center"),'}
+  
   sketch = htmltools::withTags(table(
     class = 'display',
     thead(
