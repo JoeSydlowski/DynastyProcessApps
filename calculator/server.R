@@ -15,6 +15,8 @@ shinyServer(function(input, output, session) {
   
   track_usage(storage_mode = store_json(path = "logs/"))
   
+  # output$csstheme <- reactive({if (input$lightmode) {return("css/flatly.css")} else {return("css/darkly.css")}})
+  
   combineddf <- reactive({
     names(pickDB)[1]<-"Name"
     x2020 <- dplyr::filter(pickDB, grepl('2020|2021', Name))
