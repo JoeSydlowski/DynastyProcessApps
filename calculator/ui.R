@@ -19,16 +19,16 @@ names(x)[1]<-"Name"
 x$dyno2QBECR[is.na(x$dyno2QBECR)] <- 400
 
 shinyUI(fluidPage(
-  theme = shinytheme("flatly"),
+  theme = "css/flatly.css",
   #shinythemes::themeSelector(),
   withTags(
     nav(class="navbar navbar-default navbar-static-top", role="navigation",
         div(class="container-fluid",
             div(class="navbar-header",
-                span(class="navbar-brand",
-                     a(href="https://dynastyprocess.com",strong("DynastyProcess.com"))
+                span(class="navbar-brand", style="padding: 5px 0px 5px 5px",
+                     a(href="https://dynastyprocess.com",img(src="logo-horizontal.png",width="auto"))
                 ),
-                button(type="button", class="navbar-toggle", `data-toggle`="collapse", `data-target`="#myNavbar",
+                button(type="button", class="navbar-toggle", `data-toggle`="collapse", `data-target`="#myNavbar", style="padding-left:10px",
                        span(class="icon-bar"),
                        span(class="icon-bar"),
                        span(class="icon-bar")
@@ -66,33 +66,45 @@ shinyUI(fluidPage(
     fluidRow(
     column(1,h3("About", style="text-align: center")),
     column(10, includeMarkdown("about.md"))
-  ),class="hidden-xs"),
+  ),class="hidden-xs hidden-sm"),
   hr(),
-  fluidRow(div(class="text-center",column(2,
+  fluidRow(div(class="text-center",column(3,
                   radioGroupButtons(
                     inputId = "calcType",
                     label = NULL,
                     choices = list("Normal" = "normal",
-                                   "Startup Mode (Players and Picks)" = "predraft",
-                                   "Startup Mode (Players Only)" = "postdraft"),
+                                   "Startup (Players & Picks)" = "predraft",
+                                   "Startup (Players Only)" = "postdraft"),
                     direction = "vertical",
                     status ="success",
                     justified = TRUE
                   ))
                   
   ),
-  column(2,div(class="text-center",
-         switchInput(
+  column(3,div(class="text-center",
+               # switchInput(
+               #   inputId = "lightmode",
+               #   label = "|||",
+               #   onLabel = "Light Mode",
+               #   offLabel = "Dark Mode",
+               #   offStatus = "secondary",
+               #   #size = "large",
+               #   value = TRUE,
+               #   labelWidth = "100px",
+               #   width = "100%"
+               # ),
+          switchInput(
            inputId = "numQB",
-           label = "Mode",
-           onLabel = "1QB",
-           offLabel = "2QB",
+           label = "|||",
+           onLabel = "1QB Mode",
+           offLabel = "2QB Mode",
            offStatus = "warning",
            size = "large",
            value = TRUE,
            labelWidth = "100px",
            width = "100%"
          ),
+
          selectInput("leagueSize", NULL,
                      choices = list("8 Teams" = 8,
                                     "10 Teams" = 10,
@@ -106,7 +118,7 @@ shinyUI(fluidPage(
          ),
          downloadButton("downloadData", "Download Values", class="btn radiobtn btn-primary btn-block")
          )),
-  column(4,
+  column(3,
          br(),
          sliderInput("slider1", "Depth Weight", min = -0.03,
                      max = -.02, value = -.024, step = 0.001,
@@ -116,7 +128,7 @@ shinyUI(fluidPage(
                      width= '100%'
          )
   ),
-  column(4,
+  column(3,
          br(),
          sliderInput("slider2", "Pick Value", min = 0,
                      max = 1, value = 0.5, step = 0.1,
@@ -156,17 +168,17 @@ shinyUI(fluidPage(
                   tableOutput("diffTable"))),
   hr(),
   div(fluidRow(
-    column(1,h3("About", style="text-align: center")),
-    column(10, includeMarkdown("about.md")),
+    #column(1,h3("About", style="text-align: center")),
+    column(10, offset=1,h3("About"),includeMarkdown("about.md")),
     hr()
-  ),class="visible-xs",id="About"),
-  p(paste0("Player values last updated on ", lastupdate, ".")),
-p(HTML(paste0("DynastyProcess.com Apps are created by ",
+  ),class="visible-xs visible-sm",id="About"),
+  fluidRow(column(10,offset=1, p(paste0("Player values last updated on ", lastupdate, ".")),
+                p(HTML(paste0("DynastyProcess.com Apps are created by ",
               a(href = "https://twitter.com/JoeSydlowskiFF", "Joe Sydlowski"),
               " and ",
               a(href = "https://twitter.com/_TanHo", "Tan Ho"),
               ". You can find the code on ",
               a(href = "https://github.com/JoeSydlowski/DynastyProcess/tree/master/database", "Joe's github"),
               "."
-)))
+              )))))
 ))

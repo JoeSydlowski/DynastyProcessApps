@@ -1,0 +1,1 @@
+{"outputs":[{"name":"textA","timestamp":"2019-07-31T22:06:21-05:00","binding":"shiny.textOutput"},{"name":"textB","timestamp":"2019-07-31T22:06:21-05:00","binding":"shiny.textOutput"}],"session":[{"app":"calculator","user":"shiny","server_connected":"2019-08-01T03:06:18+0000","sessionid":"b196e27d8bc88962e15b1e60407c8bf7","server_disconnected":"2019-08-01T03:06:42+0000"}]}
