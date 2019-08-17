@@ -15,6 +15,16 @@ shinyServer(function(input, output, session) {
   
   track_usage(storage_mode = store_json(path = "logs/"))
   
+  observeEvent(input$timeOut, { 
+    print(paste0("Session (", session$token, ") timed out at: ", Sys.time()))
+    showModal(modalDialog(
+      title = "Timeout",
+      paste("Session timeout due to", input$timeOut, "inactivity -", Sys.time()),
+      footer = NULL
+    ))
+    session$close()
+  })
+  
   # output$csstheme <- reactive({if (input$lightmode) {return("css/flatly.css")} else {return("css/darkly.css")}})
   
   combineddf <- reactive({
