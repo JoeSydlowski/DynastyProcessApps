@@ -9,6 +9,7 @@ options(stringsAsFactors = FALSE)
 teamIDs<-read.csv("teamIDs.csv") #teamdb because am lazy to fix nomenclature
 stats2018<-read.csv("stats2018.csv") #stat-set built from NFLScrapR/PFR -> automation a project for 2019 offseason
 rookieadp<-read.csv("rookie-adp.csv") #built from mizelle (really, DLF) ADP for rookie pick value analysis
+RASathletic<-read.csv("ras-athletic.csv") #courtesy of @Mathbomb on Twitter
 
 # Replicating the "MFL" query of database builder
 
