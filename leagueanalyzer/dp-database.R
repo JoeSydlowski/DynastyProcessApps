@@ -1,6 +1,6 @@
 #library(httr)
-library(tidyverse)
 library(jsonlite)
+library(tidyverse)
 library(rvest)
 
 options(stringsAsFactors = FALSE)
@@ -9,10 +9,8 @@ options(stringsAsFactors = FALSE)
 teamIDs<-read.csv("teamIDs.csv") #teamdb because am lazy to fix nomenclature
 stats2018<-read.csv("stats2018.csv") #stat-set built from NFLScrapR/PFR -> automation a project for 2019 offseason
 rookieadp<-read.csv("rookie-adp.csv") #built from mizelle (really, DLF) ADP for rookie pick value analysis
-#RASathletic<-read.csv("ras-athletic.csv") #courtesy of @Mathbomb on Twitter
-#pfrIDs<-read.csv("PFR-IDs.csv") #originally done with linkify but now grabbing from the URLs
 
-# Replicating the "MFL" query of database builder
+## Replicating the "MFL" query of database builder
 
 mfl<-fromJSON("https://www03.myfantasyleague.com/2019/export?TYPE=players&DETAILS=1&SINCE=&PLAYERS=&JSON=1",flatten=TRUE)%>%
     data.frame()
@@ -59,14 +57,13 @@ spotrac$name<-gsub(" II","",spotrac$name)
 spotrac$name<-gsub("\\'","",spotrac$name)
 spotrac$name<-gsub("\\.","",spotrac$name)
 spotrac$name<-gsub("St Brown","StBrown",spotrac$name)
-spotrac$Pos<-gsub("FB","RB",spotrac$Pos)
+spotrac$pos<-gsub("FB","RB",spotrac$pos)
 
 spotrac<-separate(spotrac,name,c("firstname","lastname"),sep=" ", extra="merge") %>% 
   transform(firstname=mapply(sub,lastname,"",firstname,fixed=TRUE)) %>%
   unite("name",firstname,lastname,sep=" ")%>%
-  merge(teamIDs,by.x="team",by.y="spotrac",suffixes=c("",".t")) %>%
-  select(name,team=mfl,pos=Pos,avg_salary=Average.Salary,fa_yr=Free.Agent) %>%
-  filter(pos %in% c("QB","RB","WR","TE"))
+  merge(teamids,by.x="team",by.y="spotrac",suffixes=c("",".t")) %>%
+  select(name,team=mfl,pos=Pos,avg_salary=Average.Salary,fa_yr=Free.Agent)
 
 # Get FantasyPros
 
