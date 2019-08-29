@@ -20,11 +20,17 @@ user_id<-fromJSON(paste0("https://api.sleeper.app/v1/user/",username),flatten=TR
 leaguelist<-fromJSON(paste0("https://api.sleeper.app/v1/user/",user_id,"/leagues/nfl/",year(Sys.Date())))%>%
   select(name,league_id)
 
-leagueID<-leaguelist$league_id[3] #shiny input -> select leagueID, then carry on
+#leagueID<-leaguelist$league_id[3] #shiny input -> select leagueID, then carry on
+leagueID<-425023252880957440
 
 leaguename<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)),flatten=TRUE)$name
 
-#User-related functions
+poslist<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)))$roster_positions%>%
+  tibble(poslist=.) %>%
+  count(poslist)%>%
+  spread(poslist,n)
+
+# User-related functions
 
 teamlist<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/rosters"))%>%
   select(owner_id,roster_id)
@@ -33,6 +39,7 @@ users<- fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(league
   select(owner=display_name,owner_id=user_id,teamname=metadata.team_name)%>%
   inner_join(teamlist,by="owner_id")
 
+# Future Picks - because Sleeper is f'ing lazy and only gives you traded picks.
 
 tradedpicks<- fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/traded_picks"),
                        flatten=TRUE)%>%
@@ -63,10 +70,8 @@ futurepicks <- tibble(
   inner_join(values,by=c("mergename"="mergename"),keep=TRUE)%>%
   mutate_all(as.character)
 
+# Combining raw rosters with picks, database, and values
 
-
-
-  
 rosters<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/rosters")) %>% 
   select(roster_id,players,owner_id) %>% 
   unnest() %>%
@@ -102,21 +107,20 @@ brks_dpos<-function(colnum){
   return(breakvalue)
   }
 
-datatable(pivot_dpos,
+dt_dpos<-datatable(pivot_dpos,
           rownames=FALSE,
           colnames=c("Owner","QB","RB","WR","TE","PICK","Total"),
           options(
             paging=FALSE,
             searching=FALSE
-          )) %>%
-  formatPercentage(c(2:7),2)%>%
-  formatStyle(2, backgroundColor = styleInterval(brks_dpos(2),colors(length(brks_dpos(2))+1)))%>%
-  formatStyle(3, backgroundColor = styleInterval(brks_dpos(3),colors(length(brks_dpos(3))+1)))%>%
-  formatStyle(4, backgroundColor = styleInterval(brks_dpos(4),colors(length(brks_dpos(4))+1)))%>%
-  formatStyle(5, backgroundColor = styleInterval(brks_dpos(5),colors(length(brks_dpos(5))+1)))%>%
-  formatStyle(6, backgroundColor = styleInterval(brks_dpos(6),colors(length(brks_dpos(6))+1)))%>%
-  formatStyle(7, backgroundColor = styleInterval(brks_dpos(7),colors(length(brks_dpos(7))+1)))
-  
+          ))%>%
+  formatPercentage(c(2:ncol(pivot_dpos)),2)
+
+for (i in 2:ncol(pivot_dpos)){
+dt_dpos<-dt_dpos%>%
+  formatStyle(i, backgroundColor = styleInterval(brks_dpos(i),colors(length(brks_dpos(i))+1)))
+}
+dt_dpos
 # REPORTS - POSITIONAL REDRAFT VALUE SUMMARY
 
 starters <- select(rosters, owner, mergename, pos, team, age, pts) %>%
@@ -125,19 +129,30 @@ starters <- select(rosters, owner, mergename, pos, team, age, pts) %>%
   group_by(owner, pos) %>%  mutate(posrank = rank(desc(pts), ties.method = 'first')) %>%  ungroup() %>%
   mutate(
     starter = case_when(
-      pos == "QB" & posrank == 1 ~ "QB",
-      pos == "RB" & posrank <= 2 ~ "RB",
-      pos == "WR" & posrank <= 2 ~ "WR",
-      pos == "TE" & posrank == 1 ~ "TE"
+      pos == "QB" & posrank <= poslist$QB[1] ~ "QB",
+      pos == "RB" & posrank <= poslist$RB[1] ~ "RB",
+      pos == "WR" & posrank <= poslist$WR[1] ~ "WR",
+      pos == "TE" & posrank <= poslist$TE[1] ~ "TE"
     ),
     flex_elig = case_when(pos != "QB" & is.na(starter) ~ 1)) %>%
   group_by(owner, flex_elig) %>%
   mutate(
     flexrank = case_when(flex_elig==1 ~ rank(desc(pts), ties.method = 'first')),
-    flex = case_when(flexrank <= 2 ~ "FLEX"),
+    flex = case_when(flexrank <= poslist$FLEX[1] ~ "FLEX"),
     lineup = case_when(!is.na(starter) ~ paste0(starter,posrank),
-                       flex == "FLEX" ~ paste0(flex,flexrank)))%>%
+                       flex == "FLEX" ~ paste0(flex,flexrank)),
+    sflex_elig = case_when(is.na(lineup) & pos %in% c('QB','RB','WR','TE')~1)
+    )%>%
+  ungroup() %>%
+  group_by(owner, sflex_elig) %>%
+  mutate(
+    sflexrank=case_when(sflex_elig==1 ~ rank(desc(pts),ties.method='first')),
+    sflex = case_when(sflexrank<=poslist$SUPER_FLEX[1]~"SFLEX"),
+    lineup = case_when(!is.na(lineup)~lineup,
+                       sflex == "SFLEX" ~ paste0(sflex,sflexrank))
+         )%>%
   ungroup()
+  
 
 
 pivot_rpos <- starters %>%
@@ -169,23 +184,19 @@ brks_rpos<-function(colnum){
   return(breakvalue)
 }
 
-datatable(pivot_rpos,
+dt_rpos<-datatable(pivot_rpos,
           rownames=FALSE,
           options(
             paging=FALSE,
             searching=FALSE
-          )) %>%
-  formatStyle(2, backgroundColor = styleInterval(brks_rpos(2),colors(length(brks_rpos(2))+1)))%>%
-  formatStyle(3, backgroundColor = styleInterval(brks_rpos(3),colors(length(brks_rpos(3))+1)))%>%
-  formatStyle(4, backgroundColor = styleInterval(brks_rpos(4),colors(length(brks_rpos(4))+1)))%>%
-  formatStyle(5, backgroundColor = styleInterval(brks_rpos(5),colors(length(brks_rpos(5))+1)))%>%
-  formatStyle(6, backgroundColor = styleInterval(brks_rpos(6),colors(length(brks_rpos(6))+1)))%>%
-  formatStyle(7, backgroundColor = styleInterval(brks_rpos(7),colors(length(brks_rpos(7))+1)))%>%
-  formatStyle(8, backgroundColor = styleInterval(brks_rpos(8),colors(length(brks_rpos(8))+1)))%>%
-  formatStyle(9, backgroundColor = styleInterval(brks_rpos(9),colors(length(brks_rpos(9))+1)))%>%
-  formatStyle(10, backgroundColor = styleInterval(brks_rpos(10),colors(length(brks_rpos(10))+1)))%>%
-  formatStyle(11, backgroundColor = styleInterval(brks_rpos(11),colors(length(brks_rpos(11))+1)))%>%
-  formatStyle(12, backgroundColor = styleInterval(brks_rpos(12),colors(length(brks_rpos(12))+1)))
+          ))
+
+for(i in 2:ncol(pivot_rpos)){
+  dt_rpos<-dt_rpos%>%
+    formatStyle(i, backgroundColor = styleInterval(brks_rpos(i),colors(length(brks_rpos(i))+1)))
+}
+
+dt_rpos
   
 # REPORTS - FREE AGENTS
 
