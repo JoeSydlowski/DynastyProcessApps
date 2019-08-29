@@ -3,13 +3,17 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 
-Sys.setenv(TZ="CST")
-todayMonth <- month(today())
-todayDay <- day(today())
+#Sys.setenv(TZ="CST")
+#todayMonth <- month(today())
+#todayDay <- day(today())
 
-teamIDs <- read.csv("/srv/shiny-server/DynastyProcess/database-v2/teamIDs.csv")
+teamIDs <- read.csv("C:/Users/syd23/OneDrive/Documents/DynastyProcess/database-v2/teamIDs.csv")
 
-setwd("/srv/data/files/fantasypros")
+setwd("/srv/data/files/fp-weekly-scrapes-data")
+temp <- list.files(pattern="*.csv")
+myfiles <- lapply(temp, read.delim)
+
+
 
 if (between(todayMonth,10,12) | (todayMonth == 9 & todayDay >= 10))
 {list_of_pages <- c("dynasty-overall", "dynasty-qb", "dynasty-rb", "dynasty-wr",
@@ -162,10 +166,18 @@ dfTotal <- dfTotal %>%
   arrange(roECR)
 
 write.csv(dfTotal,
-          file = paste0("ecr_", format(Sys.Date(), format = "%Y%m%d"),".csv"),
+          file = paste0("FPScrape-", format(Sys.Date(), format = "%Y%m%d"),".csv"),
           row.names=FALSE,
           na="")
 
-system("sudo systemctl restart shiny-server")
-system("git add *.csv")
-system("git commit -m 'weekly ecr commit'")
+library(ggplot2)
+library(ggrepel)
+
+
+temp <- dfTotal %>%
+  filter(Pos == "TE" & wpECR < 30)
+
+ggplot(temp, aes(wpECR, rpECR)) +
+  geom_point() + 
+  geom_abline() +
+  geom_text_repel(label = temp$Player)
