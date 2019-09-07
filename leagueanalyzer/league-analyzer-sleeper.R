@@ -121,6 +121,7 @@ dt_dpos<-dt_dpos%>%
   formatStyle(i, backgroundColor = styleInterval(brks_dpos(i),colors(length(brks_dpos(i))+1)))
 }
 dt_dpos
+
 # REPORTS - POSITIONAL REDRAFT VALUE SUMMARY
 
 starters <- select(rosters, owner, mergename, pos, team, age, pts) %>%
@@ -152,8 +153,6 @@ starters <- select(rosters, owner, mergename, pos, team, age, pts) %>%
                        sflex == "SFLEX" ~ paste0(sflex,sflexrank))
          )%>%
   ungroup()
-  
-
 
 pivot_rpos <- starters %>%
   mutate_at(vars(lineup),  ~ replace(., is.na(.), "Bench")) %>%
