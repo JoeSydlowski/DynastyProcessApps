@@ -9,7 +9,7 @@ library(DT)
 
 colors<-colorRampPalette(brewer.pal(3,'PuOr'))
 
-rankingdf <- read.csv('https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fantasypros/ecr_20190829.csv')
+rankingdf <- read.csv('https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fantasypros/ecr_20190905.csv')
 
 projections<-read.csv("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcessApps/master/leagueanalyzer/projections.csv",fileEncoding="UTF-8-BOM")
 
@@ -29,7 +29,8 @@ merged <- draftdf %>%
   inner_join(playerdf, by=c("playerId"="id")) %>%
   inner_join(rankingdf, by=c("fullName"="Player")) %>%
   left_join(projections,c('Pos'='pos','rpECR'='rank')) %>%
-  select(Pick = id, Player = fullName,pos = Pos, owner, roECR, pts)
+  mutate(diff = id - roECR) %>%
+  select(Pick = id, Player = fullName,pos = Pos, owner, roECR, pts, diff)
 
 starters <- merged %>%
   arrange(owner, pos, desc(pts)) %>%
