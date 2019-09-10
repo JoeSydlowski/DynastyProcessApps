@@ -12,7 +12,7 @@ id <- ids %>% pull(game_id)
 df2019 <-  data.frame()
 pbp_data <- for (i in id)
 {df <- scrape_json_play_by_play(i)
- df2019 <- rbind(df2019,df)}
+ df2019 <- bind_rows(df2019,df)}
 
 rushdf2019 <- df2019 %>% 
   filter(!is.na(epa),
@@ -26,6 +26,18 @@ rushdf2019 <- df2019 %>%
          logremaining = log(remaining),
          run_gap2 = ifelse((play_type == "run" & is.na(run_gap)), "center", as.character(run_gap)))
 
+recdf2019 <- df2019 %>%
+  filter(!is.na(epa),
+         play_type %in% c("pass")) %>%
+  mutate(pass_binary = if_else(play_type == "run", 0, 1),
+         TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
+         recFP = 6*touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass,
+         logyardline = log(yardline_100),
+         yardlinesq = yardline_100*yardline_100,
+         remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
+         logremaining = log(remaining),
+         abs_air_yards = abs(air_yards)
+  )
 
 # Goals: Create new method to predict FP for passing, rushing, and receiving and present as a web-app.
 
@@ -76,7 +88,8 @@ recdf <- pbp %>%
          logyardline = log(yardline_100),
          yardlinesq = yardline_100*yardline_100,
          remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-         logremaining = log(remaining)
+         logremaining = log(remaining),
+         abs_air_yards = abs(air_yards)
          )
 
 
@@ -84,19 +97,18 @@ rectrainingRowIndex <- sample(1:nrow(recdf), 0.8*nrow(recdf))  # row indices for
 rectrainingData <- recdf[rectrainingRowIndex, ]  # model training data
 rectestData  <- recdf[-rectrainingRowIndex, ]   # test data
 
-lmMod <- lm(recFP ~ logyardline + yardline_100  + factor(down) 
-            + air_yards + shotgun  + pass_location, data=rectrainingData)  # build the model
+lmMod <- lm(recFP ~ logyardline + yardline_100 + factor(down) 
+             + abs_air_yards + shotgun  + pass_location, data=rectrainingData)  # build the model
 stepAIC(lmMod)
 stargazer(lmMod, type = "text")
 
-lmMod2 <- lm(rushFP ~ logyardline+ yardlinesq + yardline_100 + factor(down)
+lmMod2 <- lm(rushFP ~ logyardline + yardlinesq + yardline_100 + factor(down)
              + shotgun + run_gap2 , data=rushtrainingData)  # build the model
 stepAIC(lmMod2)
 stargazer(lmMod2, type = "text")
 
 rectrainingData$recEP <- predict(lmMod, rectrainingData)
 rushtrainingData$rushEP <- predict(lmMod2, rushtrainingData)
-
 
 explore <- rectrainingData %>%
   #select(play_type, yards_gained, air_yards, yardline_100, ydstogo, recFP, recEP) %>%
@@ -136,15 +148,60 @@ ggplot(explore2) +
   geom_point(aes(x = yardline_100, y = avg_TD), color = 'blue')
 
 
+recdf2019$recEP <- predict(lmMod, recdf2019)
 rushdf2019$rushEP <- predict(lmMod2, rushdf2019)
+
+teamrecEP <- recdf2019 %>%
+  group_by(posteam) %>%
+  summarise(TeamTargets = sum(pass_attempt),
+            TeamCatches = sum(complete_pass),
+            TeamAYs = sum(abs_air_yards, na.rm=TRUE),
+            TeamRecEP = sum(recEP, na.rm=TRUE)
+  )
 
 playerrushEP <- rushdf2019 %>%
   group_by(rusher_player_name) %>%
-  summarise(EP = sum(rushEP, na.rm=TRUE),
-            FP = format(sum(rushFP), scientific = FALSE),
-            diff = EP- as.numeric(FP))
+  summarise(rushEP = sum(rushEP, na.rm=TRUE),
+            rushFP = format(sum(rushFP), scientific = FALSE),
+            diff = format(as.numeric(rushFP) - rushEP, nsmall=1),
+            Rushes = sum(rush_attempt))
+
+playerrecEP <- recdf2019 %>%
+  filter(!is.na(receiver_player_name)) %>%
+  group_by(receiver_player_name, posteam) %>%
+  summarise(recEP = sum(recEP, na.rm=TRUE),
+            recFP = format(sum(recFP), scientific = FALSE),
+            diff = format(as.numeric(recFP) - recEP, nsmall=1),
+            Targets = sum(pass_attempt),
+            Catches = sum(complete_pass),
+            AYs = sum(air_yards),
+            recYds = sum(yards_gained),
+            aDOT = mean(air_yards)
+            ) %>%
+  inner_join(teamrecEP, by = "posteam") %>%
+  mutate(AYshare = AYs / TeamAYs,
+         TargetShare = Targets / TeamTargets,
+         WOPR = 1.4*TargetShare + 0.7*AYshare,
+         RACR = recYds / AYs,
+         YPTPA = recYds / TeamTargets) %>%
+  dplyr::select(receiver_player_name, posteam, recEP, recFP, diff, Targets, Catches, recYds, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA)
+         
+
+
 
 temp <- rushdf2019 %>%
   dplyr::select(rusher_player_name, yardline_100, rushEP, rushFP) %>%
   filter(rusher_player_name == "M.Mack")
 
+temp2 <- recdf2019 %>%
+  dplyr::select(receiver_player_name, yardline_100, air_yards, recEP, recFP) %>%
+  filter(receiver_player_name == "T.Kelce")
+
+temp2 <- recdf2019 %>%
+  #dplyr::select(receiver_player_name, yardline_100, recEP, rechFP) %>%
+  filter(is.na(receiver_player_name) & sack != 1)
+
+
+temp2 <- recdf %>%
+  #dplyr::select(receiver_player_name, yardline_100, recEP, rechFP) %>%
+  filter( air_yards <= -15)
