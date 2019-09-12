@@ -89,7 +89,8 @@ recdf <- pbp %>%
          yardlinesq = yardline_100*yardline_100,
          remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
          logremaining = log(remaining),
-         abs_air_yards = abs(air_yards)
+         abs_air_yards = abs(air_yards),
+         trg_yardline = yardline_100 * air_yards
          )
 
 
@@ -97,7 +98,7 @@ rectrainingRowIndex <- sample(1:nrow(recdf), 0.8*nrow(recdf))  # row indices for
 rectrainingData <- recdf[rectrainingRowIndex, ]  # model training data
 rectestData  <- recdf[-rectrainingRowIndex, ]   # test data
 
-lmMod <- lm(recFP ~ logyardline + yardline_100 + factor(down) 
+lmMod <- lm(recFP ~ logyardline + yardline_100 + factor(down) + trg_yardline
              + abs_air_yards + shotgun  + pass_location, data=rectrainingData)  # build the model
 stepAIC(lmMod)
 stargazer(lmMod, type = "text")
@@ -204,4 +205,9 @@ temp2 <- recdf2019 %>%
 
 temp2 <- recdf %>%
   #dplyr::select(receiver_player_name, yardline_100, recEP, rechFP) %>%
+  filter( air_yards <= -15)
+
+temp2 <- df2019 %>%
+  group_by(pass_defense_1_player_name) %>%
+  summarise(n())
   filter( air_yards <= -15)

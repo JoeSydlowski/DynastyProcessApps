@@ -10,27 +10,37 @@ library(DT)
 colors<-colorRampPalette(brewer.pal(3,'PuOr'))
 
 rankingdf <- read.csv('https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fantasypros/ecr_20190905.csv')
+rankingdf$Player <- as.character(rankingdf$Player)
+rankingdf$Pos <- as.character(rankingdf$Pos)
+
+json_data <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/805175?view=mRoster&view=mTeam', flatten = TRUE)
 
 projections<-read.csv("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcessApps/master/leagueanalyzer/projections.csv",fileEncoding="UTF-8-BOM")
+projections$pos <- as.character(projections$pos)
 
-json_data <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/805175?view=mDraftDetail&view=mLiveScoring&view=mMatchupScore&view=mPendingTransactions&view=mPositionalRatings&view=mSettings&view=mTeam&view=modular&view=mNav', flatten = TRUE)
+#matchupjson <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/805175?matchupPeriodId=0&view=mMatchup', flatten = TRUE)
 
-playerdf <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/players?scoringPeriodId=0&view=players_wl')
-playerdf$fullName <- gsub('(-)|[[:punct:]]|( Jr)|( Sr)|( III)|( II)|( IV)','\\1',playerdf$fullName)
+#playerdf <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/players?scoringPeriodId=0&view=players_wl')
 
 
-draftdf <- json_data[["draftDetail"]][["picks"]]
+dfRosters <- data.frame()
+for (i in c(1:length(json_data[["teams"]][["roster.entries"]])))
+{
+  dftemp <- json_data[["teams"]][["roster.entries"]][[i]]
+  dfRosters <- bind_rows(dfRosters, dftemp)
+}
+
+dfRosters$fullName <- gsub('(-)|[[:punct:]]|( Jr)|( Sr)|( III)|( II)|( IV)','\\1',dfRosters$playerPoolEntry.player.fullName)
 
 teamdf <- json_data[["teams"]]
 teamdf$owner <- paste(teamdf$location,teamdf$nickname)
 
-merged <- draftdf %>% 
-  inner_join(teamdf, by=c("teamId"="id")) %>% 
-  inner_join(playerdf, by=c("playerId"="id")) %>%
+merged <- dfRosters %>% 
+  inner_join(teamdf, by=c("playerPoolEntry.onTeamId"="id")) %>% 
+  #inner_join(playerdf, by=c("playerId"="id")) %>%
   inner_join(rankingdf, by=c("fullName"="Player")) %>%
   left_join(projections,c('Pos'='pos','rpECR'='rank')) %>%
-  mutate(diff = id - roECR) %>%
-  select(Pick = id, Player = fullName,pos = Pos, owner, roECR, pts, diff)
+  select(owner, Player = fullName, pos = Pos, roECR, pts)
 
 starters <- merged %>%
   arrange(owner, pos, desc(pts)) %>%
