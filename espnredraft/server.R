@@ -8,7 +8,7 @@ library(DT)
 
 colors<-colorRampPalette(brewer.pal(3,'PuOr'))
 
-rankingdf <- read.csv('https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fantasypros/ecr_20190905.csv')
+rankingdf <- read.csv('https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/fantasypros/ecr_20190913.csv')
 rankingdf$Player <- as.character(rankingdf$Player)
 rankingdf$Pos <- as.character(rankingdf$Pos)
 
@@ -35,7 +35,9 @@ shinyServer(function(input, output) {
         dfRosters <- bind_rows(dfRosters, dftemp)
     }
     
-    dfRosters$fullName <- gsub('(-)|[[:punct:]]|( Jr)|( Sr)|( III)|( II)|( IV)','\\1',dfRosters$playerPoolEntry.player.fullName)
+    dfRosters$fullName <- gsub('([.,\'\"])|( Jr)|( Sr)|( III)|( II)|( IV)|( V$)','',dfRosters$`playerPoolEntry.player.fullName`)
+    dfRosters$fullName[dfRosters$fullName== "Mitchell Trubisky"] <- "Mitch Trubisky"
+    dfRosters$fullName[dfRosters$fullName== "DeVante Parker"] <- "Devante Parker"
     
     output$sched <- renderDT({
         

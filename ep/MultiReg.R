@@ -6,7 +6,7 @@ library(lubridate)
 library(stargazer)
 library(MASS)
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = 1)
+ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2))
 id <- ids %>% pull(game_id)
 
 df2019 <-  data.frame()
@@ -98,15 +98,29 @@ rectrainingRowIndex <- sample(1:nrow(recdf), 0.8*nrow(recdf))  # row indices for
 rectrainingData <- recdf[rectrainingRowIndex, ]  # model training data
 rectestData  <- recdf[-rectrainingRowIndex, ]   # test data
 
-lmMod <- lm(recFP ~ logyardline + yardline_100 + factor(down) + trg_yardline
+recMod <- lm(recFP ~ logyardline + yardline_100 + factor(down)
              + abs_air_yards + shotgun  + pass_location, data=rectrainingData)  # build the model
-stepAIC(lmMod)
-stargazer(lmMod, type = "text")
+stepAIC(recMod)
+stargazer(recMod, type = "text")
 
-lmMod2 <- lm(rushFP ~ logyardline + yardlinesq + yardline_100 + factor(down)
+rushMod <- lm(rushFP ~ logyardline + yardlinesq + yardline_100 + factor(down)
              + shotgun + run_gap2 , data=rushtrainingData)  # build the model
-stepAIC(lmMod2)
-stargazer(lmMod2, type = "text")
+stepAIC(rushMod)
+stargazer(rushMod, type = "text")
+
+save(recMod, rushMod, file = "models.rda")
+
+rectestData$recEP <- predict(lmMod, rectestData)
+rushtestData$rushEP <- predict(lmMod2, rushtestData)
+
+sqrt(mean((rectestData$recFP - rectestData$recEP) ^ 2 , na.rm=TRUE))
+sqrt(mean((rushtestData$rushFP - rushtestData$rushEP) ^ 2 , na.rm=TRUE))
+
+ggplot(rectestData) + 
+  geom_point(aes(x = recEP, y = recFP), color = 'red')
+
+ggplot(rushtestData) + 
+  geom_point(aes(x = rushEP, y = rushFP), color = 'red')
 
 rectrainingData$recEP <- predict(lmMod, rectrainingData)
 rushtrainingData$rushEP <- predict(lmMod2, rushtrainingData)
