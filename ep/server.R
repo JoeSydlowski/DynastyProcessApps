@@ -3,8 +3,9 @@ library(tidyverse)
 library(dplyr)
 library(nflscrapR)
 library(DT)
-setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-
+library(MASS)
+#setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+setwd("/srv/shiny-server/DynastyProcess/ep")
 # ids <- scrape_game_ids(2019, type = "reg", weeks = c(2:2)) %>%
 #     filter(state_of_game == "POST")
 #     
@@ -20,7 +21,7 @@ setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
 #     inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
 # save(df2019, file = "data19.rda")
 
-load(file = "data19.rda")
+source(file = "/srv/shiny-server/DynastyProcess/ep/data19.rda")
 
 rushdf2019 <- df2019 %>% 
     filter(!is.na(epa),
@@ -47,7 +48,7 @@ recdf2019 <- df2019 %>%
            abs_air_yards = abs(air_yards)
     )
 
-load(file = "models.rda")
+load(file = "/srv/shiny-server/DynastyProcess/ep/models.rda")
 
 recdf2019$recEP <- predict(recMod, recdf2019)
 rushdf2019$rushEP <- predict(rushMod, rushdf2019)
