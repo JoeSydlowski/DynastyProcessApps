@@ -3,7 +3,7 @@ library(dplyr)
 library(nflscrapR)
 library(ggplot2)
 library(lubridate)
-library(stargazer)
+#library(stargazer)
 library(MASS)
 
 ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2))
@@ -45,8 +45,8 @@ recdf2019 <- df2019 %>%
 
 # 2014-2018 (five years worth of pbp) cleaned to dropbacks and not-dropbacks (as per Ben Baldwin's tutorial)
 
-#setwd("~/GitHub/DynastyProcess-Apps/ep")
-setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+setwd("~/GitHub/DynastyProcess-Apps/ep")
+#setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
 
 set.seed(100)  # setting seed to reproduce results of random sampling
 

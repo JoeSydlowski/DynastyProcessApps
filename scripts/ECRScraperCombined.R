@@ -9,7 +9,7 @@ todayDay <- day(today())
 
 teamIDs <- read.csv("/srv/shiny-server/DynastyProcess/database-v2/teamIDs.csv")
 
-setwd("/srv/data/files/fantasypros")
+setwd("/srv/data/files")
 
 if (between(todayMonth,10,12) | (todayMonth == 9 & todayDay >= 10))
 {list_of_pages <- c("dynasty-overall", "dynasty-qb", "dynasty-rb", "dynasty-wr",
@@ -39,8 +39,7 @@ if (between(todayMonth,10,12) | (todayMonth == 9 & todayDay >= 10))
 dfComb <- data.frame()
 
 for (page in list_of_pages)
-{
-  url <- paste0("https://www.fantasypros.com/nfl/rankings/",page,".php")
+{ url <- paste0("https://www.fantasypros.com/nfl/rankings/",page,".php")
   webpage <- read_html(url)
   df <- webpage %>%
     html_node("table") %>%
@@ -72,10 +71,16 @@ for (page in list_of_pages)
   {df <- data.frame()
   numCols <- c()}
   
+  
+
   df[numCols] <- lapply(df[numCols], as.numeric)
+
+  df[grep("vs. ADP", colnames(df))] <- as.character(df[grep("vs. ADP", colnames(df))])
+
   
   if(!is.null(df$Pos))
   {df$Pos <- substr(df$Pos,1,2)}
+
   
   if(nrow(df) > 0)
   {
@@ -110,7 +115,7 @@ for (page in list_of_pages)
   
   df$Pos <- gsub('(^S[0-9]*$)',"DB",df$Pos)
   df[grepl("K", df$Pos), 'Pos'] <- 'K'
-  
+
   dfComb <- bind_rows(dfComb, df)
   }
   
@@ -133,6 +138,7 @@ dfComb$Page[dfComb$Page %in% c("qb", "ppr-rb", "ppr-wr", "ppr-te", "k", "dst", "
 
 
 dfTotal <- dfComb[1:10] %>%
+  filter(!(Player == 'Mike Davis' & SD == 0.0)) %>%
   select(Player, Team, Pos, ECR, Best, Worst, Page, SD) %>%
   group_by(Player) %>%
   gather(variable, value, ECR, SD, Best, Worst) %>%
@@ -161,11 +167,13 @@ dfTotal <- dfTotal %>%
   select(Player,  everything()) %>%
   arrange(roECR)
 
+
 write.csv(dfTotal,
-          file = paste0("ecr_", format(Sys.Date(), format = "%Y%m%d"),".csv"),
+          file = paste0("/srv/data/files/fantasypros/ecr_", format(Sys.Date(), format = "%Y%m%d"),".csv"),
           row.names=FALSE,
           na="")
 
 system("sudo systemctl restart shiny-server")
-system("git add *.csv")
+system("git add fantasypros/*")
 system("git commit -m 'weekly ecr commit'")
+#system("git push origin master")
