@@ -35,7 +35,10 @@ fullschedule <- schedule %>%
   hoist(teaminfo,team_name="owner",team_pct="allplaypct") %>%
   hoist(oppinfo,opp_name="owner",opp_pct="allplaypct") %>%
   select(-teaminfo,-oppinfo,-opp) %>%
-  mutate(win_prob=round(team_pct/(team_pct+opp_pct),digits=3))
+  mutate(
+    team_pct = round(team_pct,digits=3),
+    opp_pct = round(opp_pct, digits=3),
+    win_prob=round(team_pct/(team_pct+opp_pct),digits=3))
 
 expectedwins<-fullschedule %>%
   group_by(team,team_name) %>%
@@ -45,7 +48,25 @@ expectedwins<-fullschedule %>%
   nest_join(standings,by=c('team'='ownerid')) %>%
   hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl") %>%
   mutate_at(vars("h2hw","h2ht","h2hl"),as.numeric) %>%
-  mutate(total_wins=ewins+h2hw, total_losses=elosses+h2hl) %>%
-  select(team,team_name,wins=h2hw,losses=h2hl,ewins,elosses,total_wins,total_losses) %>%
-  arrange(desc(total_wins))
+  mutate(TotalWins=ewins+h2hw, TotalLosses=elosses+h2hl) %>%
+  select(Team = team_name,Wins=h2hw,Losses=h2hl,eWins=ewins,eLosses=elosses,TotalWins,TotalLosses) %>%
+  arrange(desc(TotalWins))
 
+fspivot<-fullschedule %>%
+  mutate(weekname=paste("Week",week)) %>%
+  select(weekname,team_name,win_prob) %>%
+  pivot_wider(names_from=weekname,values_from = win_prob) %>%
+  rename(Team=team_name)
+
+brks<-function(tib){
+  breakvalue<-quantile(range(fspivot),probs=seq(0.05,0.95,0.05),na.rm=TRUE)
+  return(breakvalue)
+}
+
+colors<-colorRampPalette(brewer.pal(3,'PuOr'))
+
+fs_tbl<-renderDT(fspivot)%>%
+    formatStyle(2:12,backgroundColor = styleInterval(quantile(range(list(0,1)),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colors(20)))
+
+
+  

@@ -107,33 +107,33 @@ server <- function(input, output, session) {
       win_prob=round(team_pct/(team_pct+opp_pct),digits=3))})
   
   expectedwins<-eventReactive(input$loaddata,{fullschedule() %>%
-    group_by(team,team_name) %>%
-    summarize(ewins=sum(win_prob,na.rm=TRUE),
-              elosses=n()-ewins) %>%
-    ungroup() %>%
-    nest_join(standings(),by=c('team'='ownerid'),name='standings') %>%
-    hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl") %>%
-    mutate_at(vars("h2hw","h2ht","h2hl"),as.numeric) %>%
-    mutate(total_wins=ewins+h2hw, total_losses=elosses+h2hl) %>%
-    select(team,team_name,wins=h2hw,losses=h2hl,ewins,elosses,total_wins,total_losses) %>%
-    arrange(desc(total_wins))})
+      group_by(team,team_name) %>%
+      summarize(ewins=sum(win_prob,na.rm=TRUE),
+                elosses=n()-ewins) %>%
+      ungroup() %>%
+      nest_join(standings(),by=c('team'='ownerid'),name="standings") %>%
+      hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl") %>%
+      mutate_at(vars("h2hw","h2ht","h2hl"),as.numeric) %>%
+      mutate(TotalWins=ewins+h2hw, TotalLosses=elosses+h2hl) %>%
+      select(Team = team_name,Wins=h2hw,Losses=h2hl,eWins=ewins,eLosses=elosses,TotalWins,TotalLosses) %>%
+      arrange(desc(TotalWins))})
   
+  fspivot<-eventReactive(input$loaddata,{fullschedule() %>%
+    mutate(weekname=paste0("Week",week)) %>%
+    select(weekname,team_name,win_prob) %>%
+    pivot_wider(names_from=weekname,values_from = win_prob) %>%
+    rename(Team=team_name)})
+  
+  
+  colourlist<-colorRampPalette(brewer.pal(3,'PuOr'))
 
-  
-  colors<-colorRampPalette(brewer.pal(3,'PuOr'))
-  
-  brks_dpos<-function(colnum){
-    breakvalue<-quantile(range(pivot_dpos[colnum]),probs=seq(0.01,0.99,0.01),na.rm=TRUE)
-    return(breakvalue)
-  }
-  
   output$summarytbl<- renderDT(expectedwins(), options=list(
     pageLength=25
   ))
   
-  output$detailstbl<- renderDT(fullschedule(), options=list(
-    pageLength=50
-  ))
+    output$detailstbl<-reactive({renderDataTable(fspivot(), options=list(
+    pageLength=50)) %>% 
+      formatStyle(2:12,backgroundColor = styleInterval(quantile(range(list(0,1)),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))})
   
 
 }
