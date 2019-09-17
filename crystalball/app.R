@@ -137,7 +137,7 @@ server <- function(input, output, session) {
     renderDataTable({
       datatable(fspivot(), options=list(
         pageLength=50)) %>% 
-        formatStyle(2:12,backgroundColor = styleInterval(quantile(range(list(0,1)),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))})
+        formatStyle(-1,backgroundColor = styleInterval(quantile(range(list(0,1)),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))})
   
 
 }
