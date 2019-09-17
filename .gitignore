@@ -3,3 +3,4 @@ rsconnect
 .csv
 .Rproj.user
 logs/
+*.json
