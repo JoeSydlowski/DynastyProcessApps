@@ -5,7 +5,7 @@ library(DT)
 library(RColorBrewer)
 library(lubridate)
 
-id<-18814
+id<-54040
 
 franchises<-fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",id,"&APIKEY=&JSON=1"))$league$franchises$franchise %>%
   select(ownerid=id,owner=name)
@@ -30,10 +30,8 @@ fullschedule <- schedule %>%
   bind_rows(schedule) %>%
   mutate(week=as.numeric(week)) %>% 
   arrange(week,team) %>%
-  nest_join(standings, by=c("team"="ownerid")) %>%
-  rename(teaminfo=standings) %>%
-  nest_join(standings,by=c("opp"="ownerid")) %>%
-  rename(oppinfo=standings) %>%
+  nest_join(standings, by=c("team"="ownerid"),name="teaminfo") %>%
+  nest_join(standings,by=c("opp"="ownerid"),name="oppinfo") %>%
   hoist(teaminfo,team_name="owner",team_pct="allplaypct") %>%
   hoist(oppinfo,opp_name="owner",opp_pct="allplaypct") %>%
   select(-teaminfo,-oppinfo,-opp) %>%
