@@ -1,9 +1,11 @@
 library(shiny)
 library(tidyverse)
 library(dplyr)
-library(nflscrapR)
+#library(nflscrapR)
 library(DT)
+
 #setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+setwd("/srv/shiny-server/DynastyProcess/ep")
 
 # ids <- scrape_game_ids(2019, type = "reg", weeks = c(2:2)) %>%
 #     filter(state_of_game == "POST")
@@ -18,6 +20,7 @@ library(DT)
 # 
 # df2019 <- df2019 %>%
 #     inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
+
 # write.csv(df2019, file = "data2019.csv")
 df2019 <- read.csv("data2019.csv")
 df2019$posteam <- as.character(df2019$posteam)
@@ -51,7 +54,7 @@ recdf2019 <- df2019 %>%
            abs_air_yards = abs(air_yards)
     )
 
-load(file = "models.rda")
+readRDS("/srv/shiny-server/DynastyProcess/ep/models.rda")
 
 recdf2019$recEP <- predict(recMod, recdf2019)
 rushdf2019$rushEP <- predict(rushMod, rushdf2019)

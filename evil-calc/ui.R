@@ -119,7 +119,7 @@ shinyUI(fluidPage(
   column(4,
          br(),
          sliderInput("slider2", "Pick Value", min = 0,
-                     max = 1, value = 0.5, step = 0.1,
+                     max = 1, value = 0.8, step = 0.1,
                      label = div(style='width: 800px ; max-width: 100% ;' , 
                                  div(style='float:left;', 'Pick Skeptic'), 
                                  div(style='float:right;', 'Pick Optimist')),
