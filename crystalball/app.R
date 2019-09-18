@@ -138,8 +138,8 @@ server <- function(input, output, session) {
     sumtbl<-datatable(expectedwins(), options=list(pageLength=25,rownames=FALSE))
     for(colnum in 2:6){
       sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),colourlist(20)))
-      return(sumtbl)
     }
+    sumtbl
   })
 
   output$detailstbl<-
