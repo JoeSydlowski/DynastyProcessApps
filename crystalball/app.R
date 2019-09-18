@@ -59,10 +59,10 @@ ui <- fluidPage(
   br(),
   br(),
   tabsetPanel(
-    tabPanel("Projections",
+    tabPanel("Season Projections",icon=icon("chart-bar"),
              br(),
              fluidRow(column(12,DTOutput('summarytbl')))),
-    tabPanel("Schedule",
+    tabPanel("Schedule",icon=icon("calendar"),
              br(),
              fluidRow(column(12,DTOutput('detailstbl'))))
   )
@@ -81,7 +81,7 @@ server <- function(input, output, session) {
     mutate(record=paste0(h2hw,"-",h2ht,"-",h2hl),
            allplaypct=all_play_w/(all_play_w+all_play_t+all_play_l)) %>%
     select(-starts_with('all_play')) %>%
-    inner_join(franchises())})
+    inner_join(franchises(),by=c('ownerid'='ownerid'))})
     
   
   schedule <-eventReactive(input$loaddata,{fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=schedule&L=",input$franchiseid,"&APIKEY=&JSON=1"))$schedule$weeklySchedule %>% 
@@ -127,17 +127,26 @@ server <- function(input, output, session) {
   
   colourlist<-colorRampPalette(brewer.pal(3,'PuOr'))
 
-  output$summarytbl<- renderDT(expectedwins(), options=list(
-    pageLength=25
-  ))
+  
+  brks<-function(tb,colnum){
+    breakvalue<-quantile(range(tb[colnum]),probs=seq(0.05,0.95,0.05),na.rm=TRUE)
+    return(breakvalue)
+  }
   
   
-  
+  output$summarytbl<-renderDT({
+    sumtbl<-datatable(expectedwins(), options=list(pageLength=25,rownames=FALSE))
+    for(colnum in 2:6){
+      sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),colourlist(20)))
+      return(sumtbl)
+    }
+  })
+
   output$detailstbl<-
     renderDataTable({
       datatable(fspivot(), options=list(
         pageLength=50)) %>% 
-        formatStyle(-1,backgroundColor = styleInterval(quantile(range(list(0,1)),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))})
+        formatStyle(-1,backgroundColor = styleInterval(brks(fspivot(),-1),colourlist(20)))})
   
 
 }
