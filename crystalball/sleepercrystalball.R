@@ -9,7 +9,20 @@ leagueID<-386236959468675072
 
 playoffweekstart<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)))$settings$playoff_week_start-1
 
-matchups<-tibble()
+matchups<-tibble(week=c(1:playoffweekstart))
+
+getmatchups<-function(i,LID){
+  fromJSON(paste0("https://api.sleeper.app/v1/league/",LID,"/matchups/",i)) %>%
+    #mutate(week=i) %>% 
+    select(roster_id,points,matchup_id)
+}
+
+matchups<- matchups %>% 
+  mutate(data=lapply(week,getmatchups,leagueID)) %>% 
+  hoist(data,roster_id='roster_id',points='points',matchup_id='matchup_id') %>% 
+  unnest(roster_id,points,matchup_id) %>%
+  select(-data)
+
 
 for (i in 1:playoffweekstart) {
   wm<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/matchups/",as.character(i))) %>%
