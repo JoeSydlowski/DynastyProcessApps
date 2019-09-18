@@ -115,7 +115,7 @@ server <- function(input, output, session) {
       hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl") %>%
       mutate_at(vars("h2hw","h2ht","h2hl"),as.numeric) %>%
       mutate(TotalWins=ewins+h2hw, TotalLosses=elosses+h2hl) %>%
-      select(Team = team_name,Wins=h2hw,Losses=h2hl,eWins=ewins,eLosses=elosses,TotalWins,TotalLosses) %>%
+      select(Team = team_name,Wins=h2hw,Losses=h2hl,rosWins=ewins,rosLosses=elosses,TotalWins,TotalLosses) %>%
       arrange(desc(TotalWins))})
   
   fspivot<-eventReactive(input$loaddata,{fullschedule() %>%
