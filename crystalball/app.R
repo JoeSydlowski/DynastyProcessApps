@@ -112,10 +112,10 @@ server <- function(input, output, session) {
                 elosses=n()-ewins) %>%
       ungroup() %>%
       nest_join(standings(),by=c('team'='ownerid'),name="standings") %>%
-      hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl") %>%
+      hoist(standings,h2hw="h2hw",h2ht="h2ht",h2hl="h2hl",`AllPlay%`="allplaypct") %>%
       mutate_at(vars("h2hw","h2ht","h2hl"),as.numeric) %>%
-      mutate(TotalWins=ewins+h2hw, TotalLosses=elosses+h2hl) %>%
-      select(Team = team_name,Wins=h2hw,Losses=h2hl,rosWins=ewins,rosLosses=elosses,TotalWins,TotalLosses) %>%
+      mutate(TotalWins=ewins+h2hw, TotalLosses=elosses+h2hl,`AllPlay%`=round(`AllPlay%`,digits=3)) %>%
+      select(Team = team_name,`AllPlay%`,Wins=h2hw,Losses=h2hl,rosWins=ewins,rosLosses=elosses,TotalWins,TotalLosses) %>%
       arrange(desc(TotalWins))})
   
   fspivot<-eventReactive(input$loaddata,{fullschedule() %>%
@@ -135,11 +135,12 @@ server <- function(input, output, session) {
   
   
   output$summarytbl<-renderDT({
-    sumtbl<-datatable(expectedwins(), options=list(pageLength=25,rownames=FALSE))
-    for(colnum in c(2,4,6)){
-      sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),colourlist(20)))
+    sumtbl<-datatable(expectedwins(), rownames=FALSE, options=list(pageLength=25))
+    for(colnum in c(2,3,5,7)){
+      sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),colourlist(20)))%>%
+      formatPercentage(2,1)
     }
-    for(colnum in c(3,5,7)){
+    for(colnum in c(4,6,8)){
       sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),rev(colourlist(20))))
     }
     sumtbl
@@ -147,10 +148,11 @@ server <- function(input, output, session) {
 
   output$detailstbl<-
     renderDataTable({
-      datatable(fspivot(), options=list(
+      datatable(fspivot(),rownames=FALSE, options=list(
         pageLength=50)) %>% 
-        formatStyle(-1,backgroundColor = styleInterval(brks(fspivot(),-1),colourlist(20)))})
-  
+        formatStyle(-1,backgroundColor = styleInterval(brks(fspivot(),-1),colourlist(20))) %>%
+        formatPercentage(-1,1)
+      })
 
 }
 
