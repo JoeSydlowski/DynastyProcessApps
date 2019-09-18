@@ -125,7 +125,7 @@ server <- function(input, output, session) {
     rename(Team=team_name)})
   
   
-  colourlist<-colorRampPalette(brewer.pal(3,'PuOr'))
+  colourlist<-colorRampPalette(brewer.pal(3,'PRGn'))
 
   
   brks<-function(tb,colnum){
@@ -136,8 +136,11 @@ server <- function(input, output, session) {
   
   output$summarytbl<-renderDT({
     sumtbl<-datatable(expectedwins(), options=list(pageLength=25,rownames=FALSE))
-    for(colnum in 2:6){
+    for(colnum in c(2,4,6)){
       sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),colourlist(20)))
+    }
+    for(colnum in c(3,5,7)){
+      sumtbl<-sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(expectedwins(),colnum),rev(colourlist(20))))
     }
     sumtbl
   })
