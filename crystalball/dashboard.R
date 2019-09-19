@@ -8,14 +8,68 @@ library(shiny)
 library(shinydashboard)
 
 ui <- dashboardPage(skin="blue",
-  dashboardHeader(title = "DynastyProcess.com"),
+  dashboardHeader(title = a(href="https://dynastyprocess.com",img(src = "logo-horizontal.png", height="17"))),
   dashboardSidebar(
     sidebarMenu(
       menuItem("MFL", tabName = "mfl", icon = icon("quidditch")),
       menuItem("Sleeper", tabName = "sleeper", icon = icon("magic"))
     )
   ),
-  dashboardBody(
+  dashboardBody(tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "css/yeti.css"),
+    tags$style(HTML('
+                                /* logo */
+                                .skin-blue .main-header .logo {
+                                  background-color: #000;
+                                }
+
+                                /* logo when hovered */
+                                .skin-blue .main-header .logo:hover {
+                                  background-color: #555;
+                                }
+
+                                /* navbar (rest of the header) */
+                                .skin-blue .main-header .navbar {
+                                  background-color: #000;
+                                }
+
+                                /* main sidebar */
+                                .skin-blue .main-sidebar {
+                                  background-color: #000;
+                                }
+
+                                /* active selected tab in the sidebarmenu */
+                                .skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+                                  background-color: #555;
+                                  text-decoration: none;
+                                }
+
+                                /* toggle button when hovered  */
+                                .skin-blue .main-header .navbar .sidebar-toggle:hover{
+                                  background-color: #555;
+                                  text-decoration: none;
+                                }
+                                .skin-blue .sidebar-menu > li.active > a{
+                                  border-left-color: #fff
+                                }
+
+                                /* body */
+                                .content-wrapper, .right-side {
+                                  background-color: #fff;
+                                }
+                                .btn {
+                                  font-size: 12px;
+                                }
+
+                                .selectize-input
+                                {font-size:12px;
+                                min-height:25px;
+                                padding-top:0px;
+                                padding-bottom:0px;
+                                }
+
+        '))
+  ),
     tabItems(
     tabItem(tabName = "mfl",
             fluidRow(
@@ -176,6 +230,7 @@ server <- function(input, output, session) {
   s <- reactiveValues(sleeperid = '')
   
   observeEvent(input$select_button, {
+    print(input$select_button)
     selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
     s$sleeperid <<- as.character(userleagues()$League_ID[selectedRow])
   })
@@ -187,7 +242,7 @@ server <- function(input, output, session) {
 
   s_playoffweekstart<-reactive({fromJSON(paste0("https://api.sleeper.app/v1/league/",s$sleeperid))$settings$playoff_week_start-1})
   
-  s_matchups<-eventReactive(input$select_button,{tibble(week=c(1:playoffweekstart))})
+  s_matchups<-eventReactive(input$select_button,{tibble(week=c(1:s_playoffweekstart()))})
   
   s_getmatchups<-function(i,LID){
     fromJSON(paste0("https://api.sleeper.app/v1/league/",LID,"/matchups/",i)) %>%
@@ -195,15 +250,15 @@ server <- function(input, output, session) {
   }
   
   s_matchupdata<-eventReactive(input$select_button,{s_matchups()%>%
-      mutate(data=lapply(week,getmatchups,leagueID)) %>% 
+      mutate(data=lapply(week,s_getmatchups,s$sleeperid)) %>% 
       hoist(data,roster_id='roster_id',points='points',matchup_id='matchup_id') %>% 
       unnest(roster_id,points,matchup_id) %>%
       select(-data)})
   
-    s_teamlist<-eventReactive(input$select_button,{fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/rosters"))%>%
+    s_teamlist<-eventReactive(input$select_button,{fromJSON(paste0("https://api.sleeper.app/v1/league/",s$sleeperid,"/rosters"))%>%
       select(owner_id,roster_id)})
     
-    s_users<- eventReactive(input$select_button,{fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID),"/users"),flatten=TRUE) %>%
+    s_users<- eventReactive(input$select_button,{fromJSON(paste0("https://api.sleeper.app/v1/league/",s$sleeperid,"/users"),flatten=TRUE) %>%
       select(owner=display_name,owner_id=user_id,teamname=metadata.team_name)%>%
       inner_join(s_teamlist(),by="owner_id") %>% 
       mutate_all(as.character)})
