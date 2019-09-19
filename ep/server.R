@@ -1,11 +1,11 @@
 library(shiny)
-library(tidyverse)
 library(dplyr)
-library(nflscrapR)
+#library(nflscrapR)
 library(DT)
+library(tidyr)
 
-setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-#setwd("/srv/shiny-server/DynastyProcess/ep")
+#setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+setwd("/srv/shiny-server/DynastyProcess/ep")
 
 # ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2)) %>%
 #     filter(state_of_game == "POST")
