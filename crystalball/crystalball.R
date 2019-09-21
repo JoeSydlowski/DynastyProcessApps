@@ -1,11 +1,34 @@
 library(jsonlite)
 library(rvest)
+library(httr)
 library(tidyverse)
 library(DT)
 library(RColorBrewer)
 library(lubridate)
 
 id<-54040
+
+username<-'solarpool'
+password<-'M^#63tho'
+
+
+# MFL code
+
+# for authentication somewhere in the future, needs rebuilding m_franchises/m_standings/m_schedule to accomplish
+m_cookie<-GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",username,"&PASSWORD=",URLencode(password,reserved=TRUE),"&XML=1"))$cookies$value %>%
+    URLencode(reserved=TRUE)
+
+m_leagues<-GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRANCHISE_NAMES=1&JSON=1",
+               set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>%
+  content("text") %>% fromJSON() %>% .$leagues %>% .$league %>% 
+  mutate(LeagueID=str_sub(url,start=-5)) %>% 
+  select(League=name,Team=franchise_name,LeagueID)
+
+
+
+
+m_franchises<-GET(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",id,"&APIKEY=&JSON=1"),add_headers(paste0("Cookie: MFL_USER_ID=",authcookie))) %>% 
+  content(type = 'application/json')
 
 franchises<-fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",id,"&APIKEY=&JSON=1"))$league$franchises$franchise %>%
   select(ownerid=id,owner=name)
