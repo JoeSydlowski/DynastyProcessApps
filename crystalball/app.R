@@ -1,6 +1,7 @@
 library(jsonlite)
 library(tidyr)
 library(dplyr)
+library(stringr)
 library(DT)
 library(RColorBrewer)
 library(httr)
@@ -128,7 +129,7 @@ server <- function(input, output, session) {
   
   # MFL code
   
-  m_cookie<-eventReactive(input$mfllogin,{GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",username,"&PASSWORD=",URLencode(password,reserved=TRUE),"&XML=1"))$cookies$value %>%
+  m_cookie<-eventReactive(input$mfllogin,{GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",input$mflusername,"&PASSWORD=",URLencode(input$mflpassword,reserved=TRUE),"&XML=1"))$cookies$value %>%
     URLencode(reserved=TRUE)})
   
   m_leagues<-eventReactive(input$mfllogin,{GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRANCHISE_NAMES=1&JSON=1",
