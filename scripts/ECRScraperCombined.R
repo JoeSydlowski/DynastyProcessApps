@@ -138,7 +138,15 @@ dfComb$Page[dfComb$Page %in% c("qb", "ppr-rb", "ppr-wr", "ppr-te", "k", "dst", "
 
 
 dfTotal <- dfComb[1:10] %>%
-  filter(!(Player == 'Mike Davis' & SD == 0.0)) %>%
+  filter(!(Player == 'Mike Davis' & SD == 0.0),
+         !(Player == 'Mike Davis' & SD == 0.5),
+         !(Player == 'Josh Allen' & SD == 0.0),
+         !(Player == 'Michael Thomas' & SD == 0.0),
+         !(Player == "Dont'a Hightower" & SD == 0.0),
+         !(Player == 'Kirk Cousins' & SD == 0.0),
+         !(Player == 'B.J. Hill' & SD == 0.0),
+         !(Player == 'Mecole Hardman' & SD == 0.0),
+         !(Player == 'Derek Barnett' & SD == 0.0)) %>%
   select(Player, Team, Pos, ECR, Best, Worst, Page, SD) %>%
   group_by(Player) %>%
   gather(variable, value, ECR, SD, Best, Worst) %>%

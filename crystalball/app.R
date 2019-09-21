@@ -13,7 +13,11 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
   dashboardSidebar(
     sidebarMenu(
       menuItem("MFL", tabName = "mfl", icon = icon("quidditch")),
-      menuItem("Sleeper", tabName = "sleeper", icon = icon("magic"))
+      menuItem("Sleeper", tabName = "sleeper", icon = icon("bed"))
+    ),
+    sidebarMenu(
+      menuItem("More Awesome Apps", icon=icon("rocket"),href="https://dynastyprocess.com/apps")#,
+      #menuItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator")
     )
   ),
   dashboardBody(tags$head(
@@ -78,12 +82,12 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               titlePanel("DynastyProcess.com: Crystal Ball App"),
               includeMarkdown("about.md"))),
             fluidRow(
-              box(width=4,title="Authentication",
+              box(width=4,title="MFL Authentication",
                   textInput('mflusername',NULL,placeholder="Username"),
                   passwordInput('mflpassword',NULL,placeholder="Password"),
-                  actionButton('mfllogin',"Load Leagues")
+                  actionButton('mfllogin',"Load Leagues!")
                   ),
-              box(width=8, title="MFL Leagues",
+              box(width=8, title="League List",
                   DTOutput('mflleagues'),
                   textOutput('mleaguename')
                   )),
@@ -100,7 +104,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                   includeMarkdown("about.md"))),
             fluidRow(
               box(width=4, title="Sleeper Username",
-                  textInput('sleeperusername',NULL,value="solarpool",placeholder = "username"),
+                  textInput('sleeperusername',NULL,value="solarpool",placeholder = "Sleeper Username"),
                   actionButton('sleeperloaduser','Load Leagues!')),
               box(width=8, title="League List",
                   DTOutput('sleeperleaguelist'),
@@ -366,10 +370,6 @@ server <- function(input, output, session) {
         formatStyle(2,backgroundColor = styleInterval(brks(s_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
     })
-  
-  
-  
-  
   
 } #end of server segment
 
