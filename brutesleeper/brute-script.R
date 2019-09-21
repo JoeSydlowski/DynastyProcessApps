@@ -21,7 +21,9 @@ getotherusers <-function(id){
 
 users<-tibble(user='solarpool') %>% 
   mutate(uid=getuserid(user),leagues=getuserleagues(uid)) %>% 
-  unnest_longer(leagues) %>% 
-  mutate(o_users=getotherusers(leagues))
-
+  unnest(leagues) %>% 
+  mutate(otherusers=lapply(leagues,getotherusers)) %>% 
+  hoist(otherusers,ids="idlist") %>% 
+  unnest_longer(ids) %>% 
+  filter(distinct(ids))
 
