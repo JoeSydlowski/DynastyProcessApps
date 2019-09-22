@@ -9,14 +9,20 @@ library(shiny)
 library(shinydashboard)
 
 ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
-  dashboardHeader(title = a(href="https://dynastyprocess.com",img(src = "logo-horizontal.png",width='100%'))),
-  dashboardSidebar(
+  dashboardHeader(title = a(href="https://dynastyprocess.com",img(src = "logo-horizontal.png",width='100%')),titleWidth = 250),
+  dashboardSidebar(width = 250,
     sidebarMenu(
       menuItem("MFL", tabName = "mfl", icon = icon("quidditch")),
       menuItem("Sleeper", tabName = "sleeper", icon = icon("bed"))
     ),
     sidebarMenu(
-      menuItem("More Awesome Apps", icon=icon("rocket"),href="https://dynastyprocess.com/apps")#,
+      menuItem("More from DynastyProcess:", icon=icon("rocket"),
+               menuSubItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator"),
+               menuSubItem("Database",icon=icon('database'),href="https://apps.dynastyprocess.com/database"),
+               menuSubItem("GitHub",icon=icon('github'),href="https://apps.dynastyprocess.com/ecr"),
+               menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
+               )
+      
       #menuItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator")
     )
   ),

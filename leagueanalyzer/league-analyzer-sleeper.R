@@ -23,7 +23,7 @@ leaguelist<-fromJSON(paste0("https://api.sleeper.app/v1/user/",user_id,"/leagues
 #leagueID<-leaguelist$league_id[3] #shiny input -> select leagueID, then carry on
 leagueID<-425023252880957440
 
-leaguename<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)),flatten=TRUE)$name
+league<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)),flatten=TRUE)
 
 poslist<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)))$roster_positions%>%
   tibble(poslist=.) %>%
