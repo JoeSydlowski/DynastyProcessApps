@@ -20,7 +20,7 @@ x <- x[order(x$date, x$dynpECR),]
 createContainer <- function(dates){
   
   for (i in length(dates))
-  {thString <- 'th(colspan = 2, dates[',i,'], style="text-align:center"),'}
+  {thString <- paste0('th(colspan = 2, dates[',i,'], style="text-align:center",')}
   
   sketch = htmltools::withTags(table(
     class = 'display',
