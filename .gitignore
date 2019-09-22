@@ -4,3 +4,6 @@ rsconnect
 .Rproj.user
 logs/
 *.json
+calculator/www/
+crystalball/www/
+
