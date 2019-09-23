@@ -8,10 +8,6 @@ library(lubridate)
 
 id<-54040
 
-username<-'solarpool'
-password<-'M^#63tho'
-
-
 # MFL code
 
 # for authentication somewhere in the future, needs rebuilding m_franchises/m_standings/m_schedule to accomplish
@@ -23,9 +19,6 @@ m_leagues<-GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRA
   content("text") %>% fromJSON() %>% .$leagues %>% .$league %>% 
   mutate(LeagueID=str_sub(url,start=-5)) %>% 
   select(League=name,Team=franchise_name,LeagueID)
-
-
-
 
 m_franchises<-GET(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",id,"&APIKEY=&JSON=1"),add_headers(paste0("Cookie: MFL_USER_ID=",authcookie))) %>% 
   content(type = 'application/json')
