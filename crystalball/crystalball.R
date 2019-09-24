@@ -6,7 +6,7 @@ library(DT)
 library(RColorBrewer)
 library(lubridate)
 
-id<-54040
+id<-23469
 
 # MFL code
 
@@ -71,7 +71,7 @@ expectedwins<-fullschedule %>%
 fspivot<-fullschedule %>%
   mutate(weekname=paste("Week",week)) %>%
   select(weekname,team_name,win_prob) %>%
-  pivot_wider(names_from=weekname,values_from = win_prob) %>%
+  pivot_wider(names_from=weekname,values_from = win_prob, values_fn = list(win_prob = sum)) %>%
   rename(Team=team_name)
 
 brks<-function(tib){

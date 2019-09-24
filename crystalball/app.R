@@ -233,7 +233,7 @@ server <- function(input, output, session) {
   m_fspivot<-eventReactive(input$m_select_button,{m_fullschedule() %>%
       mutate(weekname=week) %>%
       select(weekname,team_name,win_prob) %>%
-      pivot_wider(names_from=weekname,values_from = win_prob,names_prefix = "Week") %>%
+      pivot_wider(names_from=weekname,values_from = win_prob,names_prefix = "Week",values_fn = list(win_prob = sum)) %>%
       rename(Team=team_name) %>% 
       mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
       select(Team,Total,starts_with('Week')) %>% 
@@ -293,9 +293,6 @@ server <- function(input, output, session) {
   })
   
   output$sleaguename<-renderText({paste("Loaded League:",s$leaguename)})
-
-  
-  ## the rest of the chunks
 
   s_playoffweekstart<-reactive({fromJSON(paste0("https://api.sleeper.app/v1/league/",s$leagueid))$settings$playoff_week_start-1})
   
@@ -371,7 +368,7 @@ server <- function(input, output, session) {
       nest_join(s_users(),by='roster_id',name='users') %>% 
       hoist(users,Team='owner') %>% 
       select(-roster_id,-users) %>% 
-      pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week") %>% 
+      pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week", values_fn = list(win_prob = sum)) %>% 
       mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
       select(Team,Total,starts_with('Week')) %>% 
       arrange(desc(Total))
@@ -483,7 +480,8 @@ server <- function(input, output, session) {
       pivot_wider(
         names_from = week,
         values_from = win_prob,
-        names_prefix = "Week") %>%
+        names_prefix = "Week", 
+        values_fn = list(win_prob = sum)) %>%
       mutate(Total = rowSums(select(., starts_with('Week')))) %>%
       select(Team, Total, starts_with('Week')) %>% 
       arrange(desc(Total))
