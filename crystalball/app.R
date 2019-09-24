@@ -409,15 +409,18 @@ server <- function(input, output, session) {
                          '&view=mTeam', 
                          '&view=mNav'),flatten=TRUE)})
   
-  e_teamnames<-eventReactive(input$espnload,{espn()$members %>% 
-    select(id,displayName)})
+  e_owners <- eventReactive(input$espnload, {
+    espn()$members %>%
+      select(id, displayName) %>%
+      nest_join(espn()$teams,
+                by = c('id' = 'primaryOwner'),
+                name = 'teams') %>%
+      hoist(teams, team_id = 'id') %>%
+      select(-teams) %>% 
+      mutate(team_id=as.character(team_id))
+  })
   
   output$eleaguename<-renderText(paste('Loaded League:',espn()$settings$name))
-  
-  e_owners<-eventReactive(input$espnload,{tibble(ownerid=espn()$teams$owners) %>% 
-    mutate(rosterid=row.names(.)) %>% 
-    mutate_all(as.character) %>% 
-    inner_join(e_teamnames(),by=c('ownerid'='id'))})
   
   e_schedule1<-eventReactive(input$espnload,{espn()$schedule %>% 
     select(winner, contains('id'),ends_with('totalPoints')) %>% 
@@ -462,7 +465,7 @@ server <- function(input, output, session) {
     ungroup() %>% 
     left_join(e_standings(),by='team_id') %>%
     mutate(team_id=as.character(team_id)) %>% 
-    left_join(e_owners(),by=c('team_id'='rosterid')) %>%
+    left_join(e_owners(),by=c('team_id'='team_id')) %>%
     mutate(rosLosses=rosGms-rosWins) %>% 
     select(Team=displayName,`AllPlay%`=allplaypct,Wins=wins,Losses=losses,rosWins,rosLosses) %>% 
     mutate(TotalWins=Wins+rosWins,TotalLosses=Losses+rosLosses) %>% 
@@ -473,7 +476,7 @@ server <- function(input, output, session) {
       select(team_id, week, win_prob) %>%
       mutate(team_id = as.character(team_id)) %>%
       nest_join(e_owners(),
-                by = c('team_id' = 'rosterid'),
+                by = c('team_id' = 'team_id'),
                 name = 'owners') %>%
       hoist(owners, Team = 'displayName') %>%
       select(-team_id,-owners) %>%
