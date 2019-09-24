@@ -235,9 +235,9 @@ server <- function(input, output, session) {
       select(weekname,team_name,win_prob) %>%
       pivot_wider(names_from=weekname,values_from = win_prob,names_prefix = "Week") %>%
       rename(Team=team_name) %>% 
-      mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
-      select(Team,Total,starts_with('Week')) %>% 
-      arrange(desc(Total))
+      mutate(rosWins=rowSums(select(.,starts_with('Week')))) %>% 
+      select(Team,rosWins,starts_with('Week')) %>% 
+      arrange(desc(rosWins))
     })
   
   
@@ -372,9 +372,9 @@ server <- function(input, output, session) {
       hoist(users,Team='owner') %>% 
       select(-roster_id,-users) %>% 
       pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week") %>% 
-      mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
-      select(Team,Total,starts_with('Week')) %>% 
-      arrange(desc(Total))
+      mutate(rosWins=rowSums(select(.,starts_with('Week')))) %>% 
+      select(Team,rosWins,starts_with('Week')) %>% 
+      arrange(desc(rosWins))
       })
     
 
@@ -484,9 +484,9 @@ server <- function(input, output, session) {
         names_from = week,
         values_from = win_prob,
         names_prefix = "Week") %>%
-      mutate(Total = rowSums(select(., starts_with('Week')))) %>%
-      select(Team, Total, starts_with('Week')) %>% 
-      arrange(desc(Total))
+      mutate(rosWins = rowSums(select(., starts_with('Week')))) %>%
+      select(Team, rosWins, starts_with('Week')) %>% 
+      arrange(desc(rosWins))
   })
   
   output$espnsummarytbl<-renderDT({

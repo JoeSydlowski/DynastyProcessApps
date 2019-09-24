@@ -5,7 +5,7 @@ library(DT)
 library(tidyr)
 
 #setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-setwd("/srv/shiny-server/DynastyProcess/ep")
+setwd("/srv/shiny-server/DynastyProcessApps/ep")
 
 # ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2)) %>%
 #     filter(state_of_game == "POST")
