@@ -160,12 +160,13 @@ server <- function(input, output, session) {
   
   # MFL code
   
-  m_cookie<-eventReactive(input$mfllogin,{GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",input$mflusername,"&PASSWORD=",URLencode(input$mflpassword,reserved=TRUE),"&XML=1"))$cookies$value %>%
+  m_cookie<-eventReactive(input$mfllogin,{GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",input$mflusername,"&PASSWORD=",URLencode(input$mflpassword,reserved=TRUE),"&XML=1")) %>%
+    .$cookies %>% .$value %>%   
     URLencode(reserved=TRUE)})
   
   m_leagues<-eventReactive(input$mfllogin,{GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRANCHISE_NAMES=1&JSON=1",
-                 set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>%
-    content("text") %>% fromJSON() %>% .$leagues %>% .$league %>% 
+                 set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% content("text") %>% fromJSON() %>% 
+      .$leagues %>% .$league %>% 
     mutate(LeagueID=str_sub(url,start=-5),
            Select=shinyInput(actionButton,nrow(.),'button_',label="Select",onclick='Shiny.onInputChange(\"m_select_button\",  this.id)')) %>% 
     select(League=name,Team=franchise_name,LeagueID,Select)})
@@ -184,10 +185,15 @@ server <- function(input, output, session) {
   
   output$mleaguename<-renderText(paste("Loaded League:",m$leaguename))
   
-  m_franchises<-eventReactive(input$m_select_button,{fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",m$leagueid,"&APIKEY=&JSON=1"))$league$franchises$franchise %>%
+  m_franchises<-eventReactive(input$m_select_button,{GET(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=league&L=",m$leagueid,"&APIKEY=&JSON=1"),
+                                                         set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% 
+      content("text") %>% fromJSON() %>% 
+    .$league %>% .$franchises %>% .$franchise %>%
       select(ownerid=id,owner=name)})
   
-  m_standings<-eventReactive(input$m_select_button,{fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=leagueStandings&L=",m$leagueid,"&APIKEY=&JSON=1"))$leagueStandings$franchise %>% 
+  m_standings<-eventReactive(input$m_select_button,{GET(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=leagueStandings&L=",m$leagueid,"&APIKEY=&JSON=1"),
+                                                        set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% content("text") %>% fromJSON() %>%
+      .$leagueStandings %>% .$franchise %>% 
       select(ownerid=id,pointsfor=pf,potentialpoints=pp,starts_with('h2h'),starts_with('all_play')) %>%
       mutate_at(vars(starts_with('all_play')),as.numeric) %>%
       mutate(record=paste0(h2hw,"-",h2ht,"-",h2hl),
@@ -196,7 +202,9 @@ server <- function(input, output, session) {
       inner_join(m_franchises(),by=c('ownerid'='ownerid'))})
   
   
-  m_schedule <-eventReactive(input$m_select_button,{fromJSON(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=schedule&L=",m$leagueid,"&APIKEY=&JSON=1"))$schedule$weeklySchedule %>% 
+  m_schedule <-eventReactive(input$m_select_button,{GET(paste0("https://www03.myfantasyleague.com/2019/export?TYPE=schedule&L=",m$leagueid,"&APIKEY=&JSON=1"),
+                                                        set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% content("text") %>% fromJSON() %>%
+      .$schedule %>% .$weeklySchedule %>% 
       unnest(matchup) %>% 
       unnest_wider(franchise) %>%
       filter(result=='NA') %>% 
