@@ -13,7 +13,8 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
   dashboardSidebar(width = 250,
     sidebarMenu(
       menuItem("MFL", tabName = "mfl", icon = icon("quidditch")),
-      menuItem("Sleeper", tabName = "sleeper", icon = icon("bed"))
+      menuItem("Sleeper", tabName = "sleeper", icon = icon("bed")),
+      menuItem("ESPN", tabName = 'espn', icon=icon('tv'))
     ),
     sidebarMenu(
       menuItem("More from DynastyProcess:", icon=icon("rocket"),
@@ -122,6 +123,26 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
             fluidRow(box(width=12,title="Schedule",DTOutput('sleeperdetailstbl')))
             
             
+    ),
+    tabItem(tabName = "espn",
+            fluidRow(
+              box(width=12,
+                  titlePanel("DynastyProcess.com: Crystal Ball App"),
+                  includeMarkdown("about.md"))),
+            fluidRow(
+              box(width=4,title="ESPN League ID",
+                  textInput('espnid',NULL,placeholder="LeagueID"),
+                  actionButton('espnload',"Load Leagues!")
+                  ),
+              box(width=8,title="Note",
+                  includeMarkdown('espn.md')
+              )
+              ),
+            fluidRow(
+              box(title="Season Projections",width=12,
+                  DTOutput('espnsummarytbl')
+              )),
+            fluidRow(box(width=12,title="Schedule",DTOutput('espndetailstbl')))
     )
   )
   )
@@ -215,7 +236,8 @@ server <- function(input, output, session) {
       pivot_wider(names_from=weekname,values_from = win_prob,names_prefix = "Week") %>%
       rename(Team=team_name) %>% 
       mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
-      select(Team,Total,starts_with('Week'))
+      select(Team,Total,starts_with('Week')) %>% 
+      arrange(desc(Total))
     })
   
   
@@ -351,7 +373,8 @@ server <- function(input, output, session) {
       select(-roster_id,-users) %>% 
       pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week") %>% 
       mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
-      select(Team,Total,starts_with('Week'))
+      select(Team,Total,starts_with('Week')) %>% 
+      arrange(desc(Total))
       })
     
 
@@ -376,6 +399,115 @@ server <- function(input, output, session) {
         formatStyle(2,backgroundColor = styleInterval(brks(s_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
     })
+  
+  
+  # ESPN chunks
+  
+  espn<-eventReactive(input$espnload,{fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
+                         input$espnid,
+                         '?view=mMatchupScore',
+                         '&view=mTeam', 
+                         '&view=mNav'),flatten=TRUE)})
+  
+  e_teamnames<-eventReactive(input$espnload,{espn()$members %>% 
+    select(id,displayName)})
+  
+  output$eleaguename<-renderText(paste('Loaded League:',espn()$settings$name))
+  
+  e_owners<-eventReactive(input$espnload,{tibble(ownerid=espn()$teams$owners) %>% 
+    mutate(rosterid=row.names(.)) %>% 
+    mutate_all(as.character) %>% 
+    inner_join(e_teamnames(),by=c('ownerid'='id'))})
+  
+  e_schedule1<-eventReactive(input$espnload,{espn()$schedule %>% 
+    select(winner, contains('id'),ends_with('totalPoints')) %>% 
+    rename(gameid=id,week=matchupPeriodId,
+           team_id=away.teamId, opp_id=home.teamId,
+           team_points=away.totalPoints, opp_points=home.totalPoints)})
+  
+  e_schedule<-eventReactive(input$espnload,{espn()$schedule %>% 
+    select(winner, contains('id'),ends_with('totalPoints')) %>% 
+    rename(gameid=id,week=matchupPeriodId,
+           team_id=home.teamId, opp_id=away.teamId,
+           team_points=home.totalPoints, opp_points=away.totalPoints) %>% 
+    bind_rows(e_schedule1()) %>% 
+    arrange(week,team_id)})
+  
+  e_standings<-eventReactive(input$espnload,{e_schedule() %>% 
+    filter(winner!='UNDECIDED') %>% 
+    group_by(week) %>% 
+    mutate(wins=if_else(team_points>opp_points,1,0),
+           APgms=n()-1,
+           APwins=rank(team_points)-1) %>% 
+    ungroup() %>% 
+    group_by(team_id) %>% 
+    summarize(wins=sum(wins),allplaywins=sum(APwins),weeks=n(),allplaygms=sum(APgms)) %>% 
+    mutate(losses=weeks-wins,
+           allplaypct=round(allplaywins/allplaygms,digits=3),
+           allplaylosses=allplaygms-allplaywins)})
+  
+  e_fullschedule<- eventReactive(input$espnload,{e_schedule() %>%
+    filter(winner=='UNDECIDED') %>% 
+    select(team_id,week,opp_id)%>%
+    nest_join(e_standings(),by='team_id',name='teaminfo') %>%
+    nest_join(e_standings(),by=c('opp_id'='team_id'),name='oppinfo')%>%
+    hoist(teaminfo,team_pct='allplaypct')%>%
+    hoist(oppinfo,opp_pct='allplaypct')%>%
+    mutate(win_prob=round(team_pct/(team_pct+opp_pct),digits=3)) %>%
+    select(team_id,week,opp_id,team_pct,opp_pct,win_prob)})
+  
+  e_summary<-eventReactive(input$espnload,{e_fullschedule() %>% 
+    group_by(team_id) %>% 
+    summarize(rosWins=sum(win_prob),rosGms=n()) %>%
+    ungroup() %>% 
+    left_join(e_standings(),by='team_id') %>%
+    mutate(team_id=as.character(team_id)) %>% 
+    left_join(e_owners(),by=c('team_id'='rosterid')) %>%
+    mutate(rosLosses=rosGms-rosWins) %>% 
+    select(Team=displayName,`AllPlay%`=allplaypct,Wins=wins,Losses=losses,rosWins,rosLosses) %>% 
+    mutate(TotalWins=Wins+rosWins,TotalLosses=Losses+rosLosses) %>% 
+    arrange(desc(TotalWins))})
+  
+  e_fspivot <- eventReactive(input$espnload, {
+    e_fullschedule() %>%
+      select(team_id, week, win_prob) %>%
+      mutate(team_id = as.character(team_id)) %>%
+      nest_join(e_owners(),
+                by = c('team_id' = 'rosterid'),
+                name = 'owners') %>%
+      hoist(owners, Team = 'displayName') %>%
+      select(-team_id,-owners) %>%
+      pivot_wider(
+        names_from = week,
+        values_from = win_prob,
+        names_prefix = "Week") %>%
+      mutate(Total = rowSums(select(., starts_with('Week')))) %>%
+      select(Team, Total, starts_with('Week')) %>% 
+      arrange(desc(Total))
+  })
+  
+  output$espnsummarytbl<-renderDT({
+    req(input$espnload)
+    e_sumtbl<-datatable(e_summary(), rownames=FALSE, options=list(scrollX=TRUE,pageLength=25))
+    for(colnum in c(2,3,5,7)){
+      e_sumtbl<-e_sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(e_summary(),colnum),colourlist(20)))%>%
+        formatPercentage(2,1)
+    }
+    for(colnum in c(4,6,8)){
+      e_sumtbl<-e_sumtbl%>%formatStyle(colnum,backgroundColor = styleInterval(brks(e_summary(),colnum),rev(colourlist(20))))
+    }
+    e_sumtbl
+  })
+  
+  output$espndetailstbl<-
+    renderDT({
+      datatable(e_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
+        formatStyle(-(1:2),backgroundColor = styleInterval(brks(e_fspivot(),-(1:2)),colourlist(20))) %>%
+        formatStyle(2,backgroundColor = styleInterval(brks(e_fspivot(),2),colourlist(20))) %>% 
+        formatPercentage(-(1:2),1)
+    })
+  
+  
   
 } #end of server segment
 
