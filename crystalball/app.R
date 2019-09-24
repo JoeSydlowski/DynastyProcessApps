@@ -368,17 +368,10 @@ server <- function(input, output, session) {
       nest_join(s_users(),by='roster_id',name='users') %>% 
       hoist(users,Team='owner') %>% 
       select(-roster_id,-users) %>% 
-<<<<<<< HEAD
-      pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week") %>% 
+      pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week", values_fn = list(win_prob = sum)) %>% 
       mutate(rosWins=rowSums(select(.,starts_with('Week')))) %>% 
       select(Team,rosWins,starts_with('Week')) %>% 
       arrange(desc(rosWins))
-=======
-      pivot_wider(names_from = week, values_from=win_prob, names_prefix = "Week", values_fn = list(win_prob = sum)) %>% 
-      mutate(Total=rowSums(select(.,starts_with('Week')))) %>% 
-      select(Team,Total,starts_with('Week')) %>% 
-      arrange(desc(Total))
->>>>>>> bfd8a061fcaa90ddb5033cda81f8620d2ce10942
       })
     
 
@@ -487,18 +480,11 @@ server <- function(input, output, session) {
       pivot_wider(
         names_from = week,
         values_from = win_prob,
-<<<<<<< HEAD
-        names_prefix = "Week") %>%
+        names_prefix = "Week", 
+        values_fn = list(win_prob = sum)) %>%
       mutate(rosWins = rowSums(select(., starts_with('Week')))) %>%
       select(Team, rosWins, starts_with('Week')) %>% 
       arrange(desc(rosWins))
-=======
-        names_prefix = "Week", 
-        values_fn = list(win_prob = sum)) %>%
-      mutate(Total = rowSums(select(., starts_with('Week')))) %>%
-      select(Team, Total, starts_with('Week')) %>% 
-      arrange(desc(Total))
->>>>>>> bfd8a061fcaa90ddb5033cda81f8620d2ce10942
   })
   
   output$espnsummarytbl<-renderDT({
