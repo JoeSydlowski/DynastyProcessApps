@@ -31,6 +31,7 @@ startinglineup<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,8,9,10,24,12,13,
   mutate(lineup_id=as.character(lineup_id)) %>% 
   left_join(tibble(lineup_id=as.character(names(espn$settings$rosterSettings$lineupSlotCounts)),count=espn$settings$rosterSettings$lineupSlotCounts),
             by='lineup_id')
+  
 
 schedule<-espn$schedule %>%
   select(week=matchupPeriodId,away.teamId,away.entries=away.rosterForCurrentScoringPeriod.entries,
@@ -39,22 +40,32 @@ schedule<-espn$schedule %>%
   filter(away.entries!='NULL')
 
 df <- schedule %>%
-  select(week, home.teamId = away.teamId, home.entries = away.entries, home.points=away.points) %>%
+  select(
+    week,
+    home.teamId = away.teamId,
+    home.entries = away.entries,
+    home.points = away.points
+  ) %>%
   bind_rows(schedule) %>%
-  select(week, team_id = home.teamId, score=home.points, entries = home.entries) %>%
+  select(week,
+         team_id = home.teamId,
+         score = home.points,
+         entries = home.entries) %>%
   hoist(
     entries,
-    lineupid = 'lineupSlotId',
+    lineup_id = 'lineupSlotId',
     player_id = 'playerId',
     points = 'playerPoolEntry.appliedStatTotal',
     player = 'playerPoolEntry.player.fullName',
-    eligible = 'playerPoolEntry.player.eligibleSlots') %>% 
-  unnest(lineupid,player_id,points,player,eligible) %>% 
-  mutate(lineupid=as.character(lineupid)) %>% 
-  select(-entries)
-  
-
-  
-
+    eligible = 'playerPoolEntry.player.eligibleSlots'
+  ) %>%
+  unnest(lineup_id, player_id, points, player, eligible) %>%
+  mutate(lineup_id = as.character(lineup_id)) %>%
+  select(-entries) %>% 
+  unnest(eligible) %>% 
+  mutate(eligible=as.character(eligible)) %>% 
+  left_join(startinglineup,by=c('eligible'='lineup_id')) %>% 
+  select(-eligible) %>% 
+  pivot_wider(names_from=pos,values_from(count),values_fn=sum)
 
 
