@@ -3,125 +3,99 @@ library(dplyr)
 #library(nflscrapR)
 library(DT)
 library(tidyr)
+library(curl)
 
-#setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-setwd("/srv/shiny-server/DynastyProcessApps/ep")
+database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
+database$gsis_id <- as.character(database$gsis_id)
 
-# ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2)) %>%
-#     filter(state_of_game == "POST")
-# 
-# ids$game_id <- as.character(ids$game_id)
-# id <- ids %>% pull(game_id)
-# 
-# df2019 <-  data.frame()
-# pbp_data <- for (i in id)
-# {df <- scrape_json_play_by_play(i)
-# df2019 <- bind_rows(df2019,df)}
-# 
-# df2019 <- df2019 %>%
-#     inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
-# write.csv(df2019, file = "data2019.csv")
+setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+#setwd("/srv/shiny-server/DynastyProcessApps/ep")
 
-df2019 <- read.csv("data2019.csv")
+df2019 <- read.csv("data2019cleaned.csv")
 
-shinyServer(function(input, output, server) {
+shinyServer(function(input, output, session) {
     df <- reactive({
         
-        df2019$posteam <- as.character(df2019$posteam)
-        df2019$td_team <- as.character(df2019$td_team)
-        
-        rushdf2019 <- df2019 %>% 
-            filter(!is.na(epa),
-                   play_type %in% c("run")) %>%
-            mutate(TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-                   posTD = if_else(posteam == td_team & touchdown == 1, 1, 0, missing = 0),
-                   rushFP = 6*posTD + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost,
-                   logyardline = log(yardline_100),
-                   yardlinesq = yardline_100*yardline_100,
-                   game_seconds_remaining = as.numeric(game_seconds_remaining),
-                   remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-                   logremaining = log(remaining),
-                   run_gap2 = ifelse((play_type == "run" & is.na(run_gap)), "center", as.character(run_gap))
-            )
-        
-        recdf2019 <- df2019 %>%
-            filter(!is.na(epa),
-                   play_type %in% c("pass"),
-                   sack == 0) %>%
-            mutate(TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-                   posTD = if_else(posteam == td_team & touchdown == 1, 1, 0, missing = 0),
-                   recFP = 6*posTD + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass,
-                   logyardline = log(yardline_100),
-                   yardlinesq = yardline_100*yardline_100,
-                   game_seconds_remaining = as.numeric(game_seconds_remaining),
-                   remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-                   logremaining = log(remaining),
-                   abs_air_yards = abs(air_yards)
-            )
-        
-        #load("/srv/shiny-server/DynastyProcess/ep/models.rda")
-        load("models.rda")
-        
-        recdf2019$recEP <- predict(recMod, recdf2019)
-        rushdf2019$rushEP <- predict(rushMod, rushdf2019)
-
-        teamrecEP <- recdf2019 %>%
+        teamrecEP <- df2019 %>%
             {if (input$weeklyRadio == "Weekly") group_by(., posteam, week) else group_by(., posteam)} %>%
             summarise(TeamTargets = sum(pass_attempt),
                       TeamCatches = sum(complete_pass),
                       TeamAYs = sum(air_yards, na.rm=TRUE),
-                      TeamRecEP = sum(recEP, na.rm=TRUE)
+                      TeamRecEP = sum(eRecFP, na.rm=TRUE)
             )
         
-        playerrushEP <- rushdf2019 %>%
-            {if (input$weeklyRadio == "Weekly") group_by(., rusher_player_name, posteam, week) else group_by(., rusher_player_name, posteam)} %>%
-            summarise(rushEP = sum(rushEP, na.rm=TRUE),
-                      rushFP = sum(rushFP, na.rm=TRUE),
-                      rushDiff = (rushFP - rushEP),
-                      Rushes = sum(rush_attempt))
-
-        playerrecEP <- recdf2019 %>%
-            filter(!is.na(receiver_player_name)) %>%
-            {if (input$weeklyRadio == "Weekly") group_by(., receiver_player_name, posteam, week) else group_by(., receiver_player_name, posteam)} %>%            
-            summarise(recEP = sum(recEP, na.rm=TRUE),
-                      recFP = sum(recFP, na.rm=TRUE),
-                      recDiff = (recFP - recEP),
+        playerrushEP <- df2019 %>%
+            {if (input$weeklyRadio == "Weekly") group_by(., rusher_player_id, posteam, week) else group_by(., rusher_player_id, posteam)} %>%
+            summarise(eRushFP = sum(eRushFP, na.rm=TRUE),
+                      RushFP = sum(RushFP, na.rm=TRUE),
+                      RushDiff = (RushFP - eRushFP),
+                      Rushes = sum(rush_attempt),
+                      RushGames = n_distinct(game_id))
+        
+        playerrecEP <- df2019 %>%
+            #filter(!is.na(receiver_player_id)) %>%
+            {if (input$weeklyRadio == "Weekly") group_by(., receiver_player_id, posteam, week) else group_by(., receiver_player_id, posteam)} %>%            
+            summarise(eRecFP = sum(eRecFP, na.rm=TRUE),
+                      RecFP = sum(RecFP, na.rm=TRUE),
+                      RecDiff = (RecFP - eRecFP),
                       Targets = sum(pass_attempt),
                       Catches = sum(complete_pass),
-                      AYs = sum(air_yards),
-                      recYds = sum(yards_gained),
-                      aDOT = mean(air_yards)
+                      AYs = sum(abs_air_yards),
+                      RecYds = sum(yards_gained),
+                      aDOT = mean(abs_air_yards),
+                      RecGames = n_distinct(game_id)
             ) %>%
             {if (input$weeklyRadio == "Weekly") inner_join(., teamrecEP, by = c("posteam"="posteam","week"="week")) else
                 inner_join(., teamrecEP, by = c("posteam"="posteam")) } %>%
             mutate(AYshare = AYs / TeamAYs,
                    TargetShare = Targets / TeamTargets,
                    WOPR = 1.5*TargetShare + 0.7*AYshare,
-                   RACR = recYds / AYs,
-                   YPTPA = recYds / TeamTargets) %>%
-            {if (input$weeklyRadio == "Weekly") dplyr::select(., week, receiver_player_name, posteam, recEP, recFP, recDiff, Targets, Catches, recYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA) else
-                dplyr::select(., receiver_player_name, posteam, recEP, recFP, recDiff, Targets, Catches, recYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA)}
-
-        #playerdf <- bind_rows(playerrecEP, playerrushEP) %>%
-        #    mutate(
-        #        Name = coalesce(receiver_player_name, rusher_player_name)
-        #    )
-        playerdf <- playerrecEP %>%
-            {if (input$weeklyRadio == "Weekly") full_join(., playerrushEP, by = c("receiver_player_name" = "rusher_player_name", "posteam" = "posteam", "week"="week")) else
-                full_join(., playerrushEP, by = c("receiver_player_name" = "rusher_player_name", "posteam" = "posteam"))}
+                   RACR = RecYds / AYs,
+                   YPTPA = RecYds / TeamTargets) %>%
+            {if (input$weeklyRadio == "Weekly") dplyr::select(., week, receiver_player_id, posteam, eRecFP, RecGames, RecFP, RecDiff, Targets, Catches, RecYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA) else
+                dplyr::select(., receiver_player_id, posteam, eRecFP, RecGames, RecFP, RecDiff, Targets, Catches, RecYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA)}
         
+        playerdf <- playerrecEP %>%
+            {if (input$weeklyRadio == "Weekly") full_join(., playerrushEP, by = c("receiver_player_id" = "rusher_player_id", "posteam" = "posteam", "week"="week")) else
+                full_join(., playerrushEP, by = c("receiver_player_id" = "rusher_player_id", "posteam" = "posteam"))} %>%
+            inner_join(database, by = c("receiver_player_id" = "gsis_id")) %>%
+            {if (input$weeklyRadio == "Weekly") group_by(., receiver_player_id, posteam, week) else
+                group_by(., receiver_player_id, posteam) } %>%
+            mutate(
+                eFP = sum(eRecFP, eRushFP, na.rm=TRUE),
+                FP = sum(RecFP, RushFP, na.rm=TRUE),
+                Diff = sum(FP, - eFP, na.rm = TRUE),
+                Games = max(RushGames, RecGames, na.rm = TRUE)
+            ) %>%
+            {if (input$weeklyRadio == "Weekly") dplyr::select(., week, mergename, posteam, pos, eRecFP, RecFP, RecDiff, eRushFP, RushFP, eRushFP, RushDiff, eFP, FP, Diff) else
+                dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, eRushFP, RushDiff, eFP, FP, Diff)}
     })
     
+    df2 <- reactive({
+        df() %>%
+            {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . } %>%
+            {if (input$selectPos  != "All") filter(., pos == input$selectPos) else .} %>%
+            {if (input$weeklyRadio == "Weekly") filter(., week %in% input$selectWeeks) else .}
+    })
+    
+    # observeEvent({input$selectTeam
+    #     input$selectPos},{
+    #         
+    #         currentPlayer <- input$selectPlayers
+    #         updateSelectizeInput(session, 'selectPlayers',
+    #                              choices = c("All", as.character(sort(unique(df2()$mergename)))),
+    #                              selected = c(currentPlayer)
+    #         )
+    #     })
+    
     output$teamTable <- renderDT({
-        df2 <- df() %>%
-            {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . }
-        
-        datatable(df2,
+        datatable(df2(),
                   rownames=FALSE,
                   options(
                       paging=FALSE,
-                      searching=FALSE)) #%>%
+                      searching=FALSE)) %>%
             #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
+            formatRound(columns=c(6:ncol(df2())), digits=1)
         
     })
     

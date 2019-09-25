@@ -5,48 +5,10 @@ library(ggplot2)
 library(lubridate)
 #library(stargazer)
 library(MASS)
+library(car)
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:2))
-id <- ids %>% pull(game_id)
-
-df2019 <-  data.frame()
-pbp_data <- for (i in id)
-{df <- scrape_json_play_by_play(i)
- df2019 <- bind_rows(df2019,df)}
-
-rushdf2019 <- df2019 %>% 
-  filter(!is.na(epa),
-         play_type %in% c("run")) %>%
-  mutate(pass_binary = if_else(play_type == "run", 0, 1),
-         TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-         rushFP = 6*touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost,
-         logyardline = log(yardline_100),
-         yardlinesq = yardline_100*yardline_100,
-         remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-         logremaining = log(remaining),
-         run_gap2 = ifelse((play_type == "run" & is.na(run_gap)), "center", as.character(run_gap)))
-
-recdf2019 <- df2019 %>%
-  filter(!is.na(epa),
-         play_type %in% c("pass")) %>%
-  mutate(pass_binary = if_else(play_type == "run", 0, 1),
-         TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-         recFP = 6*touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass,
-         logyardline = log(yardline_100),
-         yardlinesq = yardline_100*yardline_100,
-         remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-         logremaining = log(remaining),
-         abs_air_yards = abs(air_yards)
-  )
-
-# Goals: Create new method to predict FP for passing, rushing, and receiving and present as a web-app.
-
-# Data Preprocessing
-
-# 2014-2018 (five years worth of pbp) cleaned to dropbacks and not-dropbacks (as per Ben Baldwin's tutorial)
-
-setwd("~/GitHub/DynastyProcess-Apps/ep")
-#setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+#setwd("~/GitHub/DynastyProcess-Apps/ep")
+setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
 
 set.seed(100)  # setting seed to reproduce results of random sampling
 
@@ -65,38 +27,104 @@ for (f in filelist$l){
 
 rushdf <- pbp %>% 
   filter(!is.na(epa),
-         play_type %in% c("run")) %>%
-  mutate(pass_binary = if_else(play_type == "run", 0, 1),
-         TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-         rushFP = 6*touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost,
+         play_type %in% c("run"),
+         two_point_attempt == 0) %>%
+  mutate(TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
+         rushFP = 6*rush_touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost,
+         rushFP1D = 6*rush_touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + 0.5*first_down_rush,
          logyardline = log(yardline_100),
          yardlinesq = yardline_100*yardline_100,
-         remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-         logremaining = log(remaining),
-         run_gap2 = ifelse((play_type == "run" & is.na(run_gap)), "center", as.character(run_gap)))
-
-rushtrainingRowIndex <- sample(1:nrow(rushdf), 0.8*nrow(rushdf))  # row indices for training data
-rushtrainingData <- rushdf[rushtrainingRowIndex, ]  # model training data
-rushtestData  <- rushdf[-rushtrainingRowIndex, ]   # test data
+         run_gap2 = ifelse((play_type == "run" & is.na(run_gap)), "center", as.character(run_gap))
+  )
 
 recdf <- pbp %>% 
   filter(!is.na(epa),
-         play_type %in% c("pass")) %>%
-  mutate(pass_binary = if_else(play_type == "run", 0, 1),
-         TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
-         recFP = 6*touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass,
+         play_type %in% c("pass"),
+         sack == 0,
+         two_point_attempt == 0) %>%
+  mutate(TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
+         recFP = 6*pass_touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass,
+         recFP1D = 6*pass_touchdown + 2*TwoPtConv + 0.1*yards_gained - 2*fumble_lost + complete_pass+ 0.5*first_down_pass,
          logyardline = log(yardline_100),
          yardlinesq = yardline_100*yardline_100,
-         remaining = if_else(game_seconds_remaining == 0, 1, game_seconds_remaining),
-         logremaining = log(remaining),
-         abs_air_yards = abs(air_yards),
-         trg_yardline = yardline_100 * air_yards
-         )
+         abs_air_yards = abs(air_yards)
+  )
+
+recTDMod <- glm(pass_touchdown ~ yardlinesq + yardline_100 + abs_air_yards + pass_location, data=recdf, family=binomial(link="logit"))
+recYDMod <- lm(yards_gained ~ logyardline + yardlinesq + abs_air_yards + pass_location + shotgun, data=recdf)
+recMod <- glm(complete_pass ~ logyardline + yardlinesq + abs_air_yards + pass_location + shotgun, data=recdf, family=binomial(link="logit"))
+rec1DMod <- glm(first_down_pass ~ logyardline + yardline_100 + abs_air_yards + pass_location + shotgun + ydstogo + factor(down), data=recdf, family=binomial(link="logit"))
+
+#stepAIC(rec1dMod)
+#vif(rec1dMod)
+#stargazer(rec1dMod, type = "text")
+#pR2(rec1dMod)
+
+recdf$eRecTD <- plogis(predict(recTDMod, recdf))
+recdf$eRecYD <- predict(recYDMod, recdf)
+recdf$eRec <- plogis(predict(recMod, recdf))
+recdf$eRec1D <- plogis(predict(rec1DMod, recdf))
+
+recFPMod <- lm(recFP ~ eRecTD + eRecYD + eRec , data=recdf)
+recFP1DMod <- lm(recFP1D ~ eRecTD + eRecYD + eRec1D, data=recdf)
+#stepAIC(recFPMod)
+#stargazer(recFPMod, type = "text")
+recdf$eRecFP <- predict(recFPMod, recdf)
+
+#Concordance(recdf$recFP, recdf$eFP)
+#Concordance(recdf$yards_gained, recdf$eYD)
 
 
-rectrainingRowIndex <- sample(1:nrow(recdf), 0.8*nrow(recdf))  # row indices for training data
-rectrainingData <- recdf[rectrainingRowIndex, ]  # model training data
-rectestData  <- recdf[-rectrainingRowIndex, ]   # test data
+rushTDMod <- glm(rush_touchdown ~ logyardline + yardline_100 + factor(down) + shotgun + run_gap2 , data=rushdf, family=binomial(link="logit"))
+#rushFBMod <- glm(fumble ~ yardline_100 + factor(down) + run_gap2 , data=rushdf, family=binomial(link="logit"))
+rushYDMod <- lm(yards_gained ~ logyardline + yardline_100 + factor(down) + shotgun + run_gap2 , data=rushdf)
+rush1DMod <- glm(first_down_rush ~ logyardline + yardline_100 + factor(down) + shotgun + run_gap2 + shotgun + ydstogo, data=rushdf, family=binomial(link="logit"))
+
+#stepAIC(rush1dMod)
+#vif(rush1dMod)
+#stargazer(rush1dMod, type = "text")
+#pR2(rush1dMod)
+
+rushdf$eRushTD <- plogis(predict(rushTDMod, rushdf))
+#rushdf$eFB <- plogis(predict(rushFBMod, rushdf))
+rushdf$eRushYD <- predict(rushYDMod, rushdf)
+rushdf$eRush1D <- plogis(predict(rush1DMod, rushdf))
+
+rushFPMod <- lm(rushFP ~ eRushTD + eRushYD, data=rushdf)
+rushFP1DMod <- lm(rushFP1D ~ eRushTD + eRushYD + eRush1D, data=rushdf)
+
+#stargazer(rushFP1DMod, type = "text")
+#Concordance(rushdf$rush_touchdown, rushdf$eTD)
+#Concordance(rushdf$yards_gained, rushdf$eYD)
+rushdf$eRushFP <- predict(rushFPMod, rushdf)
+rushdf$eRushFP1d <- predict(rushFP1DMod, rushdf)
+
+#df <- bind_rows(recdf, rushdf)
+
+recTDMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+recYDMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+recMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+rec1DMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+recFPMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+recFP1DMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+
+rushTDMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+rushYDMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+rush1DMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+rushFPMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+rushFP1DMod[c("residuals","effects","fitted.values","model","linear.predictors","weights","prior.weights","y","data")] <- NULL
+
+save(recTDMod, recYDMod, recMod, rec1DMod, recFPMod, recFP1DMod,
+     rushTDMod, rushYDMod, rush1DMod, rushFPMod, rushFP1DMod, file = "models.rda")
+
+dfsum <- df %>%
+  group_by(game_id, drive) %>%
+  summarise(eTD = sum(eTD, na.rm=TRUE),
+            eYD = sum(eYD, na.rm=TRUE),
+            maxYds = max(yardline_100)) %>%
+  filter(eYD > maxYds)
+
+
 
 recMod <- lm(recFP ~ logyardline + yardline_100 + factor(down)
              + abs_air_yards + shotgun  + pass_location, data=rectrainingData)  # build the model
@@ -104,11 +132,12 @@ stepAIC(recMod)
 stargazer(recMod, type = "text")
 
 rushMod <- lm(rushFP ~ logyardline + yardlinesq + yardline_100 + factor(down)
-             + shotgun + run_gap2 , data=rushtrainingData)  # build the model
+              + shotgun + run_gap2 , data=rushtrainingData)  # build the model
 stepAIC(rushMod)
 stargazer(rushMod, type = "text")
 
 save(recMod, rushMod, file = "models.rda")
+
 
 rectestData$recEP <- predict(lmMod, rectestData)
 rushtestData$rushEP <- predict(lmMod2, rushtestData)
@@ -119,21 +148,31 @@ sqrt(mean((rushtestData$rushFP - rushtestData$rushEP) ^ 2 , na.rm=TRUE))
 ggplot(rectestData) + 
   geom_point(aes(x = recEP, y = recFP), color = 'red')
 
+
+ggplot(rushdf) + 
+  geom_point(aes(x = yardline_100, y = first_down_rush), color = 'red')
+
 ggplot(rushtestData) + 
   geom_point(aes(x = rushEP, y = rushFP), color = 'red')
+
 
 rectrainingData$recEP <- predict(lmMod, rectrainingData)
 rushtrainingData$rushEP <- predict(lmMod2, rushtrainingData)
 
-explore <- rectrainingData %>%
+
+explore <- recdf %>%
+  
+  explore <- rectrainingData %>%
+  
   #select(play_type, yards_gained, air_yards, yardline_100, ydstogo, recFP, recEP) %>%
   group_by(yardline_100) %>% 
   summarise(
-            avg_EP = mean(recEP, na.rm = TRUE),
-            avg_FP = mean(recFP, na.rm = TRUE))
+    #avg_EP = mean(recEP, na.rm = TRUE),
+    #avg_FP = mean(recFP, na.rm = TRUE),
+    avg_1d = mean(first_down_pass, na.rm = TRUE))
 
 ggplot(explore) + 
-  geom_point(aes(x = yardline_100, y = avg_EP), color = 'red') + 
+  geom_point(aes(x = yardline_100, y = avg_1d), color = 'red') + 
   geom_point(aes(x = yardline_100, y = avg_FP), color = 'green')
 
 exploreay <- rectrainingData %>%
@@ -192,7 +231,7 @@ playerrecEP <- recdf2019 %>%
             AYs = sum(air_yards),
             recYds = sum(yards_gained),
             aDOT = mean(air_yards)
-            ) %>%
+  ) %>%
   inner_join(teamrecEP, by = "posteam") %>%
   mutate(AYshare = AYs / TeamAYs,
          TargetShare = Targets / TeamTargets,
@@ -200,7 +239,7 @@ playerrecEP <- recdf2019 %>%
          RACR = recYds / AYs,
          YPTPA = recYds / TeamTargets) %>%
   dplyr::select(receiver_player_name, posteam, recEP, recFP, diff, Targets, Catches, recYds, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA)
-         
+
 
 
 
@@ -224,4 +263,4 @@ temp2 <- recdf %>%
 temp2 <- df2019 %>%
   group_by(pass_defense_1_player_name) %>%
   summarise(n())
-  filter( air_yards <= -15)
+filter( air_yards <= -15)
