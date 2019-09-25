@@ -1,0 +1,1 @@
+Due to the awfulness of the ESPN API, the lineup list was manually generated. Please contact [@_TanHo](https://twitter.com/_TanHo) if the starting lineup list looks wrong. 
