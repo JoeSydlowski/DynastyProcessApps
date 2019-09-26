@@ -13,6 +13,7 @@ rankingdf$Player <- as.character(rankingdf$Player)
 rankingdf$Pos <- as.character(rankingdf$Pos)
 
 json_data <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/805175?view=mRoster&view=mTeam&view=mMatchupScore', flatten = TRUE)
+json_data2 <- fromJSON('http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/805175?scoringPeriodId=2&view=mRoster&view=mTeam&view=mMatchupScore', flatten = TRUE)
 
 projections<-read.csv("https://raw.githubusercontent.com/JoeSydlowski/DynastyProcessApps/master/leagueanalyzer/projections.csv",fileEncoding="UTF-8-BOM")
 projections$pos <- as.character(projections$pos)
