@@ -5,6 +5,9 @@ library(rvest)
 library(DT)
 library(lubridate)
 library(RColorBrewer)
+library(here)
+
+setwd(here())
 
 # Local Files
 database<-read.csv("database.csv") %>% select(sleeper_id,mergename,pos,team,age,dynoECR,dynpECR,rdpECR,
@@ -20,8 +23,8 @@ user_id<-fromJSON(paste0("https://api.sleeper.app/v1/user/",username),flatten=TR
 leaguelist<-fromJSON(paste0("https://api.sleeper.app/v1/user/",user_id,"/leagues/nfl/",year(Sys.Date())))%>%
   select(name,league_id)
 
-#leagueID<-leaguelist$league_id[3] #shiny input -> select leagueID, then carry on
-leagueID<-425023252880957440
+leagueID<-leaguelist$league_id[4] #shiny input -> select leagueID, then carry on
+#leagueID<-425023252880957440
 
 league<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)),flatten=TRUE)
 
