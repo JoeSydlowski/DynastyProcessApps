@@ -1,15 +1,15 @@
 library(shiny)
 library(dplyr)
-#library(nflscrapR)
+library(nflscrapR)
 library(DT)
 library(tidyr)
 library(curl)
+library(here)
 
 database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
 database$gsis_id <- as.character(database$gsis_id)
 
-setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-#setwd("/srv/shiny-server/DynastyProcessApps/ep")
+setwd(here())
 
 df2019 <- read.csv("data2019cleaned.csv")
 
