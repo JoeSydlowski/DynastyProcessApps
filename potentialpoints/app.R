@@ -86,27 +86,28 @@ ui <-
       tabItem(tabName='espnpp',
               fluidRow(
                 box(width=12, 
-                    titlePanel("DynastyProcess: ESPN Potential Points Calculator")#,
-                    #includeMarkdown('about.md')
+                    titlePanel("DynastyProcess: Potential Points Calculator"),
+                    includeMarkdown('about.md')
                     )
               ),
               fluidRow(
-                box(width=12,
+                box(width=8,
                     textInput('leagueid',label='ESPN League ID',value='1178049',placeholder="(Public Leagues Only!)"),
                     sliderInput('weekselect',label = "Select Weeks", value=c(1,17),min=1,max=17, ticks=FALSE),
                     actionButton('load','Calculate!',icon=icon('calculator')),
                     br(),
                     textOutput('leaguename')
-                    )
+                    ),
+                box(width=4,title='Downloads',
+                    downloadButton('downloadseason',label="Download PP Summary"),
+                    downloadButton('downloadweek',label='Download Weekly Breakdown'))
               ),
               fluidRow(
-                    tabBox(width = 9,title = "Summary",side='right',
+                    tabBox(width = 12,title = "Summary",side='right',
                     tabPanel('Total',DTOutput('summary_season')),
                     tabPanel('Weekly Breakdown',DTOutput('summary_week'))
-              ),
-              box(width=3,title='Downloads',
-              downloadButton('downloadseason',label="Download PP Summary"),
-              downloadButton('downloadweek',label='Download Weekly Breakdown'))),
+              )
+),
 
               fluidRow(
                 box(title='Details',width=12,solidHeader = TRUE,
@@ -153,12 +154,14 @@ server <- function(input, output, session) {
                            '&view=mNav'),flatten=TRUE)
     
     teams<-espn$teams %>% 
-      select(id,primaryOwner)
+      select(id,primaryOwner, location, nickname) %>% 
+      mutate(team_name=paste(location,nickname)) %>% 
+      select(id,primaryOwner,team_name)
     
     owners<-espn$members %>% 
-      select(id,displayName) %>% 
-      nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
-      hoist(teams,team_id='id') %>% 
+      select(id,owner_name=displayName) %>% 
+      nest_join(teams,by=c('id'='primaryOwner'),name='teams') %>% 
+      hoist(teams,team_id='id',team_name='team_name') %>% 
       select(-teams)
     
     leaguename<-espn$settings$name
@@ -242,25 +245,25 @@ server <- function(input, output, session) {
       unnest_wider(data) %>% 
       unnest_wider(3) %>% 
       unnest(-(1:2)) %>% 
-      select(Week=week,Team=displayName,Pos=pos,ActualScore=score,Player=player,Points=points)
+      select(Week=week,Team=team_name,Owner=owner_name,Pos=pos,ActualScore=score,Player=player,Points=points)
   })
   
   summary_week<-eventReactive(input$load,{
     details() %>% 
-      group_by(Week,Team) %>%
+      group_by(Week,Team,Owner) %>%
       summarize(ActualScore=mean(ActualScore),PotentialScore=sum(Points)) %>% 
       ungroup()
   })
   
   summary_season<-eventReactive(input$load,{
     summary_week() %>% 
-      group_by(Team) %>% 
+      group_by(Team,Owner) %>% 
       summarize(ActualScore=sum(ActualScore),PotentialScore=sum(PotentialScore)) %>% 
       arrange(desc(PotentialScore))
   })
   
   
-  output$details<-renderDT(details(),options=list(pageLength=25))
+  output$details<-renderDT(details(),rownames=FALSE,options=list(pageLength=25))
   
   output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
   

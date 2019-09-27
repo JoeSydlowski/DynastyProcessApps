@@ -7,7 +7,7 @@ Sys.setenv(TZ="CST")
 todayMonth <- month(today())
 todayDay <- day(today())
 
-teamIDs <- read.csv("/srv/shiny-server/DynastyProcess/database-v2/teamIDs.csv")
+teamIDs <- read.csv("/srv/shiny-server/DynastyProcessApps/database-v2/teamIDs.csv")
 
 setwd("/srv/data/files")
 
@@ -33,8 +33,6 @@ if (between(todayMonth,10,12) | (todayMonth == 9 & todayDay >= 10))
                     "ppr-wr-cheatsheets", "ppr-te-cheatsheets", "k-cheatsheets", "dst-cheatsheets",
                     "idp-cheatsheets", "dl-cheatsheets", "lb-cheatsheets", "db-cheatsheets")
 }
-
-
 
 dfComb <- data.frame()
 
@@ -115,6 +113,18 @@ for (page in list_of_pages)
   
   df$Pos <- gsub('(^S[0-9]*$)',"DB",df$Pos)
   df[grepl("K", df$Pos), 'Pos'] <- 'K'
+  
+  if (page %in% c("ros-idp","ros-db","ros-dl"))
+  {
+    df$Pos[df$Player == "Mike Davis"] <- "DB"
+    df$Team[df$Player == "Mike Davis"] <- "LAC"
+    
+    df$Pos[df$Player == "Josh Allen"] <- "DL"
+    df$Team[df$Player == "Josh Allen"] <- "JAC"
+    
+    df$Pos[df$Player == "Michael Thomas"] <- "DB"
+    df$Team[df$Player == "Michael Thomas"] <- "NYG"
+  }
 
   dfComb <- bind_rows(dfComb, df)
   }
@@ -138,15 +148,15 @@ dfComb$Page[dfComb$Page %in% c("qb", "ppr-rb", "ppr-wr", "ppr-te", "k", "dst", "
 
 
 dfTotal <- dfComb[1:10] %>%
-  filter(!(Player == 'Mike Davis' & SD == 0.0),
-         !(Player == 'Mike Davis' & SD == 0.5),
-         !(Player == 'Josh Allen' & SD == 0.0),
-         !(Player == 'Michael Thomas' & SD == 0.0),
-         !(Player == "Dont'a Hightower" & SD == 0.0),
-         !(Player == 'Kirk Cousins' & SD == 0.0),
-         !(Player == 'B.J. Hill' & SD == 0.0),
-         !(Player == 'Mecole Hardman' & SD == 0.0),
-         !(Player == 'Derek Barnett' & SD == 0.0)) %>%
+  # filter(!(Player == 'Mike Davis' & SD == 0.0),
+  #        !(Player == 'Mike Davis' & SD == 0.5),
+  #        !(Player == 'Josh Allen' & SD == 0.0),
+  #        !(Player == 'Michael Thomas' & SD == 0.0),
+  #        !(Player == "Dont'a Hightower" & SD == 0.0),
+  #        !(Player == 'Kirk Cousins' & SD == 0.0),
+  #        !(Player == 'B.J. Hill' & SD == 0.0),
+  #        !(Player == 'Mecole Hardman' & SD == 0.0),
+  #        !(Player == 'Derek Barnett' & SD == 0.0)) %>%
   select(Player, Team, Pos, ECR, Best, Worst, Page, SD) %>%
   group_by(Player) %>%
   gather(variable, value, ECR, SD, Best, Worst) %>%
