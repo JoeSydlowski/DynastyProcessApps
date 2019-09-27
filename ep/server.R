@@ -1,9 +1,9 @@
 library(shiny)
+library(tidyverse)
 library(dplyr)
 library(nflscrapR)
 library(DT)
-library(tidyr)
-library(curl)
+library(shinydashboard)
 library(here)
 
 database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
