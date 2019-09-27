@@ -27,7 +27,7 @@ ui <-
                         icon('rocket'), href = "https://dynastyprocess.com/apps")
         ))
     ),
-    dashboardBody(tags$head(
+    dashboardBody({tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
       tags$style(HTML('
                                 /* logo */
@@ -81,7 +81,7 @@ ui <-
                                 }
 
         '))
-    ),
+    )},
     tabItems(
       tabItem(tabName='espnpp',
               fluidRow(
@@ -93,8 +93,10 @@ ui <-
               fluidRow(
                 box(width=12,
                     textInput('leagueid',label='ESPN League ID',value='1178049',placeholder="(Public Leagues Only!)"),
-                    sliderInput('weekselect',label = "Select Weeks", value=c(1:4),min=1,max=17),
-                    actionButton('load','Calculate Potential Points!',icon=icon('calculator'))
+                    sliderInput('weekselect',label = "Select Weeks", value=c(1,17),min=1,max=17, ticks=FALSE),
+                    actionButton('load','Calculate!',icon=icon('calculator')),
+                    br(),
+                    textOutput('leaguename')
                     )
               ),
               fluidRow(
@@ -102,10 +104,12 @@ ui <-
                     tabPanel('Total',DTOutput('summary_season')),
                     tabPanel('Weekly Breakdown',DTOutput('summary_week'))
               ),
-              downloadButton('downloaddata',label="Download Data!")),
+              box(width=3,title='Downloads',
+              downloadButton('downloadseason',label="Download PP Summary"),
+              downloadButton('downloadweek',label='Download Weekly Breakdown'))),
 
               fluidRow(
-                box(title='Details',width=12,
+                box(title='Details',width=12,solidHeader = TRUE,
                     DTOutput('details'))
               )
 
@@ -118,6 +122,18 @@ ui <-
 
 server <- function(input, output, session) {
   
+  espnbasic<- eventReactive(input$load,fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
+                              input$leagueid,
+                              '?view=mSettings'),flatten=TRUE))
+  
+  currentweek<-reactive(espnbasic()$status$currentMatchupPeriod)
+  
+  leaguename<-reactive(espnbasic()$settings$name)
+  
+  maxweek<-reactive(if_else(input$weekselect[2]<=currentweek(),input$weekselect[2],currentweek()))
+  
+  output$leaguename<-renderText(paste('Loaded:',leaguename()))
+
   ppfunction<-function(league_id,scoreweek){
     
     optimal_lineups<-tibble()
@@ -219,7 +235,7 @@ server <- function(input, output, session) {
   }
   
   details<-eventReactive(input$load,{
-    tibble(league_id=input$leagueid,weeklist=c(input$weekselect[1]:input$weekselect[2])) %>%
+    tibble(league_id=input$leagueid,weeklist=c(input$weekselect[1]:maxweek())) %>%
       rowwise() %>% 
       mutate(lineups=lapply(league_id,ppfunction,weeklist)) %>% 
       unnest_wider(lineups) %>% 
@@ -250,9 +266,13 @@ server <- function(input, output, session) {
   
   output$summary_season<-renderDT(summary_season(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
   
-  output$downloaddata<-downloadHandler(
-    filename=function(){paste0(input$leagueid,'.csv')},
-    content=function(){write.csv(summary_season(),file,row.names=FALSE)}
+  output$downloadseason<-downloadHandler(
+    filename=function(){paste0('Potential Points:',leaguename(),'.csv')},
+    content=function(file){write.csv(summary_season(),file,row.names=FALSE)}
+  )
+  output$downloadweek<-downloadHandler(
+    filename=function(){paste0('Potential Points:',leaguename(),'.csv')},
+    content=function(file){write.csv(summary_week(),file,row.names=FALSE)}
   )
   
 }

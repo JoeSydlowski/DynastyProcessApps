@@ -9,6 +9,16 @@ league_id<-1178049
 
 optimal_lineups<-tibble()
 
+espnbasic<- fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
+                       league_id,
+                       '?view=mSettings'
+                       ),flatten=TRUE)
+
+maxweek<-espnbasic$status$currentMatchupPeriod
+
+name<-espnbasic$settings$name
+
+
 for (scoreweek in 1:3){
 
 espn<- fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
@@ -101,6 +111,8 @@ for (i in lineup_settings$priority) {
 }
 
 optimal_lineups<-bind_rows(optimal_lineups,starters)
+
+optimal_lineups
 
 }
 
