@@ -124,15 +124,27 @@ server <- function(input, output, session) {
   
   espnbasic<- eventReactive(input$load,fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
                               input$leagueid,
-                              '?view=mSettings'),flatten=TRUE))
-  
-  currentweek<-reactive(espnbasic()$status$currentMatchupPeriod)
+                              '?view=mSettings',
+                              '&view=mTeam'),flatten=TRUE))
   
   leaguename<-reactive(espnbasic()$settings$name)
+  
+  currentweek<-reactive(espnbasic()$status$currentMatchupPeriod)
   
   maxweek<-reactive(if_else(input$weekselect[2]<=currentweek(),input$weekselect[2],currentweek()))
   
   output$leaguename<-renderText(paste('Loaded:',leaguename()))
+  
+  teams<-reactive({espnbasic()$teams %>% 
+    select(id,primaryOwner, location, nickname) %>% 
+    mutate(team_name=paste(location,nickname)) %>% 
+    select(id,primaryOwner,team_name)})
+  
+  owners<-reactive({espnbasic()$members %>% 
+    select(id,owner_name=displayName) %>% 
+    nest_join(teams(),by=c('id'='primaryOwner'),name='teams') %>% 
+    hoist(teams,team_id='id',team_name='team_name') %>% 
+    select(-teams)})
 
   ppfunction<-function(league_id,scoreweek){
     
@@ -144,24 +156,25 @@ server <- function(input, output, session) {
                            scoreweek,
                            '&view=mMatchupScore',
                            '&view=mBoxscore',
-                           '&view=mScoreboard',
-                           '&view=mTeam', 
-                           '&view=mRoster',
+                           #'&view=mScoreboard',
+                           #'&view=mTeam', 
+                           #'&view=mRoster',
                            '&view=mSettings',
-                           '&view=mRosterSettings',
-                           '&view=kona_player_info',
-                           '&view=mNav'),flatten=TRUE)
+                           '&view=mRosterSettings'
+                           #'&view=kona_player_info',
+                           #'&view=mNav'
+                           ),flatten=TRUE)
+    # 
+    # teams<-espn$teams %>% 
+    #   select(id,primaryOwner)
+    # 
+    # owners<-espn$members %>% 
+    #   select(id,displayName) %>% 
+    #   nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
+    #   hoist(teams,team_id='id') %>% 
+    #   select(-teams)
     
-    teams<-espn$teams %>% 
-      select(id,primaryOwner)
-    
-    owners<-espn$members %>% 
-      select(id,displayName) %>% 
-      nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
-      hoist(teams,team_id='id') %>% 
-      select(-teams)
-    
-    leaguename<-espn$settings$name
+    #leaguename<-espn$settings$name
     
     lineup_settings<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,
                                         8,9,10,11,24,12,13,14,15),
@@ -228,7 +241,6 @@ server <- function(input, output, session) {
     }
     
     optimal_lineups<-bind_rows(optimal_lineups,starters) %>%
-      left_join(owners,by="team_id") %>% 
       nest(data=everything())
     
     return(optimal_lineups)
@@ -241,20 +253,21 @@ server <- function(input, output, session) {
       unnest_wider(lineups) %>% 
       unnest_wider(data) %>% 
       unnest_wider(3) %>% 
-      unnest(-(1:2)) %>% 
-      select(Week=week,Team=displayName,Pos=pos,ActualScore=score,Player=player,Points=points)
+      unnest(-(1:2)) %>%
+      left_join(owners(),by="team_id") %>% 
+      select(Week=week,Owner=owner_name,Team=team_name,Pos=pos,ActualScore=score,Player=player,Points=points)
   })
   
   summary_week<-eventReactive(input$load,{
     details() %>% 
-      group_by(Week,Team) %>%
+      group_by(Owner,Week,Team) %>%
       summarize(ActualScore=mean(ActualScore),PotentialScore=sum(Points)) %>% 
       ungroup()
   })
   
   summary_season<-eventReactive(input$load,{
     summary_week() %>% 
-      group_by(Team) %>% 
+      group_by(Owner,Team) %>% 
       summarize(ActualScore=sum(ActualScore),PotentialScore=sum(PotentialScore)) %>% 
       arrange(desc(PotentialScore))
   })
