@@ -86,27 +86,28 @@ ui <-
       tabItem(tabName='espnpp',
               fluidRow(
                 box(width=12, 
-                    titlePanel("DynastyProcess: ESPN Potential Points Calculator")#,
-                    #includeMarkdown('about.md')
+                    titlePanel("DynastyProcess: Potential Points Calculator"),
+                    includeMarkdown('about.md')
                     )
               ),
               fluidRow(
-                box(width=12,
+                box(width=8,
                     textInput('leagueid',label='ESPN League ID',value='1178049',placeholder="(Public Leagues Only!)"),
                     sliderInput('weekselect',label = "Select Weeks", value=c(1,17),min=1,max=17, ticks=FALSE),
                     actionButton('load','Calculate!',icon=icon('calculator')),
                     br(),
                     textOutput('leaguename')
-                    )
+                    ),
+                box(width=4,title='Downloads',
+                    downloadButton('downloadseason',label="Download PP Summary"),
+                    downloadButton('downloadweek',label='Download Weekly Breakdown'))
               ),
               fluidRow(
-                    tabBox(width = 9,title = "Summary",side='right',
+                    tabBox(width = 12,title = "Summary",side='right',
                     tabPanel('Total',DTOutput('summary_season')),
                     tabPanel('Weekly Breakdown',DTOutput('summary_week'))
-              ),
-              box(width=3,title='Downloads',
-              downloadButton('downloadseason',label="Download PP Summary"),
-              downloadButton('downloadweek',label='Download Weekly Breakdown'))),
+              )
+),
 
               fluidRow(
                 box(title='Details',width=12,solidHeader = TRUE,
@@ -164,18 +165,7 @@ server <- function(input, output, session) {
                            #'&view=kona_player_info',
                            #'&view=mNav'
                            ),flatten=TRUE)
-    # 
-    # teams<-espn$teams %>% 
-    #   select(id,primaryOwner)
-    # 
-    # owners<-espn$members %>% 
-    #   select(id,displayName) %>% 
-    #   nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
-    #   hoist(teams,team_id='id') %>% 
-    #   select(-teams)
-    
-    #leaguename<-espn$settings$name
-    
+
     lineup_settings<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,
                                         8,9,10,11,24,12,13,14,15),
                             pos=c('QB','RB','RB/WR','WR','WR/TE','TE',
@@ -273,7 +263,7 @@ server <- function(input, output, session) {
   })
   
   
-  output$details<-renderDT(details(),options=list(pageLength=25))
+  output$details<-renderDT(details(),rownames=FALSE,options=list(pageLength=25))
   
   output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
   
