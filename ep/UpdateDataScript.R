@@ -5,17 +5,18 @@ library(nflscrapR)
 setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
 #setwd("/srv/shiny-server/DynastyProcess/ep")
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:3)) %>%
-  filter(state_of_game == "POST") #& game_id != 2019092208 & game_id != 2019090808)
+ids <- scrape_game_ids(2019, type = "reg", weeks = c(4:4)) #%>%
+  #filter(state_of_game == "POST")
 
 ids$game_id <- as.character(ids$game_id)
 id <- ids %>% pull(game_id)
 
 dfnew <-  data.frame()
-pbp_data <- for (i in id)
+for (i in id)
 { print(i)
-  df <- scrape_json_play_by_play(i)
-  dfnew <- bind_rows(dfnew,df)}
+  tryCatch({df <- scrape_json_play_by_play(i)
+  dfnew <- bind_rows(dfnew,df)}, error=function(e){"Game Unavailable"})
+}
 
 dfnew <- dfnew %>%
   inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
@@ -63,10 +64,13 @@ rushdf$eRushFP1D <- predict(rushFP1DMod, rushdf)
 
 dfnewmerged <- bind_rows(recdf, rushdf)
 
-#df2019 <- read.csv("data2019cleaned.csv")
+dfnewmerged$play_id <- as.numeric(dfnewmerged$play_id)
 
-#finaldf <- bind_rows(df2019, dfnewmerged) %>%
-#  distinct()
+df2019 <- read.csv("data2019cleaned.csv")
+df2019$X <- NULL
+
+finaldf <- rbind(df2019, dfnewmerged) %>%
+ distinct()
 
 #view <- anti_join(dfnew, dfnewmerged, by = "play_id") %>%
 #  filter(is.na(kicker_player_name),
