@@ -75,21 +75,32 @@ shinyServer(function(input, output, session) {
         df() %>%
             {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . } %>%
             {if (input$selectPos  != "All") filter(., pos == input$selectPos) else .} %>%
-            {if (input$weeklyRadio == "Weekly") filter(., week %in% input$selectWeeks) else .}
+            {if (input$weeklyRadio == "Weekly") filter(., week %in% input$selectWeeks) else .} 
     })
     
-    # observeEvent({input$selectTeam
-    #     input$selectPos},{
-    #         
-    #         currentPlayer <- input$selectPlayers
-    #         updateSelectizeInput(session, 'selectPlayers',
-    #                              choices = c("All", as.character(sort(unique(df2()$mergename)))),
-    #                              selected = c(currentPlayer)
-    #         )
-    #     })
+    df3 <- reactive({
+        df2() %>%
+            {if (input$selectPlayers != "All") filter(., mergename %in% input$selectPlayers) else .}
+    })
+    
+    observeEvent({input$selectTeam
+        input$selectPos
+        input$selectPlayers},{
+            currentPlayer <- input$selectPlayers
+            if (currentPlayer[1] == "All" & length(currentPlayer) > 1)
+            {currentPlayer <- currentPlayer[!currentPlayer %in% "All"]
+            print(currentPlayer)}
+            if("All" %in% currentPlayer & currentPlayer[1] != "All")
+            {currentPlayer <- c("All")}
+
+            updateSelectizeInput(session, 'selectPlayers',
+                                 choices = c("All", as.character(sort(unique(df2()$mergename)))),
+                                 selected = currentPlayer
+            )
+        })
     
     output$teamTable <- renderDT({
-        datatable(df2(),
+        datatable(df3(),
                   rownames=FALSE,
                   options(
                       paging=FALSE,
