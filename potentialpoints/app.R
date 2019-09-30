@@ -27,7 +27,7 @@ ui <-
                         icon('rocket'), href = "https://dynastyprocess.com/apps")
         ))
     ),
-    dashboardBody(tags$head(
+    dashboardBody({tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
       tags$style(HTML('
                                 /* logo */
@@ -81,31 +81,36 @@ ui <-
                                 }
 
         '))
-    ),
+    )},
     tabItems(
       tabItem(tabName='espnpp',
               fluidRow(
                 box(width=12, 
-                    titlePanel("DynastyProcess: ESPN Potential Points Calculator")#,
-                    #includeMarkdown('about.md')
+                    titlePanel("DynastyProcess: Potential Points Calculator"),
+                    includeMarkdown('about.md')
                     )
               ),
               fluidRow(
-                box(width=12,
+                box(width=8,
                     textInput('leagueid',label='ESPN League ID',value='1178049',placeholder="(Public Leagues Only!)"),
-                    sliderInput('weekselect',label = "Select Weeks", value=c(1:4),min=1,max=17),
-                    actionButton('load','Calculate Potential Points!',icon=icon('calculator'))
-                    )
+                    sliderInput('weekselect',label = "Select Weeks", value=c(1,17),min=1,max=17, ticks=FALSE),
+                    actionButton('load','Calculate!',icon=icon('calculator')),
+                    br(),
+                    textOutput('leaguename')
+                    ),
+                box(width=4,title='Downloads',
+                    downloadButton('downloadseason',label="Download PP Summary"),
+                    downloadButton('downloadweek',label='Download Weekly Breakdown'))
               ),
               fluidRow(
-                    tabBox(width = 9,title = "Summary",side='right',
+                    tabBox(width = 12,title = "Summary",side='right',
                     tabPanel('Total',DTOutput('summary_season')),
                     tabPanel('Weekly Breakdown',DTOutput('summary_week'))
-              ),
-              downloadButton('downloaddata',label="Download Data!")),
+              )
+),
 
               fluidRow(
-                box(title='Details',width=12,
+                box(title='Details',width=12,solidHeader = TRUE,
                     DTOutput('details'))
               )
 
@@ -118,6 +123,30 @@ ui <-
 
 server <- function(input, output, session) {
   
+  espnbasic<- eventReactive(input$load,fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
+                              input$leagueid,
+                              '?view=mSettings',
+                              '&view=mTeam'),flatten=TRUE))
+  
+  leaguename<-reactive(espnbasic()$settings$name)
+  
+  currentweek<-reactive(espnbasic()$status$currentMatchupPeriod)
+  
+  maxweek<-reactive(if_else(input$weekselect[2]<=currentweek(),input$weekselect[2],currentweek()))
+  
+  output$leaguename<-renderText(paste('Loaded:',leaguename()))
+  
+  teams<-reactive({espnbasic()$teams %>% 
+    select(id,primaryOwner, location, nickname) %>% 
+    mutate(team_name=paste(location,nickname)) %>% 
+    select(id,primaryOwner,team_name)})
+  
+  owners<-reactive({espnbasic()$members %>% 
+    select(id,owner_name=displayName) %>% 
+    nest_join(teams(),by=c('id'='primaryOwner'),name='teams') %>% 
+    hoist(teams,team_id='id',team_name='team_name') %>% 
+    select(-teams)})
+
   ppfunction<-function(league_id,scoreweek){
     
     optimal_lineups<-tibble()
@@ -128,25 +157,15 @@ server <- function(input, output, session) {
                            scoreweek,
                            '&view=mMatchupScore',
                            '&view=mBoxscore',
-                           '&view=mScoreboard',
-                           '&view=mTeam', 
-                           '&view=mRoster',
+                           #'&view=mScoreboard',
+                           #'&view=mTeam', 
+                           #'&view=mRoster',
                            '&view=mSettings',
-                           '&view=mRosterSettings',
-                           '&view=kona_player_info',
-                           '&view=mNav'),flatten=TRUE)
-    
-    teams<-espn$teams %>% 
-      select(id,primaryOwner)
-    
-    owners<-espn$members %>% 
-      select(id,displayName) %>% 
-      nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
-      hoist(teams,team_id='id') %>% 
-      select(-teams)
-    
-    leaguename<-espn$settings$name
-    
+                           '&view=mRosterSettings'
+                           #'&view=kona_player_info',
+                           #'&view=mNav'
+                           ),flatten=TRUE)
+
     lineup_settings<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,
                                         8,9,10,11,24,12,13,14,15),
                             pos=c('QB','RB','RB/WR','WR','WR/TE','TE',
@@ -212,47 +231,51 @@ server <- function(input, output, session) {
     }
     
     optimal_lineups<-bind_rows(optimal_lineups,starters) %>%
-      left_join(owners,by="team_id") %>% 
       nest(data=everything())
     
     return(optimal_lineups)
   }
   
   details<-eventReactive(input$load,{
-    tibble(league_id=input$leagueid,weeklist=c(input$weekselect[1]:input$weekselect[2])) %>%
+    tibble(league_id=input$leagueid,weeklist=c(input$weekselect[1]:maxweek())) %>%
       rowwise() %>% 
       mutate(lineups=lapply(league_id,ppfunction,weeklist)) %>% 
       unnest_wider(lineups) %>% 
       unnest_wider(data) %>% 
       unnest_wider(3) %>% 
-      unnest(-(1:2)) %>% 
-      select(Week=week,Team=displayName,Pos=pos,ActualScore=score,Player=player,Points=points)
+      unnest(-(1:2)) %>%
+      left_join(owners(),by="team_id") %>% 
+      select(Week=week,Owner=owner_name,Team=team_name,Pos=pos,ActualScore=score,Player=player,Points=points)
   })
   
   summary_week<-eventReactive(input$load,{
     details() %>% 
-      group_by(Week,Team) %>%
+      group_by(Owner,Week,Team) %>%
       summarize(ActualScore=mean(ActualScore),PotentialScore=sum(Points)) %>% 
       ungroup()
   })
   
   summary_season<-eventReactive(input$load,{
     summary_week() %>% 
-      group_by(Team) %>% 
+      group_by(Owner,Team) %>% 
       summarize(ActualScore=sum(ActualScore),PotentialScore=sum(PotentialScore)) %>% 
       arrange(desc(PotentialScore))
   })
   
   
-  output$details<-renderDT(details(),options=list(pageLength=25))
+  output$details<-renderDT(details(),rownames=FALSE,options=list(pageLength=25))
   
   output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
   
   output$summary_season<-renderDT(summary_season(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
   
-  output$downloaddata<-downloadHandler(
-    filename=function(){paste0(input$leagueid,'.csv')},
-    content=function(){write.csv(summary_season(),file,row.names=FALSE)}
+  output$downloadseason<-downloadHandler(
+    filename=function(){paste0('Potential Points:',leaguename(),'.csv')},
+    content=function(file){write.csv(summary_season(),file,row.names=FALSE)}
+  )
+  output$downloadweek<-downloadHandler(
+    filename=function(){paste0('Potential Points:',leaguename(),'.csv')},
+    content=function(file){write.csv(summary_week(),file,row.names=FALSE)}
   )
   
 }

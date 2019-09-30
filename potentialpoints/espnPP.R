@@ -7,7 +7,30 @@ library(DT)
 
 league_id<-1178049
 
+scoreweek<-3
+
 optimal_lineups<-tibble()
+
+espnbasic<- fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
+                       league_id,
+                       '?view=mSettings',
+                       '&view=mTeam' 
+                       ),flatten=TRUE)
+
+maxweek<-espnbasic$status$currentMatchupPeriod
+
+name<-espnbasic$settings$name
+
+teams<-espnbasic$teams %>% 
+  select(id,primaryOwner, location, nickname) %>% 
+  mutate(team_name=paste(location,nickname)) %>% 
+  select(id,primaryOwner,team_name)
+
+owners<-espnbasic$members %>% 
+  select(id,owner_name=displayName) %>% 
+  nest_join(teams,by=c('id'='primaryOwner'),name='teams') %>% 
+  hoist(teams,team_id='id',team_name='team_name') %>% 
+  select(-teams)
 
 for (scoreweek in 1:3){
 
@@ -17,24 +40,14 @@ espn<- fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/
                        scoreweek,
                        '&view=mMatchupScore',
                        '&view=mBoxscore',
-                       '&view=mScoreboard',
-                       '&view=mTeam', 
-                       '&view=mRoster',
+                       #'&view=mScoreboard',
+                       #'&view=mTeam', 
+                       #'&view=mRoster',
                        '&view=mSettings',
-                       '&view=mRosterSettings',
-                       '&view=kona_player_info',
-                       '&view=mNav'),flatten=TRUE)
-
-teams<-espn$teams %>% 
-  select(id,primaryOwner)
-
-owners<-espn$members %>% 
-  select(id,displayName) %>% 
-  nest_join(espn$teams,by=c('id'='primaryOwner'),name='teams') %>% 
-  hoist(teams,team_id='id') %>% 
-  select(-teams)
-
-leaguename<-espn$settings$name
+                       '&view=mRosterSettings'
+                       #'&view=kona_player_info'
+                       #'&view=mNav'
+                       ),flatten=TRUE)
 
 lineup_settings<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,
                                    8,9,10,11,24,12,13,14,15),
@@ -102,6 +115,8 @@ for (i in lineup_settings$priority) {
 
 optimal_lineups<-bind_rows(optimal_lineups,starters)
 
+optimal_lineups
+
 }
 
 
@@ -111,4 +126,4 @@ summary_week<-optimal_lineups %>%
   ungroup() %>% 
   left_join(owners,by='team_id') %>% 
   arrange(week,desc(optimal_score)) %>% 
-  select(Team=displayName,Week=week,`Actual Score`=actual_score,`Optimal Score`=optimal_score)
+  select(Team=team_name,Week=week,`Actual Score`=actual_score,`Optimal Score`=optimal_score)
