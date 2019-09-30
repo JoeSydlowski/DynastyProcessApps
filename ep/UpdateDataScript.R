@@ -1,11 +1,10 @@
-
 library(dplyr)
 library(nflscrapR)
 
 setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
 #setwd("/srv/shiny-server/DynastyProcess/ep")
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = c(4:4)) #%>%
+ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:4)) #%>%
   #filter(state_of_game == "POST")
 
 ids$game_id <- as.character(ids$game_id)
@@ -66,21 +65,10 @@ dfnewmerged <- bind_rows(recdf, rushdf)
 
 dfnewmerged$play_id <- as.numeric(dfnewmerged$play_id)
 
-df2019 <- read.csv("data2019cleaned.csv")
-df2019$X <- NULL
-
-finaldf <- rbind(df2019, dfnewmerged) %>%
- distinct()
-
-#view <- anti_join(dfnew, dfnewmerged, by = "play_id") %>%
-#  filter(is.na(kicker_player_name),
-#         is.na(punter_player_name),
-#         is.na(penalty_player_name),
-#         qb_kneel == 0,
-#         !is.na(play_type),
-#         sack == 0) %>%
-#  select(play_id ,down, desc, interception)
-
-#play <- dfnew %>% filter(play_id == 	4116)
+# df2019 <- read.csv("data2019cleaned.csv")
+# df2019$X <- NULL
+# 
+# finaldf <- rbind(df2019, dfnewmerged) %>%
+#  distinct()
 
 write.csv(dfnewmerged, file = "data2019cleaned.csv")
