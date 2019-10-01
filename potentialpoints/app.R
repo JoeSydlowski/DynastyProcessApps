@@ -141,11 +141,16 @@ server <- function(input, output, session) {
     mutate(team_name=paste(location,nickname)) %>% 
     select(id,primaryOwner,team_name)})
   
-  owners<-reactive({espnbasic()$members %>% 
-    select(id,owner_name=displayName) %>% 
-    nest_join(teams(),by=c('id'='primaryOwner'),name='teams') %>% 
-    hoist(teams,team_id='id',team_name='team_name') %>% 
-    select(-teams)})
+  owners <- reactive({
+    espnbasic()$members %>%
+      select(id, owner_name = displayName) %>%
+      nest_join(teams(),
+                by = c('id' = 'primaryOwner'),
+                name = 'teams') %>%
+      hoist(teams, team_id = 'id', team_name = 'team_name') %>%
+      select(-teams) %>%
+      unnest(team_id, team_name)
+  })
 
   ppfunction<-function(league_id,scoreweek){
     
