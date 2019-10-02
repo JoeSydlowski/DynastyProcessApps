@@ -7,6 +7,7 @@ library(shinydashboard)
 library(here)
 
 setwd(here())
+#setwd("C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep")
 
 df2019 <- read.csv("data2019cleaned.csv")
 
@@ -156,6 +157,7 @@ shinyUI(
                    choices = c("All"),
                    selected = "All",
                    multiple = TRUE),
-    DTOutput("teamTable")
+    DTOutput("teamTable"),
+    DTOutput("teamPivot")
   )
 ) #end of UI code

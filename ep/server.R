@@ -10,6 +10,7 @@ database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/m
 database$gsis_id <- as.character(database$gsis_id)
 
 setwd(here())
+#setwd("C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep")
 
 df2019 <- read.csv("data2019cleaned.csv")
 
@@ -22,7 +23,8 @@ shinyServer(function(input, output, session) {
                       TeamCatches = sum(complete_pass),
                       TeamAYs = sum(air_yards, na.rm=TRUE),
                       TeamRecEP = sum(eRecFP, na.rm=TRUE)
-            )
+            ) %>%
+            ungroup()
         
         playerrushEP <- df2019 %>%
             {if (input$weeklyRadio == "Weekly") group_by(., rusher_player_id, posteam, week) else group_by(., rusher_player_id, posteam)} %>%
@@ -30,7 +32,8 @@ shinyServer(function(input, output, session) {
                       RushFP = sum(RushFP, na.rm=TRUE),
                       RushDiff = (RushFP - eRushFP),
                       Rushes = sum(rush_attempt),
-                      RushGames = n_distinct(game_id))
+                      RushGames = n_distinct(game_id)) %>%
+            ungroup()
         
         playerrecEP <- df2019 %>%
             #filter(!is.na(receiver_player_id)) %>%
@@ -52,6 +55,7 @@ shinyServer(function(input, output, session) {
                    WOPR = 1.5*TargetShare + 0.7*AYshare,
                    RACR = RecYds / AYs,
                    YPTPA = RecYds / TeamTargets) %>%
+            ungroup() %>%
             {if (input$weeklyRadio == "Weekly") dplyr::select(., week, receiver_player_id, posteam, eRecFP, RecGames, RecFP, RecDiff, Targets, Catches, RecYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA) else
                 dplyr::select(., receiver_player_id, posteam, eRecFP, RecGames, RecFP, RecDiff, Targets, Catches, RecYds, AYs, AYshare, TargetShare, aDOT, WOPR, RACR, YPTPA)}
         
@@ -67,8 +71,10 @@ shinyServer(function(input, output, session) {
                 Diff = sum(FP, - eFP, na.rm = TRUE),
                 Games = max(RushGames, RecGames, na.rm = TRUE)
             ) %>%
+            ungroup() %>%
             {if (input$weeklyRadio == "Weekly") dplyr::select(., week, mergename, posteam, pos, eRecFP, RecFP, RecDiff, eRushFP, RushFP, eRushFP, RushDiff, eFP, FP, Diff) else
                 dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, eRushFP, RushDiff, eFP, FP, Diff)}
+
     })
     
     df2 <- reactive({
@@ -81,6 +87,17 @@ shinyServer(function(input, output, session) {
     df3 <- reactive({
         df2() %>%
             {if (input$selectPlayers != "All") filter(., mergename %in% input$selectPlayers) else .}
+    })
+    
+    df4 <- reactive({
+        df3() %>%
+            select(mergename, week, eFP) %>%
+            arrange(week) %>%
+            pivot_wider(names_from = week,
+                        names_prefix = "Week",
+                        values_from = eFP) %>%
+            mutate(Total = rowSums(.[2:ncol(.)], na.rm = TRUE))
+
     })
     
     observeEvent({input$selectTeam
@@ -106,7 +123,18 @@ shinyServer(function(input, output, session) {
                       paging=FALSE,
                       searching=FALSE)) %>%
             #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
-            formatRound(columns=c(6:ncol(df2())), digits=1)
+            formatRound(columns=c(5:ncol(df3())), digits=1)
+        
+    })
+    
+    output$teamPivot <- renderDT({
+        req(input$weeklyRadio == "Weekly")
+        datatable(df4(),
+                  rownames=FALSE,
+                  options(
+                      paging=FALSE,
+                      searching=FALSE)) %>%
+            formatRound(columns = c(2:ncol(df4())), digits = 1)
         
     })
     

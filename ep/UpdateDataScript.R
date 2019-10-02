@@ -63,8 +63,8 @@ rushdf$eRushFP1D <- predict(rushFP1DMod, rushdf)
 
 dfnewmerged <- bind_rows(recdf, rushdf)
 
-dfnewmerged$play_id <- as.numeric(dfnewmerged$play_id)
-
+# dfnewmerged$play_id <- as.numeric(dfnewmerged$play_id)
+# 
 # df2019 <- read.csv("data2019cleaned.csv")
 # df2019$X <- NULL
 # 
