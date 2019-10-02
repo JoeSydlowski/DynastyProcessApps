@@ -3,9 +3,9 @@ library(tidyverse)
 library(shiny)
 library(shinydashboard)
 library(DT)
-library(here)
+# library(here)
 
-setwd(here())
+# setwd(here())
 
 ui <-
   dashboardPage(skin = "blue", title = "DynastyProcess Apps: Potential Points Calculator",
@@ -141,11 +141,16 @@ server <- function(input, output, session) {
     mutate(team_name=paste(location,nickname)) %>% 
     select(id,primaryOwner,team_name)})
   
-  owners<-reactive({espnbasic()$members %>% 
-    select(id,owner_name=displayName) %>% 
-    nest_join(teams(),by=c('id'='primaryOwner'),name='teams') %>% 
-    hoist(teams,team_id='id',team_name='team_name') %>% 
-    select(-teams)})
+  owners <- reactive({
+    espnbasic()$members %>%
+      select(id, owner_name = displayName) %>%
+      nest_join(teams(),
+                by = c('id' = 'primaryOwner'),
+                name = 'teams') %>%
+      hoist(teams, team_id = 'id', team_name = 'team_name') %>%
+      select(-teams) %>%
+      unnest(team_id, team_name)
+  })
 
   ppfunction<-function(league_id,scoreweek){
     
@@ -263,11 +268,11 @@ server <- function(input, output, session) {
   })
   
   
-  output$details<-renderDT(details(),rownames=FALSE,options=list(pageLength=25))
+  output$details<-renderDT(details(),rownames=FALSE,options=list(scrollX=TRUE,pageLength=25))
   
-  output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
+  output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(scrollX=TRUE,lengthChange=FALSE,pageLength=50))
   
-  output$summary_season<-renderDT(summary_season(),rownames=FALSE,options=list(lengthChange=FALSE,pageLength=50))
+  output$summary_season<-renderDT(summary_season(),rownames=FALSE,options=list(scrollX=TRUE,lengthChange=FALSE,pageLength=50))
   
   output$downloadseason<-downloadHandler(
     filename=function(){paste0('Potential Points:',leaguename(),'.csv')},
