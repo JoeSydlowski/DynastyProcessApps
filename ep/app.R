@@ -22,8 +22,8 @@ ui <- dashboardPage(skin="blue",
                                     titleWidth = 250),
                     dashboardSidebar(width = 250,
                                      sidebarMenu(
-                                       menuItem('EP', tabname = 'ep', icon = icon('rocket')),
-                                       menuItem('EP2', tabname = 'ep2', icon = icon('quidditch')))
+                                       menuItem('EP', tabName = 'ep', icon = icon('rocket')),
+                                       menuItem('EP2', tabName = 'ep2', icon = icon('quidditch')))
                     ),
                     dashboardBody(
                       tags$head(
@@ -81,7 +81,7 @@ ui <- dashboardPage(skin="blue",
                                       ')
                         )
                       ),
-                      #tabItems(
+                      tabItems(
                         tabItem(tabName = 'ep',
                                 fluidRow(
                                   box(width = 3,
@@ -120,7 +120,7 @@ ui <- dashboardPage(skin="blue",
                         tabItem(tabName = "ep2",
                                 DTOutput("teamPivot"))
                       )
-                    #)
+                    )
 )
   
   # fluidPage(
