@@ -26,7 +26,7 @@ ui <- dashboardPage(skin="blue",
                                        menuItem('EP2', tabName = 'ep2', icon = icon('quidditch')))
                     ),
                     dashboardBody(
-                      tags$head(
+                      {tags$head(
                         tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
                         tags$style(HTML('
                                 /* logo */
@@ -80,9 +80,11 @@ ui <- dashboardPage(skin="blue",
                                 }
                                       ')
                         )
-                      ),
+                      )},
                       tabItems(
                         tabItem(tabName = 'ep',
+                                titlePanel('DynastyProcess Apps: Expected Points'),
+                                # fluidRow(includeMarkdown('about.md')),
                                 fluidRow(
                                   box(width = 3,
                                       selectInput("selectTeam",
@@ -118,7 +120,9 @@ ui <- dashboardPage(skin="blue",
                                              DTOutput("teamTable")))
                         ),
                         tabItem(tabName = "ep2",
-                                DTOutput("teamPivot"))
+                                titlePanel('DynastyProcess Apps: Expected Points'),
+                                #fluidRow(includeMarkdown('about2.md')),
+                                fluidRow(DTOutput("teamPivot")))
                       )
                     )
 )
