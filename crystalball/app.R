@@ -27,7 +27,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
       #menuItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator")
     )
   ),
-  dashboardBody(tags$head(
+  dashboardBody({tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
     tags$style(HTML('
                                 /* logo */
@@ -81,7 +81,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                                 }
 
         '))
-  ),
+  )},
     tabItems(
     tabItem(tabName = "mfl",
             fluidRow(
@@ -102,7 +102,13 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               box(title="Season Projections",width=12,
                   DTOutput('mflsummarytbl')
                   )),
-            fluidRow(box(width=12,title="Schedule",DTOutput('mfldetailstbl')))
+            fluidRow(
+              tabBox(width=12,
+                     tabPanel('Weekly Schedule',DTOutput('mflweekpivot')),
+                     tabPanel('Details',DTOutput('mfldetails'))
+                     )
+            )
+            # fluidRow(tabBox(width=12,title="Schedule",DTOutput('mfldetailstbl')))
     ),
     tabItem(tabName = "sleeper",
             fluidRow(
@@ -120,7 +126,11 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               box(title="Season Projections",width=12,
                   DTOutput('sleepersummarytbl')
               )),
-            fluidRow(box(width=12,title="Schedule",DTOutput('sleeperdetailstbl')))
+            fluidRow(
+              tabBox(width=12,
+                     tabPanel('Weekly Schedule',DTOutput('sleeperweekpivot')),
+                     tabPanel('Details',DTOutput('sleeperdetails'))
+              ))
             
             
     ),
@@ -142,7 +152,12 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               box(title="Season Projections",width=12,
                   DTOutput('espnsummarytbl')
               )),
-            fluidRow(box(width=12,title="Schedule",DTOutput('espndetailstbl')))
+            fluidRow(
+              tabBox(width=12,
+                     tabPanel('Weekly Schedule',DTOutput('espnweekpivot')),
+                     tabPanel('Details',DTOutput('espndetails'))
+              ))
+            #fluidRow(box(width=12,title="Schedule",DTOutput('espndetailstbl')))
     )
   )
   )
@@ -270,12 +285,22 @@ server <- function(input, output, session) {
     mfl_sumtbl
   })
   
-  output$mfldetailstbl<-
+  output$mflweekpivot<-
     renderDT({
-      datatable(m_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
+      datatable(m_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=25)) %>% 
         formatStyle(-(1:2),backgroundColor = styleInterval(brks(m_fspivot(),-(1:2)),colourlist(20))) %>%
         formatStyle(2,backgroundColor=styleInterval(brks(m_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
+    })
+  
+  output$mfldetails<-
+    renderDT({
+      m_fullschedule() %>% 
+        select(Week=week,Team=team_name,`Team%`=team_pct,Opp=opp_name,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+        datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=25)) %>% 
+        formatStyle(3,backgroundColor=styleInterval(brks(m_fullschedule(),4),colourlist(20))) %>% 
+        formatStyle(5,backgroundColor=styleInterval(brks(m_fullschedule(),6),colourlist(20))) %>%
+        formatStyle(6,backgroundColor=styleInterval(brks(m_fullschedule(),7),colourlist(20)))
     })
   
   #Sleeper chunks start here!
@@ -397,12 +422,27 @@ server <- function(input, output, session) {
     s_sumtbl
   })
   
-  output$sleeperdetailstbl<-
+  output$sleeperweekpivot<-
     renderDT({
       datatable(s_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
         formatStyle(-(1:2),backgroundColor = styleInterval(brks(s_fspivot(),-(1:2)),colourlist(20))) %>%
         formatStyle(2,backgroundColor = styleInterval(brks(s_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
+    })
+  
+  output$sleeperdetails<-
+    renderDT({
+      s_fullschedule() %>%
+        nest_join(s_users(),by='roster_id',name='users') %>%
+        nest_join(s_users(),by=c('opp'='roster_id'),name='oppinfo') %>% 
+        hoist(users,Team='owner') %>% 
+        hoist(oppinfo,Opp='owner') %>% 
+        select(-roster_id,-opp,-users,-oppinfo) %>% 
+        select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+        datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
+        formatStyle(3,backgroundColor=styleInterval(brks(s_fullschedule(),4),colourlist(20))) %>% 
+        formatStyle(5,backgroundColor=styleInterval(brks(s_fullschedule(),5),colourlist(20))) %>%
+        formatStyle(6,backgroundColor=styleInterval(brks(s_fullschedule(),6),colourlist(20)))
     })
   
   
@@ -508,12 +548,28 @@ server <- function(input, output, session) {
     e_sumtbl
   })
   
-  output$espndetailstbl<-
+  output$espnweekpivot<-
     renderDT({
       datatable(e_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
         formatStyle(-(1:2),backgroundColor = styleInterval(brks(e_fspivot(),-(1:2)),colourlist(20))) %>%
         formatStyle(2,backgroundColor = styleInterval(brks(e_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
+    })
+  
+  output$espndetails<-
+    renderDT({
+      e_fullschedule() %>%
+        mutate(team_id = as.character(team_id),opp_id=as.character(opp_id)) %>%
+        nest_join(e_owners(),by='team_id',name='users') %>%
+        nest_join(e_owners(),by=c('opp_id'='team_id'),name='oppinfo') %>% 
+        hoist(users,Team='displayName') %>% 
+        hoist(oppinfo,Opp='displayName') %>% 
+        select(-team_id,-opp_id,-users,-oppinfo) %>% 
+        select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+        datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
+        formatStyle(3,backgroundColor=styleInterval(brks(e_fullschedule(),4),colourlist(20))) %>% 
+        formatStyle(5,backgroundColor=styleInterval(brks(e_fullschedule(),5),colourlist(20))) %>%
+        formatStyle(6,backgroundColor=styleInterval(brks(e_fullschedule(),6),colourlist(20)))
     })
   
   
