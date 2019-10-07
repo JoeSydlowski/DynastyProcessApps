@@ -297,7 +297,7 @@ server <- function(input, output, session) {
     renderDT({
       m_fullschedule() %>% 
         select(Week=week,Team=team_name,`Team%`=team_pct,Opp=opp_name,`Opp%`=opp_pct,WinProb=win_prob) %>% 
-        datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=25)) %>% 
+        datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
         formatStyle(3,backgroundColor=styleInterval(brks(m_fullschedule(),4),colourlist(20))) %>% 
         formatStyle(5,backgroundColor=styleInterval(brks(m_fullschedule(),6),colourlist(20))) %>%
         formatStyle(6,backgroundColor=styleInterval(brks(m_fullschedule(),7),colourlist(20)))
@@ -424,7 +424,7 @@ server <- function(input, output, session) {
   
   output$sleeperweekpivot<-
     renderDT({
-      datatable(s_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
+      datatable(s_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=25)) %>% 
         formatStyle(-(1:2),backgroundColor = styleInterval(brks(s_fspivot(),-(1:2)),colourlist(20))) %>%
         formatStyle(2,backgroundColor = styleInterval(brks(s_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
@@ -550,7 +550,7 @@ server <- function(input, output, session) {
   
   output$espnweekpivot<-
     renderDT({
-      datatable(e_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=50)) %>% 
+      datatable(e_fspivot(),rownames=FALSE, options=list(scrollX=TRUE,pageLength=25)) %>% 
         formatStyle(-(1:2),backgroundColor = styleInterval(brks(e_fspivot(),-(1:2)),colourlist(20))) %>%
         formatStyle(2,backgroundColor = styleInterval(brks(e_fspivot(),2),colourlist(20))) %>% 
         formatPercentage(-(1:2),1)
