@@ -100,40 +100,71 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                   )),
             fluidRow(
               box(title="Season Projections",width=12,
-                  DTOutput('mflsummarytbl')
+                  DTOutput('mflsummarytbl'),
+                  br(),
+                  downloadButton('mfldownloadsummary',label="Download")
                   )),
             fluidRow(
               tabBox(width=12,
-                     tabPanel('Weekly Schedule',DTOutput('mflweekpivot')),
-                     tabPanel('Details',DTOutput('mfldetails'))
+                     tabPanel('Weekly Schedule',DTOutput('mflweekpivot'),br(),downloadButton('mfldownloadpivot',label='Download')),
+                     tabPanel('Details',
+                              DTOutput('mfldetails'),
+                              br(),
+                              downloadButton('mfldownloaddetails',label='Download'))
                      )
             )
-            # fluidRow(tabBox(width=12,title="Schedule",DTOutput('mfldetailstbl')))
     ),
     tabItem(tabName = "sleeper",
+            fluidRow(box(
+              width = 12,
+              titlePanel("DynastyProcess.com: Crystal Ball App"),
+              includeMarkdown("about.md")
+            )),
             fluidRow(
-              box(width=12,
-                  titlePanel("DynastyProcess.com: Crystal Ball App"),
-                  includeMarkdown("about.md"))),
+              box(
+                width = 4,
+                title = "Sleeper Username",
+                textInput(
+                  'sleeperusername',
+                  NULL,
+                  value = "solarpool",
+                  placeholder = "Sleeper Username"
+                ),
+                actionButton('sleeperloaduser', 'Load Leagues!')
+              ),
+              box(
+                width = 8,
+                title = "League List",
+                DTOutput('sleeperleaguelist'),
+                textOutput('sleaguename')
+              )
+            ),
             fluidRow(
-              box(width=4, title="Sleeper Username",
-                  textInput('sleeperusername',NULL,value="solarpool",placeholder = "Sleeper Username"),
-                  actionButton('sleeperloaduser','Load Leagues!')),
-              box(width=8, title="League List",
-                  DTOutput('sleeperleaguelist'),
-                  textOutput('sleaguename'))),
-            fluidRow(
-              box(title="Season Projections",width=12,
-                  DTOutput('sleepersummarytbl')
-              )),
-            fluidRow(
-              tabBox(width=12,
-                     tabPanel('Weekly Schedule',DTOutput('sleeperweekpivot')),
-                     tabPanel('Details',DTOutput('sleeperdetails'))
-              ))
-            
-            
-    ),
+              box(
+                title = "Season Projections",
+                width = 12,
+                DTOutput('sleepersummarytbl'),
+                br(),
+                downloadButton('sleeperdownloadsummary', label = "Download")
+              )
+            ),
+            fluidRow(tabBox(
+              width = 12,
+              tabPanel(
+                'Weekly Schedule',
+                DTOutput('sleeperweekpivot'),
+                br(),
+                downloadButton('sleeperdownloadpivot', label =
+                                 "Download")
+              ),
+              tabPanel(
+                'Details',
+                DTOutput('sleeperdetails'),
+                br(),
+                downloadButton('sleeperdownloaddetails', label =
+                                 "Download")
+              )
+            ))), 
     tabItem(tabName = "espn",
             fluidRow(
               box(width=12,
@@ -150,14 +181,13 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               ),
             fluidRow(
               box(title="Season Projections",width=12,
-                  DTOutput('espnsummarytbl')
+                  DTOutput('espnsummarytbl'),br(),downloadButton('espndownloadsummary')
               )),
             fluidRow(
               tabBox(width=12,
-                     tabPanel('Weekly Schedule',DTOutput('espnweekpivot')),
-                     tabPanel('Details',DTOutput('espndetails'))
+                     tabPanel('Weekly Schedule',DTOutput('espnweekpivot'),br(),downloadButton('espndownloadpivot')),
+                     tabPanel('Details',DTOutput('espndetails'),br(),downloadButton('espndownloaddetails'))
               ))
-            #fluidRow(box(width=12,title="Schedule",DTOutput('espndetailstbl')))
     )
   )
   )
@@ -172,6 +202,12 @@ server <- function(input, output, session) {
     inputs
   }
   
+  colourlist<-colorRampPalette(brewer.pal(3,'PRGn'))
+  
+  brks<-function(tb,colnum){
+    breakvalue<-quantile(range(tb[colnum]),probs=seq(0.05,0.95,0.05),na.rm=TRUE)
+    return(breakvalue)
+  }
   
   # MFL code
   
@@ -263,14 +299,15 @@ server <- function(input, output, session) {
       arrange(desc(rosWins))
     })
   
+  m_details<-eventReactive(input$m_select_button,{
+    m_fullschedule() %>% 
+      select(Week=week,Team=team_name,`Team%`=team_pct,Opp=opp_name,`Opp%`=opp_pct,WinProb=win_prob)
+  })
   
-  colourlist<-colorRampPalette(brewer.pal(3,'PRGn'))
+  
+
   
   
-  brks<-function(tb,colnum){
-    breakvalue<-quantile(range(tb[colnum]),probs=seq(0.05,0.95,0.05),na.rm=TRUE)
-    return(breakvalue)
-  }
   
   
   output$mflsummarytbl<-renderDT({
@@ -295,13 +332,28 @@ server <- function(input, output, session) {
   
   output$mfldetails<-
     renderDT({
-      m_fullschedule() %>% 
-        select(Week=week,Team=team_name,`Team%`=team_pct,Opp=opp_name,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+      m_details() %>% 
         datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
         formatStyle(3,backgroundColor=styleInterval(brks(m_fullschedule(),4),colourlist(20))) %>% 
         formatStyle(5,backgroundColor=styleInterval(brks(m_fullschedule(),6),colourlist(20))) %>%
         formatStyle(6,backgroundColor=styleInterval(brks(m_fullschedule(),7),colourlist(20)))
     })
+  
+  output$mfldownloadsummary<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballsummary_',m$leaguename,'.csv')},
+      content = function(file){write.csv(m_expectedwins(),file,row.names = F)}
+      )
+  output$mfldownloadpivot<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballweeks_',m$leaguename,'.csv')},
+      content = function(file){write.csv(m_fspivot(),file,row.names = F)}
+    )
+  output$mfldownloaddetails<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballdetails_',m$leaguename,'.csv')},
+      content = function(file){write.csv(m_details(),file,row.names = F)}
+    )
   
   #Sleeper chunks start here!
   
@@ -408,6 +460,15 @@ server <- function(input, output, session) {
       arrange(desc(rosWins))
       })
     
+    s_details<-eventReactive(input$s_select_button,{
+      s_fullschedule() %>%
+        nest_join(s_users(),by='roster_id',name='users') %>%
+        nest_join(s_users(),by=c('opp'='roster_id'),name='oppinfo') %>% 
+        hoist(users,Team='owner') %>% 
+        hoist(oppinfo,Opp='owner') %>% 
+        select(-roster_id,-opp,-users,-oppinfo) %>% 
+        select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob)
+    })
 
   
   output$sleepersummarytbl<-renderDT({
@@ -433,18 +494,30 @@ server <- function(input, output, session) {
   
   output$sleeperdetails<-
     renderDT({
-      s_fullschedule() %>%
-        nest_join(s_users(),by='roster_id',name='users') %>%
-        nest_join(s_users(),by=c('opp'='roster_id'),name='oppinfo') %>% 
-        hoist(users,Team='owner') %>% 
-        hoist(oppinfo,Opp='owner') %>% 
-        select(-roster_id,-opp,-users,-oppinfo) %>% 
-        select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+      s_details() %>% 
         datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
         formatStyle(3,backgroundColor=styleInterval(brks(s_fullschedule(),4),colourlist(20))) %>% 
         formatStyle(5,backgroundColor=styleInterval(brks(s_fullschedule(),5),colourlist(20))) %>%
         formatStyle(6,backgroundColor=styleInterval(brks(s_fullschedule(),6),colourlist(20)))
     })
+  
+  output$sleeperdownloadsummary<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballsummary_',s$leaguename,'.csv')},
+      content = function(file){write.csv(s_summary(),file,row.names = F)}
+    )
+  output$sleeperdownloadpivot<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballweeks_',s$leaguename,'.csv')},
+      content = function(file){write.csv(s_fspivot(),file,row.names = F)}
+    )
+  output$sleeperdownloaddetails<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballdetails_',s$leaguename,'.csv')},
+      content = function(file){write.csv(s_details(),file,row.names = F)}
+    )
+  
+  
   
   
   # ESPN chunks
@@ -536,6 +609,17 @@ server <- function(input, output, session) {
       arrange(desc(rosWins))
   })
   
+  e_details<-eventReactive(input$espnload,{
+    e_fullschedule() %>%
+      mutate(team_id = as.character(team_id),opp_id=as.character(opp_id)) %>%
+      nest_join(e_owners(),by='team_id',name='users') %>%
+      nest_join(e_owners(),by=c('opp_id'='team_id'),name='oppinfo') %>% 
+      hoist(users,Team='displayName') %>% 
+      hoist(oppinfo,Opp='displayName') %>% 
+      select(-team_id,-opp_id,-users,-oppinfo) %>% 
+      select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob)
+  })
+  
   output$espnsummarytbl<-renderDT({
     req(input$espnload)
     e_sumtbl<-datatable(e_summary(), rownames=FALSE, options=list(scrollX=TRUE,pageLength=25))
@@ -559,20 +643,28 @@ server <- function(input, output, session) {
   
   output$espndetails<-
     renderDT({
-      e_fullschedule() %>%
-        mutate(team_id = as.character(team_id),opp_id=as.character(opp_id)) %>%
-        nest_join(e_owners(),by='team_id',name='users') %>%
-        nest_join(e_owners(),by=c('opp_id'='team_id'),name='oppinfo') %>% 
-        hoist(users,Team='displayName') %>% 
-        hoist(oppinfo,Opp='displayName') %>% 
-        select(-team_id,-opp_id,-users,-oppinfo) %>% 
-        select(Week=week,Team,`Team%`=team_pct,Opp,`Opp%`=opp_pct,WinProb=win_prob) %>% 
+      e_details() %>% 
         datatable(rownames=FALSE,filter='top',options=list(scrollX=TRUE,pageLength=10)) %>% 
         formatStyle(3,backgroundColor=styleInterval(brks(e_fullschedule(),4),colourlist(20))) %>% 
         formatStyle(5,backgroundColor=styleInterval(brks(e_fullschedule(),5),colourlist(20))) %>%
         formatStyle(6,backgroundColor=styleInterval(brks(e_fullschedule(),6),colourlist(20)))
     })
   
+  output$espndownloadsummary<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballsummary_',espn()$settings$name,'.csv')},
+      content = function(file){write.csv(e_summary(),file,row.names = F)}
+    )
+  output$espndownloadpivot<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballweeks_',espn()$settings$name,'.csv')},
+      content = function(file){write.csv(e_fspivot(),file,row.names = F)}
+    )
+  output$espndownloaddetails<-
+    downloadHandler(
+      filename = function(){paste0('DP_crystalballdetails_',espn()$settings$name,'.csv')},
+      content = function(file){write.csv(e_details(),file,row.names = F)}
+    )
   
   
 } #end of server segment
