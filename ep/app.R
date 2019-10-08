@@ -8,9 +8,7 @@ library(here)
 library(shinyWidgets)
 library(ggplot2)
 
-#setwd(here())
-#setwd("C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep")
-setwd("/srv/shiny-server/DynastyProcessApps/ep")
+setwd(here())
 
 df2019 <- read.csv("data2019cleaned2.csv")
 
@@ -23,8 +21,18 @@ ui <- dashboardPage(
                   titleWidth = 250),
   dashboardSidebar(width = 250,
                    sidebarMenu(
-                     menuItem('EP', tabName = 'ep', icon = icon('rocket')),
-                     menuItem('EP2', tabName = 'ep2', icon = icon('quidditch')))
+                     menuItem('EP', tabName = 'ep', icon = icon('chart-line')),
+                     menuItem('EP2', tabName = 'ep2', icon = icon('quidditch'))),
+                   sidebarMenu(
+                     menuItem("More from DynastyProcess:", icon=icon("rocket"),
+                              menuSubItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator"),
+                              menuSubItem("Database",icon=icon('database'),href="https://apps.dynastyprocess.com/database"),
+                              menuSubItem('Crystal Ball',icon=icon('quidditch'),href='https://apps.dynastyprocess.com/crystalball'),
+                              #menuSubItem('Expected Points', icon=icon('chart-line'),href='https://apps.dynastyprocess.com/ep'),
+                              menuSubItem("GitHub",icon=icon('github'),href="https://apps.dynastyprocess.com/ecr"),
+                              menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
+                     )
+                   )
   ),
   dashboardBody(
     {tags$head(

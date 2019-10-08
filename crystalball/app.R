@@ -20,11 +20,11 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
       menuItem("More from DynastyProcess:", icon=icon("rocket"),
                menuSubItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator"),
                menuSubItem("Database",icon=icon('database'),href="https://apps.dynastyprocess.com/database"),
+               #menuSubItem('Crystal Ball',icon=icon('quidditch'),href='https://apps.dynastyprocess.com/crystalball'),
+               menuSubItem('Expected Points', icon=icon('chart-line'),href='https://apps.dynastyprocess.com/ep'),
                menuSubItem("GitHub",icon=icon('github'),href="https://apps.dynastyprocess.com/ecr"),
                menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
                )
-      
-      #menuItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator")
     )
   ),
   dashboardBody({tags$head(
@@ -127,7 +127,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                 textInput(
                   'sleeperusername',
                   NULL,
-                  value = "deathpoker31",
+                  value = "solarpool",
                   placeholder = "Sleeper Username"
                 ),
                 actionButton('sleeperloaduser', 'Load Leagues!')
