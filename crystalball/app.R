@@ -127,7 +127,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                 textInput(
                   'sleeperusername',
                   NULL,
-                  value = "solarpool",
+                  value = "deathpoker31",
                   placeholder = "Sleeper Username"
                 ),
                 actionButton('sleeperloaduser', 'Load Leagues!')
@@ -665,7 +665,6 @@ server <- function(input, output, session) {
       filename = function(){paste0('DP_crystalballdetails_',espn()$settings$name,'.csv')},
       content = function(file){write.csv(e_details(),file,row.names = F)}
     )
-  
   
 } #end of server segment
 
