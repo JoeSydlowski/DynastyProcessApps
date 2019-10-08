@@ -181,7 +181,7 @@ server <- function(input, output, session) {
   
   m_leagues<-eventReactive(input$mfllogin,{GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRANCHISE_NAMES=1&JSON=1",
                  set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% content("text") %>% fromJSON() %>% 
-      .$leagues %>% .$league %>% 
+      .$leagues %>% .$league %>% data.frame() %>% 
     mutate(LeagueID=str_sub(url,start=-5),
            Select=shinyInput(actionButton,nrow(.),'button_',label="Select",onclick='Shiny.onInputChange(\"m_select_button\",  this.id)')) %>% 
     select(League=name,Team=franchise_name,LeagueID,Select)})
@@ -308,6 +308,7 @@ server <- function(input, output, session) {
   sleeperuserid<-eventReactive(input$sleeperloaduser,fromJSON(paste0("https://api.sleeper.app/v1/user/",input$sleeperusername),flatten=TRUE)$user_id)
   
   sleeperleagues<-eventReactive(input$sleeperloaduser,{fromJSON(paste0("https://api.sleeper.app/v1/user/",sleeperuserid(),"/leagues/nfl/",'2019'))%>%
+      data.frame() %>% 
       select(Name=name,League_ID=league_id) %>%
       mutate(LeagueSelect=shinyInput(actionButton,nrow(.),'button_',label="Select",onclick='Shiny.onInputChange(\"s_select_button\",  this.id)'))
     })
