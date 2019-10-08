@@ -181,7 +181,7 @@ server <- function(input, output, session) {
   
   m_leagues<-eventReactive(input$mfllogin,{GET("https://www61.myfantasyleague.com/2019/export?TYPE=myleagues&FRANCHISE_NAMES=1&JSON=1",
                  set_cookies("MFL_USER_ID"=m_cookie()[1],"MFL_PW_SEQ"=m_cookie()[2]),accept_json()) %>% content("text") %>% fromJSON() %>% 
-      .$leagues %>% .$league %>% data.frame() %>% 
+      .$leagues %>% .$league %>% 
     mutate(LeagueID=str_sub(url,start=-5),
            Select=shinyInput(actionButton,nrow(.),'button_',label="Select",onclick='Shiny.onInputChange(\"m_select_button\",  this.id)')) %>% 
     select(League=name,Team=franchise_name,LeagueID,Select)})
