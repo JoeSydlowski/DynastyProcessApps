@@ -9,7 +9,8 @@ library(shinyWidgets)
 library(ggplot2)
 
 #setwd(here())
-setwd("C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep")
+#setwd("C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep")
+setwd("/srv/shiny-server/DynastyProcessApps/ep")
 
 df2019 <- read.csv("data2019cleaned2.csv")
 
