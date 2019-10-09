@@ -89,25 +89,25 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               titlePanel("DynastyProcess.com: Crystal Ball App"),
               includeMarkdown("about.md"))),
             fluidRow(
-              box(width=4,title="MFL Authentication",
+              box(width=4,title="MFL Authentication",status='info',
                   textInput('mflusername',NULL,placeholder="Username"),
                   passwordInput('mflpassword',NULL,placeholder="Password"),
                   actionButton('mfllogin',"Load Leagues!")
                   ),
-              box(width=8, title="League List",
+              box(width=8, title="League List",status='info',
                   DTOutput('mflleagues'),
                   textOutput('mleaguename')
                   )),
             fluidRow(
-              box(title="Season Projections",width=12,
+              box(title="Season Projections",width=12,status='success',
                   DTOutput('mflsummarytbl'),
                   br(),
                   downloadButton('mfldownloadsummary',label="Download")
                   )),
             fluidRow(
               tabBox(width=12,
-                     tabPanel('Weekly Schedule',DTOutput('mflweekpivot'),br(),downloadButton('mfldownloadpivot',label='Download')),
-                     tabPanel('Details',
+                     tabPanel('Weekly Schedule',status='success',DTOutput('mflweekpivot'),br(),downloadButton('mfldownloadpivot',label='Download')),
+                     tabPanel('Details',status='success',
                               DTOutput('mfldetails'),
                               br(),
                               downloadButton('mfldownloaddetails',label='Download'))
@@ -121,7 +121,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               includeMarkdown("about.md")
             )),
             fluidRow(
-              box(
+              box(status='info',
                 width = 4,
                 title = "Sleeper Username",
                 textInput(
@@ -132,7 +132,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                 ),
                 actionButton('sleeperloaduser', 'Load Leagues!')
               ),
-              box(
+              box(status='info',
                 width = 8,
                 title = "League List",
                 DTOutput('sleeperleaguelist'),
@@ -140,7 +140,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
               )
             ),
             fluidRow(
-              box(
+              box(status='success',
                 title = "Season Projections",
                 width = 12,
                 DTOutput('sleepersummarytbl'),
@@ -151,14 +151,14 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
             fluidRow(tabBox(
               width = 12,
               tabPanel(
-                'Weekly Schedule',
+                'Weekly Schedule',status='success',
                 DTOutput('sleeperweekpivot'),
                 br(),
                 downloadButton('sleeperdownloadpivot', label =
                                  "Download")
               ),
               tabPanel(
-                'Details',
+                'Details',status='success',
                 DTOutput('sleeperdetails'),
                 br(),
                 downloadButton('sleeperdownloaddetails', label =
@@ -171,22 +171,22 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                   titlePanel("DynastyProcess.com: Crystal Ball App"),
                   includeMarkdown("about.md"))),
             fluidRow(
-              box(width=4,title="ESPN League ID",
+              box(width=4,title="ESPN League ID",status='info',
                   textInput('espnid',NULL,placeholder="LeagueID"),
                   actionButton('espnload',"Load Leagues!")
                   ),
-              box(width=8,title="Note",
+              box(width=8,title="Note",status='info',
                   includeMarkdown('espn.md')
               )
               ),
             fluidRow(
-              box(title="Season Projections",width=12,
+              box(title="Season Projections",width=12,status='success',
                   DTOutput('espnsummarytbl'),br(),downloadButton('espndownloadsummary')
               )),
             fluidRow(
               tabBox(width=12,
-                     tabPanel('Weekly Schedule',DTOutput('espnweekpivot'),br(),downloadButton('espndownloadpivot')),
-                     tabPanel('Details',DTOutput('espndetails'),br(),downloadButton('espndownloaddetails'))
+                     tabPanel('Weekly Schedule',status='success',DTOutput('espnweekpivot'),br(),downloadButton('espndownloadpivot')),
+                     tabPanel('Details',status='success',DTOutput('espndetails'),br(),downloadButton('espndownloaddetails'))
               ))
     )
   )
