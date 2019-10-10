@@ -253,7 +253,9 @@ server <- shinyServer(function(input, output, session) {
       pivot_wider(names_from = week,
                   names_prefix = "Week",
                   values_from = input$selectVar) %>%
-      mutate(Total = rowSums(.[2:ncol(.)], na.rm = TRUE))
+      mutate(Total = rowSums(.[2:ncol(.)], na.rm = TRUE),
+             Avg = rowMeans(.[2:ncol(.)],na.rm=T)) %>% 
+      arrange(desc(Avg))
     
   })
   
@@ -284,15 +286,17 @@ server <- shinyServer(function(input, output, session) {
   })
   
   output$pivotGraph <- renderPlot({
-    plotdf <- df3() %>%
-      filter(!is.na(input$selectVar))
-    print(df3())
-    #selVar <- input$selectVar
+    plotdf <- df3()
+    plotdf[is.na(plotdf)]<-NaN
+    plotdf<-plotdf #%>% 
+      #filter(!is.na(input$selectVar))
+    # print(df3())
     ggplot(plotdf,
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
-      geom_smooth(method = "lm", fill = NA) +
-      theme_bw()
+      geom_smooth(method = "gam", fill = NA) +
+      theme_bw() + 
+      labs(x="Week",title="Weekly Summary") 
   })
   
   output$teamPivot <- renderDT({
