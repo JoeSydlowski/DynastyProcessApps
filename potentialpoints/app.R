@@ -175,7 +175,7 @@ server <- function(input, output, session) {
                                         8,9,10,11,24,12,13,14,15),
                             pos=c('QB','RB','RB/WR','WR','WR/TE','TE',
                                   'OP','DST','K','BE','IR','FLEX',
-                                  'DT','DE','OLB','LB','EDR','CB','S','DB','DP'),
+                                  'DT','DE','LB','DL','EDR','CB','S','DB','DP'),
                             priority=c(1,2,5,3,6,4,8,9,10,0,0,11,12,11,13,14,17,15,16,18,19)) %>%
       arrange(lineup_id) %>% 
       mutate(lineup_id=as.character(lineup_id)) %>% 
