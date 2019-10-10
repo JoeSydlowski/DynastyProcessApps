@@ -8,22 +8,21 @@ library(here)
 library(shinyWidgets)
 library(ggplot2)
 
-setwd(here())
-
 df2019 <- read.csv("data2019cleaned2.csv")
 
 ui <- dashboardPage(
   skin="blue",
   title="DynastyProcess Apps: Expected Points",
-  dashboardHeader(title = a(href="https://dynastyprocess.com",
+  {dashboardHeader(title = a(href="https://dynastyprocess.com",
                             img(src = "logo-horizontal.png",
                                 width='100%')),
-                  titleWidth = 250),
+                  titleWidth = 250)},
   dashboardSidebar(width = 250,
                    sidebarMenu(
-                     menuItem('EP', tabName = 'ep', icon = icon('chart-line')),
-                     menuItem('EP2', tabName = 'ep2', icon = icon('quidditch'))),
+                     menuItem('Database', tabName = 'ep1', icon = icon('chart-line')),
+                     menuItem('Weekly Breakdowns', tabName = 'ep2', icon = icon('quidditch'))),
                    sidebarMenu(
+                     menuItem('Inputs:'),
                      selectInput("selectTeam",
                                  "Select Team:",
                                  choices = c("All", as.character(sort(unique(df2019$posteam)))),
@@ -48,7 +47,7 @@ ui <- dashboardPage(
                                                      selected = max(df2019$week),
                                                      multiple = TRUE))
                    ),
-                   sidebarMenu(
+                   {sidebarMenu(
                      menuItem("More from DynastyProcess:", icon=icon("rocket"),
                               menuSubItem("Calculator",icon=icon('calculator'),href="https://apps.dynastyprocess.com/calculator"),
                               menuSubItem("Database",icon=icon('database'),href="https://apps.dynastyprocess.com/database"),
@@ -57,7 +56,7 @@ ui <- dashboardPage(
                               menuSubItem("GitHub",icon=icon('github'),href="https://apps.dynastyprocess.com/ecr"),
                               menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
                      )
-                   )
+                   )}
   ),
   dashboardBody(
     {tags$head(
@@ -116,57 +115,31 @@ ui <- dashboardPage(
       )
     )},
     tabItems(
-      tabItem(tabName = 'ep',
+      tabItem(tabName = 'ep1',
               titlePanel('DynastyProcess Apps: Expected Points'),
-              fluidRow(column(12,'You can change the inputs from the sidebar!')),
+              br(),
+              # fluidRow(column(12,'You can change the inputs from the sidebar!')),
               # fluidRow(includeMarkdown('about.md')),
               fluidRow(column(12,
-                # box(width = 3,
-                #     selectInput("selectTeam",
-                #                 "Select Team:",
-                #                 choices = c("All", as.character(sort(unique(df2019$posteam)))),
-                #                 selected = "KC"),
                     radioGroupButtons("selectCol","Select Columns:", choices = c("Exp Points","Raw Stats","Rate Stats"),
                                       selected = "Exp Points"))
-                #)
-                # box(width = 3,
-                    # selectInput("selectPos",
-                    #             "Select Position:",
-                    #             choices = c("All", "QB", "RB", "WR", "TE"),
-                    #             selected = "All")
-                # ),
-                # box(width = 3,
-                    # radioButtons("weeklyRadio",
-                    #              "Weekly or Cumulative?",
-                    #              choices = c("Weekly","Cumulative"),
-                    #              selected = "Cumulative"),
-                    # conditionalPanel(condition = "input.weeklyRadio == 'Weekly'",
-                    #                  selectizeInput("selectWeeks",
-                    #                                 "Select Weeks:",
-                    #                                 choices = sort(unique(df2019$week)),
-                    #                                 selected = max(df2019$week),
-                    #                                 multiple = TRUE))),
-                # box(width = 3,
-                #     selectizeInput("selectPlayers",
-                #                    "Select Players:",
-                #                    choices = c("All"),
-                #                    selected = "All",
-                #                    multiple = TRUE)
-                # )
+
               ),
               fluidRow(box(width = 12,
                            DTOutput("teamTable")))
       ),
       tabItem(tabName = "ep2",
               titlePanel('DynastyProcess Apps: Expected Points'),
+              fluidRow(box(width=12,status='info',"(You'll need to select 'weekly' instead of 'cumulative' in the sidebar to use this tab!)")),
               #fluidRow(includeMarkdown('about2.md')),
               fluidRow(box(width = 3,
                            selectInput("selectVar",
                                        "Select Variable:",
-                                       choices = c("eRushFP","eTeamRushFP","RushFP","TeamRushFP","RushDiff","Rushes","RushGames",
-                                                   "RushYD","eRecFP","eTeamRecFP","RecFP","TeamRecFP","RecDiff","Targets","TeamTargets","Catches","AYs",
-                                                   "TeamAYs","RecYD","aDOT","RecGames","RushTD","RecTD","TD","eFP","FP","Diff",     
-                                                   "eTeamFP","TeamFP","TeamDiff","AYshare","TargetShare","WOPR","RACR","YPTPA","eFPshare","FPshare"),
+                                       choices = c("eFP","FP","Diff", "eFPshare","FPshare",
+                                                   "eRushFP","eTeamRushFP","RushFP","TeamRushFP","RushDiff","Rushes","RushGames", "RushYD",
+                                                   "eRecFP","eTeamRecFP","RecFP","TeamRecFP","RecDiff","Targets","TeamTargets",
+                                                   "Catches","AYs","TeamAYs","RecYD","aDOT","RecGames","RushTD","RecTD","TD",     
+                                                   "eTeamFP","TeamFP","TeamDiff","AYshare","TargetShare","WOPR","RACR","YPTPA"),
                                        selected = "eFP"))),
               fluidRow(box(width = 12,
                            plotOutput("pivotGraph"),
