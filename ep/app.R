@@ -140,7 +140,10 @@ ui <- dashboardPage(
                                                    "eRecFP","eTeamRecFP","RecFP","TeamRecFP","RecDiff","Targets","TeamTargets",
                                                    "Catches","AYs","TeamAYs","RecYD","aDOT","RecGames","RushTD","RecTD","TD",     
                                                    "eTeamFP","TeamFP","TeamDiff","AYshare","TargetShare","WOPR","RACR","YPTPA"),
-                                       selected = "eFP"))),
+                                       selected = "eFP"),
+                           checkboxInput("pivot_trendlines", label = "Display Trendlines", value = TRUE)
+                           )
+                       ),
               fluidRow(box(width = 12,
                            plotOutput("pivotGraph"),
                            DTOutput("teamPivot"))))
@@ -279,6 +282,7 @@ server <- shinyServer(function(input, output, session) {
     datatable(df4(),
               rownames=FALSE,
               options(
+                scrollX=TRUE,
                 paging=FALSE,
                 searching=FALSE)) %>%
       #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
@@ -294,19 +298,22 @@ server <- shinyServer(function(input, output, session) {
     ggplot(plotdf,
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
-      geom_smooth(method = "gam", fill = NA) +
       theme_bw() + 
-      labs(x="Week",title="Weekly Summary") 
+      labs(x="Week",title="Weekly Summary") +
+      if(input$pivot_trendlines){geom_smooth(method = "gam", fill = NA)}
   })
   
   output$teamPivot <- renderDT({
     req(input$weeklyRadio == "Weekly")
-    datatable(df5(),
+    
+    df5() %>% 
+      datatable(
               rownames=FALSE,
               options(
+                scrollX=TRUE,
                 paging=FALSE,
                 searching=FALSE)) %>%
-      formatRound(columns = c(2:ncol(df4())), digits = 1)
+      formatRound(columns = c(2:ncol(df4())), digits = if (grepl('share',input$selectVar)) {3} else {1})
   })
 })
 
