@@ -5,9 +5,9 @@ library(DT)
 
 #This is the one with the for loop. One day, Joe will teach me how to wrap reactives around this to make it shiny.
 
-league_id<-1178049
+league_id<-251449
 
-scoreweek<-3
+scoreweek<-4
 
 optimal_lineups<-tibble()
 
@@ -32,7 +32,7 @@ owners<-espnbasic$members %>%
   hoist(teams,team_id='id',team_name='team_name') %>% 
   select(-teams)
 
-for (scoreweek in 1:3){
+for (scoreweek in 1:4){
 
 espn<- fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
                        league_id,
@@ -53,13 +53,15 @@ lineup_settings<-tibble(lineup_id=c(0,2,3,4,5,6,7,16,17,20,21,23,
                                    8,9,10,11,24,12,13,14,15),
                        pos=c('QB','RB','RB/WR','WR','WR/TE','TE',
                              'OP','DST','K','BE','IR','FLEX',
-                             'DT','DE','OLB','LB','EDR','CB','S','DB','DP'),
-                       priority=c(1,2,5,3,6,4,8,9,10,0,0,11,12,11,13,14,17,15,16,18,19)) %>%
+                             'DT','DE','LB','DL','EDR','CB','S','DB','DP'),
+                       priority=c(1,2,5,3,6,4,8,9,10,0,0,11,
+                                  12,13,16,14,15,17,18,19,20)) %>%
   arrange(lineup_id) %>% 
   mutate(lineup_id=as.character(lineup_id)) %>% 
   left_join(tibble(lineup_id=as.character(names(espn$settings$rosterSettings$lineupSlotCounts)),count=espn$settings$rosterSettings$lineupSlotCounts),
             by='lineup_id') %>% 
-  filter(count!=0 & priority!=0)
+  filter(count!=0 & priority!=0) %>% 
+  arrange(priority)
   
 
 schedule<-espn$schedule %>%

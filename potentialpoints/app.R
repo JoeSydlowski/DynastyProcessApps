@@ -176,12 +176,14 @@ server <- function(input, output, session) {
                             pos=c('QB','RB','RB/WR','WR','WR/TE','TE',
                                   'OP','DST','K','BE','IR','FLEX',
                                   'DT','DE','LB','DL','EDR','CB','S','DB','DP'),
-                            priority=c(1,2,5,3,6,4,8,9,10,0,0,11,12,11,13,14,17,15,16,18,19)) %>%
+                            priority=c(1,2,5,3,6,4,8,9,10,0,0,11,
+                                       12,13,16,14,15,17,18,19,20)) %>%
       arrange(lineup_id) %>% 
       mutate(lineup_id=as.character(lineup_id)) %>% 
       left_join(tibble(lineup_id=as.character(names(espn$settings$rosterSettings$lineupSlotCounts)),count=espn$settings$rosterSettings$lineupSlotCounts),
                 by='lineup_id') %>% 
-      filter(count!=0 & priority!=0)
+      filter(count!=0 & priority!=0) %>% 
+      arrange(priority)
     
     
     schedule<-espn$schedule %>%
