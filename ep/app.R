@@ -43,8 +43,8 @@ ui <- dashboardPage(
                      conditionalPanel(condition = "input.weeklyRadio == 'Weekly'",
                                       selectizeInput("selectWeeks",
                                                      "Select Weeks:",
-                                                     choices = sort(unique(df2019$week)),
-                                                     selected = max(df2019$week),
+                                                     choices = c("All", sort(unique(df2019$week))),
+                                                     selected = "All",
                                                      multiple = TRUE))
                    ),
                    {sidebarMenu(
@@ -223,7 +223,7 @@ server <- shinyServer(function(input, output, session) {
     df() %>%
       {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . } %>%
       {if (input$selectPos  != "All") filter(., pos == input$selectPos) else .} %>%
-      {if (input$weeklyRadio == "Weekly") filter(., week %in% input$selectWeeks) else .} 
+      {if (input$weeklyRadio == "Weekly" & input$selectWeeks != "All") filter(., week %in% input$selectWeeks) else .} 
   })
   
   df3 <- reactive({
