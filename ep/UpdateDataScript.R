@@ -8,7 +8,7 @@ load("models.rda")
 database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
 database$gsis_id <- as.character(database$gsis_id)
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:5))
+ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:6))
 
 ids$game_id <- as.character(ids$game_id)
 id <- ids %>% pull(game_id)
@@ -20,13 +20,13 @@ for (i in id)
   dfnew <- bind_rows(dfnew,df)}, error=function(e){print(paste("Game", i, "Unavailable"))})
 }
 
-
-df4 <- read.csv("reg_pbp_2019.csv")
-df4$X <- NULL
-df5 <- df4 %>%
-  filter(game_id <= 	2019093000) %>%
-  rbind(., dfnew)
-#write.csv(df5, file = "reg_pbp_2019.csv")
+# 
+# df4 <- read.csv("reg_pbp_2019.csv")
+# df4$X <- NULL
+# df5 <- df4 %>%
+#   filter(game_id <= 	2019093000) %>%
+#   rbind(., dfnew)
+write.csv(dfnew, file = "reg_pbp_2019.csv")
 
 dfnew <- dfnew %>%
   inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
