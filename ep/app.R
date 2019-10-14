@@ -17,7 +17,7 @@ ui <- dashboardPage(
                             img(src = "logo-horizontal.png",
                                 width='100%')),
                   titleWidth = 250)},
-  dashboardSidebar(width = 250,
+  {dashboardSidebar(width = 250,
                    sidebarMenu(
                      menuItem('Database', tabName = 'ep1', icon = icon('chart-line')),
                      menuItem('Weekly Breakdowns', tabName = 'ep2', icon = icon('quidditch'))),
@@ -57,7 +57,7 @@ ui <- dashboardPage(
                               menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
                      )
                    )}
-  ),
+  )},
   dashboardBody(
     {tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
@@ -213,8 +213,10 @@ server <- shinyServer(function(input, output, session) {
                 YPTPA = RecYD / TeamTargets,
                 eFPshare = eFP / eTeamFP,
                 FPshare = FP/ TeamFP,
-                Games = sum(Games, na.rm = TRUE)
-                ) %>%
+                Games = sum(Games, na.rm = TRUE), 
+                `eFP/G` = eFP / Games,
+                `FP/G` = FP / Games,
+                `Diff/G` = `FP/G` - `eFP/G`) %>%
       ungroup()
 
   })
@@ -234,17 +236,17 @@ server <- shinyServer(function(input, output, session) {
   df4 <- reactive({
     df3() %>%
       {if (input$selectCol == "Exp Points" & input$weeklyRadio == "Weekly")
-        dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff)
+        dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
         else if (input$selectCol == "Raw Stats" & input$weeklyRadio == "Weekly")
           dplyr::select(., week, mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
         else if (input$selectCol == "Rate Stats" & input$weeklyRadio == "Weekly")
-          dplyr::select(., week, mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare)
+          dplyr::select(., week, mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
         else if (input$selectCol == "Exp Points")
-          dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff)
+          dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
         else if (input$selectCol == "Raw Stats")
           dplyr::select(., mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
         else if (input$selectCol == "Rate Stats")
-          dplyr::select(., mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare)
+          dplyr::select(., mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
       }
     
   })
