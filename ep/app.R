@@ -122,7 +122,9 @@ ui <- dashboardPage(
               # fluidRow(includeMarkdown('about.md')),
               fluidRow(column(12,
                     radioGroupButtons("selectCol","Select Columns:", choices = c("Exp Points","Raw Stats","Rate Stats"),
-                                      selected = "Exp Points"))
+                                      selected = "Exp Points")#,
+                    #checkboxInput("datatable_filters", label = "Display Filters", value = FALSE)
+                    )
 
               ),
               fluidRow(box(width = 12,
@@ -282,7 +284,8 @@ server <- shinyServer(function(input, output, session) {
   
   output$teamTable <- renderDT({
     datatable(df4(),
-              rownames=FALSE,
+              rownames=T,
+              #filter=if(input$datatable_filters){'top'} else {'none'},
               options(
                 scrollX=TRUE,
                 paging=FALSE,
@@ -310,7 +313,7 @@ server <- shinyServer(function(input, output, session) {
     
     df5() %>% 
       datatable(
-              rownames=FALSE,
+              rownames=T,
               options(
                 scrollX=TRUE,
                 paging=FALSE,
