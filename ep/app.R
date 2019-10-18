@@ -17,7 +17,7 @@ ui <- dashboardPage(
                             img(src = "logo-horizontal.png",
                                 width='100%')),
                   titleWidth = 250)},
-  dashboardSidebar(width = 250,
+  {dashboardSidebar(width = 250,
                    sidebarMenu(
                      menuItem('Database', tabName = 'ep1', icon = icon('chart-line')),
                      menuItem('Weekly Breakdowns', tabName = 'ep2', icon = icon('quidditch'))),
@@ -43,8 +43,8 @@ ui <- dashboardPage(
                      conditionalPanel(condition = "input.weeklyRadio == 'Weekly'",
                                       selectizeInput("selectWeeks",
                                                      "Select Weeks:",
-                                                     choices = sort(unique(df2019$week)),
-                                                     selected = max(df2019$week),
+                                                     choices = c("All", sort(unique(df2019$week))),
+                                                     selected = "All",
                                                      multiple = TRUE))
                    ),
                    {sidebarMenu(
@@ -57,7 +57,7 @@ ui <- dashboardPage(
                               menuSubItem("More!", icon=icon('rocket'),href="https://dynastyprocess.com/apps")
                      )
                    )}
-  ),
+  )},
   dashboardBody(
     {tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
@@ -122,7 +122,9 @@ ui <- dashboardPage(
               # fluidRow(includeMarkdown('about.md')),
               fluidRow(column(12,
                     radioGroupButtons("selectCol","Select Columns:", choices = c("Exp Points","Raw Stats","Rate Stats"),
-                                      selected = "Exp Points"))
+                                      selected = "Exp Points")#,
+                    #checkboxInput("datatable_filters", label = "Display Filters", value = FALSE)
+                    )
 
               ),
               fluidRow(box(width = 12,
@@ -140,7 +142,10 @@ ui <- dashboardPage(
                                                    "eRecFP","eTeamRecFP","RecFP","TeamRecFP","RecDiff","Targets","TeamTargets",
                                                    "Catches","AYs","TeamAYs","RecYD","aDOT","RecGames","RushTD","RecTD","TD",     
                                                    "eTeamFP","TeamFP","TeamDiff","AYshare","TargetShare","WOPR","RACR","YPTPA"),
-                                       selected = "eFP"))),
+                                       selected = "eFP"),
+                           checkboxInput("pivot_trendlines", label = "Display Trendlines", value = TRUE)
+                           )
+                       ),
               fluidRow(box(width = 12,
                            plotOutput("pivotGraph"),
                            DTOutput("teamPivot"))))
@@ -210,8 +215,10 @@ server <- shinyServer(function(input, output, session) {
                 YPTPA = RecYD / TeamTargets,
                 eFPshare = eFP / eTeamFP,
                 FPshare = FP/ TeamFP,
-                Games = sum(Games, na.rm = TRUE)
-                ) %>%
+                Games = sum(Games, na.rm = TRUE), 
+                `eFP/G` = eFP / Games,
+                `FP/G` = FP / Games,
+                `Diff/G` = `FP/G` - `eFP/G`) %>%
       ungroup()
 
   })
@@ -220,7 +227,7 @@ server <- shinyServer(function(input, output, session) {
     df() %>%
       {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . } %>%
       {if (input$selectPos  != "All") filter(., pos == input$selectPos) else .} %>%
-      {if (input$weeklyRadio == "Weekly") filter(., week %in% input$selectWeeks) else .} 
+      {if (input$weeklyRadio == "Weekly" & input$selectWeeks != "All") filter(., week %in% input$selectWeeks) else .} 
   })
   
   df3 <- reactive({
@@ -231,17 +238,17 @@ server <- shinyServer(function(input, output, session) {
   df4 <- reactive({
     df3() %>%
       {if (input$selectCol == "Exp Points" & input$weeklyRadio == "Weekly")
-        dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff)
+        dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
         else if (input$selectCol == "Raw Stats" & input$weeklyRadio == "Weekly")
           dplyr::select(., week, mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
         else if (input$selectCol == "Rate Stats" & input$weeklyRadio == "Weekly")
-          dplyr::select(., week, mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare)
+          dplyr::select(., week, mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
         else if (input$selectCol == "Exp Points")
-          dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff)
+          dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
         else if (input$selectCol == "Raw Stats")
           dplyr::select(., mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
         else if (input$selectCol == "Rate Stats")
-          dplyr::select(., mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare)
+          dplyr::select(., mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
       }
     
   })
@@ -277,8 +284,10 @@ server <- shinyServer(function(input, output, session) {
   
   output$teamTable <- renderDT({
     datatable(df4(),
-              rownames=FALSE,
+              rownames=T,
+              #filter=if(input$datatable_filters){'top'} else {'none'},
               options(
+                scrollX=TRUE,
                 paging=FALSE,
                 searching=FALSE)) %>%
       #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
@@ -294,19 +303,22 @@ server <- shinyServer(function(input, output, session) {
     ggplot(plotdf,
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
-      geom_smooth(method = "gam", fill = NA) +
       theme_bw() + 
-      labs(x="Week",title="Weekly Summary") 
+      labs(x="Week",title="Weekly Summary") +
+      if(input$pivot_trendlines){geom_smooth(method = "gam", fill = NA)}
   })
   
   output$teamPivot <- renderDT({
     req(input$weeklyRadio == "Weekly")
-    datatable(df5(),
-              rownames=FALSE,
+    
+    df5() %>% 
+      datatable(
+              rownames=T,
               options(
+                scrollX=TRUE,
                 paging=FALSE,
                 searching=FALSE)) %>%
-      formatRound(columns = c(2:ncol(df4())), digits = 1)
+      formatRound(columns = c(2:ncol(df4())), digits = if (grepl('share',input$selectVar)) {3} else {1})
   })
 })
 

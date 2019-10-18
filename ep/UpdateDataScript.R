@@ -2,17 +2,28 @@ library(dplyr)
 library(nflscrapR)
 library(here)
 
+
 setwd(here())
+
+# setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+# setwd("/srv/shiny-server/DynastyProcessApps/ep")
+
 load("models.rda")
-#setwd("/srv/shiny-server/DynastyProcess/ep")
+ytd19 <- read.csv("reg_pbp_2019.csv")
+ytd19$X <- NULL
+
+completedID <- ytd19 %>%
+  filter(desc == "END GAME") %>%
+  select(game_id) %>%
+  distinct()
 
 database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
 database$gsis_id <- as.character(database$gsis_id)
 
-ids <- scrape_game_ids(2019, type = "reg", weeks = c(1:5))
+ids <- scrape_game_ids(2019, type = "reg") #, weeks = c(6:6)) %>%
 
-ids$game_id <- as.character(ids$game_id)
-id <- ids %>% pull(game_id)
+newids <- filter(ids, !(game_id %in% completedID$game_id))
+id <- newids %>% pull(game_id)
 
 dfnew <-  data.frame()
 for (i in id)
@@ -21,22 +32,21 @@ for (i in id)
   dfnew <- bind_rows(dfnew,df)}, error=function(e){print(paste("Game", i, "Unavailable"))})
 }
 
+dfcombined <- rbind(ytd19, dfnew) %>%
+  distinct()
 
-df4 <- read.csv("reg_pbp_2019.csv")
-df4$X <- NULL
-df5 <- df4 %>%
-  filter(game_id <= 	2019093000) %>%
-  rbind(., dfnew)
-#write.csv(df5, file = "reg_pbp_2019.csv")
+write.csv(dfcombined, file = "reg_pbp_2019.csv")
 
-dfnew <- dfnew %>%
+ids$game_id <- as.integer(ids$game_id)
+
+dfcombined <- dfcombined %>%
   inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
 
-dfnew$posteam <- as.character(dfnew$posteam)
-dfnew$td_team <- as.character(dfnew$td_team)
+dfcombined$posteam <- as.character(dfcombined$posteam)
+dfcombined$td_team <- as.character(dfcombined$td_team)
 
 #Split the rush data and aggregate by week
-rushdf <- dfnew %>% 
+rushdf <- dfcombined %>% 
   filter(play_type %in% c("run"),
          two_point_attempt == 0) %>%
   mutate(TwoPtConv = if_else(two_point_conv_result == 'success', 1, 0, missing = 0),
@@ -83,7 +93,7 @@ weeklyRushDF <- rushdf %>%
   
 
 #Split the rec data and aggregate by week
-recdf <- dfnew %>% 
+recdf <- dfcombined %>% 
   filter(play_type %in% c("pass"),
          sack == 0,
          two_point_attempt == 0) %>%
@@ -154,15 +164,5 @@ dfnewmerged <- full_join(weeklyRushDF, weeklyRecDF, by = c("rusher_player_id" = 
     TeamDiff1D = TeamFP1D - eTeamFP1D,     
     Games = max(RushGames, RecGames, na.rm = TRUE)
   ) 
-
-#dfnewmerged <- bind_rows(weeklyRushDF, weeklyRecDF)
-
-# dfnewmerged$play_id <- as.numeric(dfnewmerged$play_id)
-# 
-# df2019 <- read.csv("data2019cleaned.csv")
-# df2019$X <- NULL
-# 
-# finaldf <- rbind(df2019, dfnewmerged) %>%
-#  distinct()
 
 write.csv(dfnewmerged, file = "data2019cleaned2.csv")
