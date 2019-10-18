@@ -333,7 +333,7 @@ server <- shinyServer(function(input, output, session) {
               #filter=if(input$datatable_filters){'top'} else {'none'},
               options(
                 scrollX=TRUE,
-                paging=FALSE,
+                paging=TRUE,
                 searching=FALSE)) %>%
       #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
       formatRound(columns=c(4:ncol(filter2())), digits = if (input$selectCol == "Rate Stats") {2} else {1})

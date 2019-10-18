@@ -33,7 +33,7 @@ for (i in id)
 }
 
 dfcombined <- rbind(ytd19, dfnew) %>%
-  filter(game_id != '2019101700')
+  #filter(game_id != '2019101700')
   distinct()
 
 write.csv(dfcombined, file = "reg_pbp_2019.csv")
@@ -176,3 +176,9 @@ dfnewmerged <- full_join(weeklyRushDF, weeklyRecDF, by = c("rusher_player_id" = 
   ) 
 
 write.csv(dfnewmerged, file = "data2019cleaned2.csv")
+
+# temp <- rushdf %>%
+#   filter(game_id == "2019101700" & posteam == "KC" & grepl("Dam.Williams", desc))
+# 
+# temp <- recdf %>%
+#   filter(game_id == "2019101700" & posteam == "KC" & grepl("Dam.Williams", desc))
