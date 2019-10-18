@@ -154,7 +154,7 @@ ui <- dashboardPage(
 )
 
 server <- shinyServer(function(input, output, session) {
-  df <- reactive({
+  allCols <- reactive({
     df2019 %>%
       {if (input$weeklyRadio == "Weekly") group_by(., mergename, pos, posteam, week) else group_by(., mergename, pos, posteam)} %>%
       summarise(eRushFP = sum(eRushFP, na.rm = TRUE),
@@ -184,24 +184,50 @@ server <- shinyServer(function(input, output, session) {
                 aDOT = mean(AYs, na.rm = TRUE),
                 RecGames = sum(RecGames, na.rm = TRUE),
                 
-                # eRushTD = sum(eRushTD, na.rm = TRUE),
+                eTDRush = sum(eTDRush, na.rm = TRUE),
                 RushTD = sum(RushTD, na.rm = TRUE),
-                # RushTDDiff = RushTD - eRushTD,
-                # 
-                # eRecTD = sum(eRecTD, na.rm = TRUE),
+                RushTDDiff = RushTD - eTDRush,
+                
+                eRushYD = sum(eRushYD, na.rm = TRUE),
+                RushYD = sum(RushYD, na.rm = TRUE),
+                RushYDDiff = RushYD - eRushYD,
+                
+                eRush1D = sum(eRush1D, na.rm = TRUE),
+                Rush1D = sum(Rush1D, na.rm = TRUE),
+                Rush1DDiff = Rush1D - eRush1D,
+                
+                eTDRec = sum(eTDRec, na.rm = TRUE),
                 RecTD = sum(RecTD, na.rm = TRUE),
-                # RecTDDiff = RecTD - eRecTD,
-                # 
-                # eTD = eRushTD + eRecTD,
+                RecTDDiff = RecTD - eTDRec,
+                
+                eRecYD = sum(eRecYD, na.rm = TRUE),
+                RecYD = sum(RecYD, na.rm = TRUE),
+                RecYDDiff = RecYD - eRecYD,
+                
+                eRec1D = sum(eRec1D, na.rm = TRUE),
+                Rec1D = sum(Rec1D, na.rm = TRUE),
+                Rec1DDiff = Rec1D - eRec1D,
+                
+                eTD = eTDRush + eTDRec,
                 TD = RushTD + RecTD,
-                # TDDiff = TD - eTD,
+                TDDiff = TD - eTD,
+                
+                eYD = eRushYD + eRecYD,
+                YDs = RushYD + RecYD,
+                TDDiff = YDs - eYD,
+                
+                e1D = eRush1D + eRec1D,
+                total1Ds = Rush1D + Rec1D,
+                total1Ddiff = total1Ds - e1D,
                 
                 eFP = eRecFP + eRushFP,
                 FP = RecFP + RushFP,
                 Diff = FP - eFP,
+                
                 #eFP1D = eRecFP1D + eRushFP1D,
                 #FP1D = RecFP1D + RushFP1D,
                 #Diff1D = FP1D - eFP1D,
+                
                 eTeamFP = eTeamRecFP + eTeamRushFP,
                 TeamFP = TeamRecFP + TeamRushFP,
                 TeamDiff = TeamFP - eTeamFP,
@@ -223,20 +249,20 @@ server <- shinyServer(function(input, output, session) {
 
   })
   
-  df2 <- reactive({
-    df() %>%
+  filter1 <- reactive({
+    allCols() %>%
       {if (input$selectTeam != "All") filter(., posteam == input$selectTeam) else . } %>%
       {if (input$selectPos  != "All") filter(., pos == input$selectPos) else .} %>%
       {if (input$weeklyRadio == "Weekly" & input$selectWeeks != "All") filter(., week %in% input$selectWeeks) else .} 
   })
   
-  df3 <- reactive({
-    df2() %>%
+  filter2 <- reactive({
+    filter1() %>%
       {if (input$selectPlayers != "All") filter(., mergename %in% input$selectPlayers) else .}
   })
   
-  df4 <- reactive({
-    df3() %>%
+  selCols <- reactive({
+    filter2() %>%
       {if (input$selectCol == "Exp Points" & input$weeklyRadio == "Weekly")
         dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
         else if (input$selectCol == "Raw Stats" & input$weeklyRadio == "Weekly")
@@ -253,8 +279,8 @@ server <- shinyServer(function(input, output, session) {
     
   })
   
-  df5 <- reactive({
-    df3() %>%
+  weekPivot <- reactive({
+    filter2() %>%
       select(mergename, week, input$selectVar) %>%
       arrange(week) %>%
       pivot_wider(names_from = week,
@@ -277,13 +303,13 @@ server <- shinyServer(function(input, output, session) {
       {currentPlayer <- c("All")}
       
       updateSelectizeInput(session, 'selectPlayers',
-                           choices = c("All", as.character(sort(unique(df2()$mergename)))),
+                           choices = c("All", as.character(sort(unique(filter1()$mergename)))),
                            selected = currentPlayer
       )
     })
   
   output$teamTable <- renderDT({
-    datatable(df4(),
+    datatable(selCols(),
               rownames=T,
               #filter=if(input$datatable_filters){'top'} else {'none'},
               options(
@@ -291,15 +317,14 @@ server <- shinyServer(function(input, output, session) {
                 paging=FALSE,
                 searching=FALSE)) %>%
       #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
-      formatRound(columns=c(4:ncol(df3())), digits=1)
+      formatRound(columns=c(4:ncol(filter2())), digits=1)
   })
   
   output$pivotGraph <- renderPlot({
-    plotdf <- df3()
+    plotdf <- filter2()
     plotdf[is.na(plotdf)]<-NaN
     plotdf<-plotdf #%>% 
       #filter(!is.na(input$selectVar))
-    # print(df3())
     ggplot(plotdf,
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
@@ -311,14 +336,14 @@ server <- shinyServer(function(input, output, session) {
   output$teamPivot <- renderDT({
     req(input$weeklyRadio == "Weekly")
     
-    df5() %>% 
+    weekPivot() %>% 
       datatable(
               rownames=T,
               options(
                 scrollX=TRUE,
                 paging=FALSE,
                 searching=FALSE)) %>%
-      formatRound(columns = c(2:ncol(df4())), digits = if (grepl('share',input$selectVar)) {3} else {1})
+      formatRound(columns = c(2:ncol(selCols())), digits = if (grepl('share',input$selectVar)) {3} else {1})
   })
 })
 

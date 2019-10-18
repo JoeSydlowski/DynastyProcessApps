@@ -33,11 +33,12 @@ for (i in id)
 }
 
 dfcombined <- rbind(ytd19, dfnew) %>%
+  filter(game_id != '2019101700')
   distinct()
 
 write.csv(dfcombined, file = "reg_pbp_2019.csv")
 
-ids$game_id <- as.integer(ids$game_id)
+ids$game_id <- as.character(ids$game_id)
 
 dfcombined <- dfcombined %>%
   inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
@@ -82,6 +83,9 @@ weeklyRushDF <- rushdf %>%
             RushYD = sum(yards_gained, na.rm = TRUE),
             Rush1D = sum(first_down_rush, na.rm = TRUE),
             RushTD = sum(rush_touchdown, na.rm = TRUE),
+            eRushYD = sum(eRushYD, na.rm = TRUE),
+            eTDRush = sum(eRushTD, na.rm = TRUE),
+            eRush1D = sum(eRush1D, na.rm = TRUE),
             eRushFP = sum(eRushFP, na.rm = TRUE),
             RushFP = sum(RushFP, na.rm = TRUE),
             RushDiff = (RushFP - eRushFP),            
@@ -135,6 +139,9 @@ weeklyRecDF <- recdf %>%
             RecYD = sum(yards_gained, na.rm = TRUE),
             Rec1D = sum(first_down_pass, na.rm = TRUE),
             RecTD = sum(pass_touchdown, na.rm = TRUE),
+            eRecYD = sum(eRecYD, na.rm = TRUE),
+            eTDRec = sum(eRecTD, na.rm = TRUE),
+            eRec1D = sum(eRec1D, na.rm = TRUE),
             eRecFP = sum(eRecFP, na.rm = TRUE),
             RecFP = sum(RecFP, na.rm = TRUE),
             RecDiff = (RecFP - eRecFP),            
@@ -150,6 +157,9 @@ dfnewmerged <- full_join(weeklyRushDF, weeklyRecDF, by = c("rusher_player_id" = 
   inner_join(weeklyTeamRushDF, by = c("posteam"="posteam", "week"="week")) %>%
   inner_join(weeklyTeamRecDF, by = c("posteam"="posteam", "week"="week")) %>%
   mutate(
+    eTD = eTDRec + eTDRush,
+    eYD = eRecYD + eRushYD,
+    e1D = eRec1D + eRush1D,
     eFP = eRecFP + eRushFP,
     FP = RecFP + RushFP,
     Diff = FP - eFP,
