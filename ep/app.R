@@ -22,7 +22,7 @@ ui <- dashboardPage(
                      menuItem('Database', tabName = 'ep1', icon = icon('chart-line')),
                      menuItem('Weekly Breakdowns', tabName = 'ep2', icon = icon('quidditch'))),
                    sidebarMenu(
-                     menuItem('Inputs:'),
+                     menuItem('Inputs:',startExpanded = TRUE,
                      selectInput("selectTeam",
                                  "Select Team:",
                                  choices = c("All", as.character(sort(unique(df2019$posteam)))),
@@ -45,7 +45,10 @@ ui <- dashboardPage(
                                                      "Select Weeks:",
                                                      choices = c("All", sort(unique(df2019$week))),
                                                      selected = "All",
-                                                     multiple = TRUE))
+                                                     multiple = TRUE)),
+                     actionButton('updatefilter','Update!',class='success'),
+                     br()
+                     )                     
                    ),
                    {sidebarMenu(
                      menuItem("More from DynastyProcess:", icon=icon("rocket"),
@@ -86,6 +89,12 @@ ui <- dashboardPage(
                                 .skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
                                   background-color: #555;
                                   text-decoration: none;
+                                }
+
+                                /* active selected tab in the sidebarmenu */
+                                .skin-blue .sidebar-menu>li>.treeview-menu {
+                                background-color: #111;
+                                text-decoration: none;
                                 }
 
                                 /* toggle button when hovered  */
