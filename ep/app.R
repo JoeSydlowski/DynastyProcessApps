@@ -121,7 +121,7 @@ ui <- dashboardPage(
               # fluidRow(column(12,'You can change the inputs from the sidebar!')),
               # fluidRow(includeMarkdown('about.md')),
               fluidRow(column(12,
-                    radioGroupButtons("selectCol","Select Columns:", choices = c("Exp Points","Raw Stats","Rate Stats"),
+                    radioGroupButtons("selectCol","Select Columns:", choices = c("Exp Points","Rush Stats","Rec Stats","Total Stats","Rate Stats"),
                                       selected = "Exp Points")#,
                     #checkboxInput("datatable_filters", label = "Display Filters", value = FALSE)
                     )
@@ -209,12 +209,12 @@ server <- shinyServer(function(input, output, session) {
                 Rec1DDiff = Rec1D - eRec1D,
                 
                 eTD = eTDRush + eTDRec,
-                TD = RushTD + RecTD,
-                TDDiff = TD - eTD,
+                TDs = RushTD + RecTD,
+                TDDiff = TDs - eTD,
                 
                 eYD = eRushYD + eRecYD,
                 YDs = RushYD + RecYD,
-                TDDiff = YDs - eYD,
+                YDDiff = YDs - eYD,
                 
                 e1D = eRush1D + eRec1D,
                 total1Ds = Rush1D + Rec1D,
@@ -265,16 +265,25 @@ server <- shinyServer(function(input, output, session) {
     filter2() %>%
       {if (input$selectCol == "Exp Points" & input$weeklyRadio == "Weekly")
         dplyr::select(., week, mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
-        else if (input$selectCol == "Raw Stats" & input$weeklyRadio == "Weekly")
-          dplyr::select(., week, mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
+        else if (input$selectCol == "Rush Stats" & input$weeklyRadio == "Weekly")
+          dplyr::select(., week, mergename, posteam, pos, Games, Rushes, eRushYD, RushYD, RushYDDiff, eTDRush, RushTD, RushTDDiff, eRush1D, Rush1D, Rush1DDiff) %>% arrange(desc(RushYD))
+        else if (input$selectCol == "Rec Stats" & input$weeklyRadio == "Weekly")
+          dplyr::select(., week, mergename, posteam, pos, Games, Targets, Catches, eRecYD, RecYD, RecYDDiff, eTDRec, RecTD, RecTDDiff, eRec1D, Rec1D, Rec1DDiff) %>% arrange(desc(RecYD))
+        else if (input$selectCol == "Total Stats" & input$weeklyRadio == "Weekly")
+          dplyr::select(., week, mergename, posteam, pos, Games, eYD, YDs, YDDiff, eTD, TDs, TDDiff, e1D, total1Ds, total1Ddiff) %>% arrange(desc(YDs))
+        
         else if (input$selectCol == "Rate Stats" & input$weeklyRadio == "Weekly")
           dplyr::select(., week, mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
         else if (input$selectCol == "Exp Points")
           dplyr::select(., mergename, posteam, pos, Games, eRecFP, RecFP, RecDiff, eRushFP, RushFP, RushDiff, eFP, FP, Diff, `eFP/G`, `FP/G`, `Diff/G`) %>% arrange(desc(`eFP/G`))
-        else if (input$selectCol == "Raw Stats")
-          dplyr::select(., mergename, posteam, pos, Games, Rushes, RushYD, RushTD, Targets, Catches, AYs, RecYD, RecTD)
+        else if (input$selectCol == "Rush Stats")
+          dplyr::select(., mergename, posteam, pos, Games, Rushes, eRushYD, RushYD, RushYDDiff, eTDRush, RushTD, RushTDDiff, eRush1D, Rush1D, Rush1DDiff) %>% arrange(desc(RushYD))
+        else if (input$selectCol == "Rec Stats")
+          dplyr::select(., mergename, posteam, pos, Games, Targets, Catches, eRecYD, RecYD, RecYDDiff, eTDRec, RecTD, RecTDDiff, eRec1D, Rec1D, Rec1DDiff) %>% arrange(desc(RecYD))   
+        else if (input$selectCol == "Total Stats")
+          dplyr::select(., mergename, posteam, pos, Games, eYD, YDs, YDDiff, eTD, TDs, TDDiff, e1D, total1Ds, total1Ddiff) %>% arrange(desc(YDs))        
         else if (input$selectCol == "Rate Stats")
-          dplyr::select(., mergename, posteam, pos, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
+          dplyr::select(., mergename, posteam, pos, Games, AYshare, TargetShare, WOPR, RACR, YPTPA, eFPshare, FPshare) %>% arrange(desc(eFPshare))
       }
     
   })
@@ -309,6 +318,7 @@ server <- shinyServer(function(input, output, session) {
     })
   
   output$teamTable <- renderDT({
+    #print(colnames(filter2()))
     datatable(selCols(),
               rownames=T,
               #filter=if(input$datatable_filters){'top'} else {'none'},
@@ -317,7 +327,7 @@ server <- shinyServer(function(input, output, session) {
                 paging=FALSE,
                 searching=FALSE)) %>%
       #formatRound(columns=c((ncol(df2)-15):ncol(df2)), digits=1)
-      formatRound(columns=c(4:ncol(filter2())), digits=1)
+      formatRound(columns=c(4:ncol(filter2())), digits = if (input$selectCol == "Rate Stats") {2} else {1})
   })
   
   output$pivotGraph <- renderPlot({
