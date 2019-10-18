@@ -1,7 +1,8 @@
 library(dplyr)
 library(nflscrapR)
+library(here)
 
-setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
+setwd(here())
 load("models.rda")
 #setwd("/srv/shiny-server/DynastyProcess/ep")
 
