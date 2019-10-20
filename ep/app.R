@@ -19,8 +19,11 @@ ui <- dashboardPage(
                   titleWidth = 250)},
   {dashboardSidebar(width = 250,
                    sidebarMenu(
-                     menuItem('Database', tabName = 'ep1', icon = icon('chart-line')),
-                     menuItem('Weekly Breakdowns', tabName = 'ep2', icon = icon('quidditch'))),
+                     menuItem('Database', tabName = 'ep_table', icon = icon('table')),
+                     menuItem('Weekly Breakdowns', tabName = 'ep_week', icon = icon('chart-line')),
+                     menuItem('Buy Lows: Tan', tabName = 'buylows_tan',icon=icon('money-check-alt')),
+                     menuItem('About EP',tabName='ep_about',icon=icon('question-circle'))
+                     ),
                    sidebarMenu(
                      menuItem('Inputs:',startExpanded = TRUE,
                      selectInput("selectTeam",
@@ -46,7 +49,7 @@ ui <- dashboardPage(
                                                      choices = c("All", sort(unique(df2019$week))),
                                                      selected = "All",
                                                      multiple = TRUE)),
-                     actionButton('updatefilter','Update!',class='success'),
+                     #actionButton('updatefilter','Update!',class='btn-info'),
                      br()
                      )                     
                    ),
@@ -124,7 +127,7 @@ ui <- dashboardPage(
       )
     )},
     tabItems(
-      tabItem(tabName = 'ep1',
+      tabItem(tabName = 'ep_table',
               titlePanel('DynastyProcess Apps: Expected Points'),
               br(),
               # fluidRow(column(12,'You can change the inputs from the sidebar!')),
@@ -139,7 +142,7 @@ ui <- dashboardPage(
               fluidRow(box(width = 12,
                            DTOutput("teamTable")))
       ),
-      tabItem(tabName = "ep2",
+      tabItem(tabName = "ep_week",
               titlePanel('DynastyProcess Apps: Expected Points'),
               fluidRow(box(width=12,status='info',"(You'll need to select 'weekly' instead of 'cumulative' in the sidebar to use this tab!)")),
               #fluidRow(includeMarkdown('about2.md')),
@@ -157,7 +160,17 @@ ui <- dashboardPage(
                        ),
               fluidRow(box(width = 12,
                            plotOutput("pivotGraph"),
-                           DTOutput("teamPivot"))))
+                           DTOutput("teamPivot")))),
+      tabItem(tabName='buylows_tan',
+              titlePanel('DynastyProcess Apps: Expected Points'),
+              h3("Tan's Buy Lows"),
+              fluidRow(box(width=12,p("A few views and filters of the database tables that I wanted to have handy and pre-filtered. Joe's building some fancy regressions app...the overachieving little bugger. -Tan")))
+              ),
+      tabItem(tabName='ep_about',
+              titlePanel('DynastyProcess Apps: Expected Points'),
+              fluidRow(column(12,
+              includeMarkdown('about_ep.md')
+              )))
     )
   )
 )
@@ -348,7 +361,8 @@ server <- shinyServer(function(input, output, session) {
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
       theme_bw() + 
-      labs(x="Week",title="Weekly Summary") +
+      labs(x="Week",title=paste0("Weekly Summary \n",input$selectVar,": ",input$selectTeam," | ",input$selectPos)) +
+      theme(plot.title = element_text(face='bold', family = 'serif')) +
       if(input$pivot_trendlines){geom_smooth(method = "gam", fill = NA)}
   })
   
