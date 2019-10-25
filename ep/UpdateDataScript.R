@@ -33,8 +33,13 @@ for (i in id)
 }
 
 dfcombined <- rbind(ytd19, dfnew) %>%
-  #filter(game_id != '2019101700')
+  #filter(game_id != '2019102011') %>%
   distinct()
+
+# temp <- dfcombined %>%
+#   filter(desc == "END GAME") %>%
+#   group_by(game_id) %>%
+#   summarise(n())
 
 write.csv(dfcombined, file = "reg_pbp_2019.csv")
 
