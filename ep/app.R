@@ -328,14 +328,27 @@ server <- shinyServer(function(input, output, session) {
     input$selectPlayers},{
       currentPlayer <- input$selectPlayers
       if (currentPlayer[1] == "All" & length(currentPlayer) > 1)
-      {currentPlayer <- currentPlayer[!currentPlayer %in% "All"]
-      print(currentPlayer)}
+      {currentPlayer <- currentPlayer[!currentPlayer %in% "All"]}
       if("All" %in% currentPlayer & currentPlayer[1] != "All")
       {currentPlayer <- c("All")}
       
       updateSelectizeInput(session, 'selectPlayers',
                            choices = c("All", as.character(sort(unique(filter1()$mergename)))),
                            selected = currentPlayer
+      )
+    })
+  
+  observeEvent({input$selectWeeks},{
+      currentWeeks <- input$selectWeeks
+      if (currentWeeks[1] == "All" & length(currentWeeks) > 1)
+      {currentWeeks <- currentWeeks[!currentWeeks %in% "All"]
+      print(currentWeeks)}
+      if("All" %in% currentWeeks & currentWeeks[1] != "All")
+      {currentWeeks <- c("All")}
+      
+      updateSelectizeInput(session, 'selectWeeks',
+                           choices = c("All", sort(unique(df2019$week))),
+                           selected = currentWeeks
       )
     })
   

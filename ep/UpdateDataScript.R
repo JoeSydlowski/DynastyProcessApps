@@ -33,7 +33,7 @@ for (i in id)
 }
 
 dfcombined <- rbind(ytd19, dfnew) %>%
-  #filter(game_id != '2019102011') %>%
+  filter(game_id != '2019102712') %>%
   distinct()
 
 # temp <- dfcombined %>%
