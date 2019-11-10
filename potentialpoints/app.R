@@ -3,14 +3,14 @@ library(tidyverse)
 library(shiny)
 library(shinydashboard)
 library(DT)
-# library(here)
-
-# setwd(here())
+library(markdown)
 
 ui <-
   dashboardPage(skin = "blue", title = "DynastyProcess Apps: Potential Points Calculator",
     dashboardHeader(title = a(href = "https://dynastyprocess.com", img(src = "logo-horizontal.png", width ='100%')), titleWidth = 250),
-    dashboardSidebar(width = 250,
+    dashboardSidebar(
+      #sidebarmenus----
+      width = 250,
       sidebarMenu(menuItem("ESPN Potential Points", tabName = "espnpp", icon = icon("tv"))
       ),
       sidebarMenu(
@@ -27,7 +27,8 @@ ui <-
                         icon('rocket'), href = "https://dynastyprocess.com/apps")
         ))
     ),
-    dashboardBody({tags$head(
+    dashboardBody(tags$head(
+      #CSS----
       tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
       tags$style(HTML('
                                 /* logo */
@@ -81,7 +82,8 @@ ui <-
                                 }
 
         '))
-    )},
+    ),
+    #Content----
     tabItems(
       tabItem(tabName='espnpp',
               fluidRow(
@@ -112,8 +114,9 @@ ui <-
               fluidRow(
                 box(title='Details',width=12,solidHeader = TRUE,
                     DTOutput('details'))
-              )
+              ),
 
+              uiOutput('debugbox')
               )
       )
       
@@ -243,6 +246,7 @@ server <- function(input, output, session) {
     return(optimal_lineups)
   }
   
+  
   details<-eventReactive(input$load,{
     tibble(league_id=input$leagueid,weeklist=c(input$weekselect[1]:maxweek())) %>%
       rowwise() %>% 
@@ -269,7 +273,19 @@ server <- function(input, output, session) {
       arrange(desc(PotentialScore))
   })
   
+
+  errortext<-eventReactive(input$load,{
+    req(input$leagueid)
+    paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',as.character(input$leagueid),'?view=mSettings')
+    # HTML(a(href=paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',as.character(input$leagueid),'&view=mSettings'),'Link'))
+  })
   
+  output$debugbox<-renderUI(fluidRow(box(title='Debug Link',width=12,
+                                         HTML(renderMarkdown(text=paste0("[Having trouble? Open this page in an incognito window to see if the app is reading the ESPN API correctly!](",errortext(),")")))
+                                         )))
+  
+                          
+
   output$details<-renderDT(details(),rownames=FALSE,options=list(scrollX=TRUE,pageLength=25))
   
   output$summary_week<-renderDT(summary_week(),rownames=FALSE,options=list(scrollX=TRUE,lengthChange=FALSE,pageLength=50))

@@ -121,7 +121,6 @@ optimal_lineups
 
 }
 
-
 summary_week<-optimal_lineups %>% 
   group_by(team_id,week) %>% 
   summarise(actual_score=mean(score),optimal_score=sum(points)) %>% 
@@ -129,3 +128,7 @@ summary_week<-optimal_lineups %>%
   left_join(owners,by='team_id') %>% 
   arrange(week,desc(optimal_score)) %>% 
   select(Team=team_name,Week=week,`Actual Score`=actual_score,`Optimal Score`=optimal_score)
+
+unused_summary<-unusedplayers %>% 
+  select(-eligible) %>% 
+  distinct()
