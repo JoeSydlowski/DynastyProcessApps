@@ -56,10 +56,10 @@ for (page in list_of_pages)
   df <- df[!(df$Avg == "" | df$Avg == "&nbsp" | grepl('googletag', df$Avg)), ]
   
   #numCols <- c("Rank","Bye","Best","Worst","Avg","Std Dev","ADP","vs, ADP")
-  if(page %in% c('dynasty-overall', 'rookies', 'ppr-cheatsheets', 'ros-ppr-overall', 'ppr-flex', 'idp', 'idp-cheatsheets', 'ros-idp'))
+  if(page %in% c('dynasty-overall', 'rookies', 'ppr-cheatsheets', 'ros-ppr-overall', 'ppr-flex', 'idp', 'idp-cheatsheets', 'ros-idp','dl','lb','db'))
   {
     numCols <- c(4:9)
-  } else 
+  } else
   {numCols <- c(3:8)}
   
   if(nrow(dfName) > 0) {
@@ -147,7 +147,7 @@ dfComb$Page[grep("ros", dfComb$Page)] <- "rp"
 dfComb$Page[dfComb$Page %in% c("qb", "ppr-rb", "ppr-wr", "ppr-te", "k", "dst", "idp", "dl", "lb", "db")] <- "wp"
 
 
-dfTotal <- dfComb[1:10] %>%
+dfTotal <- dfComb[1:11] %>%
   # filter(!(Player == 'Mike Davis' & SD == 0.0),
   #        !(Player == 'Mike Davis' & SD == 0.5),
   #        !(Player == 'Josh Allen' & SD == 0.0),
