@@ -8,9 +8,9 @@ library(httr)
 library(shiny)
 library(shinydashboard)
 
-ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
+ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball", # dashboard ----
   dashboardHeader(title = a(href="https://dynastyprocess.com",img(src = "logo-horizontal.png",width='100%')),titleWidth = 250),
-  dashboardSidebar(width = 250,
+  dashboardSidebar(width = 250, # sidebar ----
     sidebarMenu(
       menuItem("MFL", tabName = "mfl", icon = icon("quidditch")),
       menuItem("Sleeper", tabName = "sleeper", icon = icon("bed")),
@@ -27,7 +27,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                )
     )
   ),
-  dashboardBody({tags$head(
+  dashboardBody(tags$head( # CSS ----
     tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
     tags$style(HTML('
                                 /* logo */
@@ -81,9 +81,9 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                                 }
 
         '))
-  )},
-    tabItems(
-    tabItem(tabName = "mfl",
+  ),
+    tabItems( # body content----
+    tabItem(tabName = "mfl", # mfl tab UI----
             fluidRow(
               box(width=12,
               titlePanel("DynastyProcess.com: Crystal Ball App"),
@@ -114,7 +114,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                      )
             )
     ),
-    tabItem(tabName = "sleeper",
+    tabItem(tabName = "sleeper", # sleeper tab UI ----
             fluidRow(box(
               width = 12,
               titlePanel("DynastyProcess.com: Crystal Ball App"),
@@ -165,7 +165,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
                                  "Download")
               )
             ))), 
-    tabItem(tabName = "espn",
+    tabItem(tabName = "espn", # espn tab ui ----
             fluidRow(
               box(width=12,
                   titlePanel("DynastyProcess.com: Crystal Ball App"),
@@ -191,10 +191,11 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball",
     )
   )
   )
-)
+) # end of UI----
 
 server <- function(input, output, session) {
-  shinyInput <- function(FUN, len, id, ...) {
+  # functions for all tabs ----
+  shinyInput <- function(FUN, len, id, ...) { 
     inputs <- character(len)
     for (i in seq_len(len)) {
       inputs[i] <- as.character(FUN(paste0(id, i), ...))
@@ -209,7 +210,7 @@ server <- function(input, output, session) {
     return(breakvalue)
   }
   
-  # MFL code
+  # MFL code ----
   
   m_cookie<-eventReactive(input$mfllogin,{GET(paste0("https://api.myfantasyleague.com/2019/login?USERNAME=",input$mflusername,"&PASSWORD=",URLencode(input$mflpassword,reserved=TRUE),"&XML=1")) %>%
     .$cookies %>% .$value %>%   
@@ -304,12 +305,6 @@ server <- function(input, output, session) {
       select(Week=week,Team=team_name,`Team%`=team_pct,Opp=opp_name,`Opp%`=opp_pct,WinProb=win_prob)
   })
   
-  
-
-  
-  
-  
-  
   output$mflsummarytbl<-renderDT({
     mfl_sumtbl<-datatable(m_expectedwins(), rownames=FALSE, options=list(scrollX=TRUE,pageLength=25))
     for(colnum in c(2,3,5,7)){
@@ -355,7 +350,7 @@ server <- function(input, output, session) {
       content = function(file){write.csv(m_details(),file,row.names = F)}
     )
   
-  #Sleeper chunks start here!
+  # Sleeper code ----
   
   sleeperuserid<-eventReactive(input$sleeperloaduser,fromJSON(paste0("https://api.sleeper.app/v1/user/",input$sleeperusername),flatten=TRUE)$user_id)
   
@@ -520,7 +515,7 @@ server <- function(input, output, session) {
   
   
   
-  # ESPN chunks
+  # ESPN code ----
   
   espn<-eventReactive(input$espnload,{fromJSON(paste0('https://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/',
                          input$espnid,
@@ -666,6 +661,6 @@ server <- function(input, output, session) {
       content = function(file){write.csv(e_details(),file,row.names = F)}
     )
   
-} #end of server segment
+} #end of server function ----
 
 shinyApp(ui, server)

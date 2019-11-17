@@ -4,7 +4,7 @@ library(tidyverse)
 library(DT)
 library(RColorBrewer)
 
-leagueID<-386236959468675072
+leagueID<-467841245645893632
 #leagueID<-425023252880957440
 
 playoffweekstart<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)))$settings$playoff_week_start-1

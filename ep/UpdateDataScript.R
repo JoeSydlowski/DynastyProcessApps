@@ -18,6 +18,7 @@ completedID <- ytd19 %>%
   distinct()
 
 database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/master/files/database.csv", fileEncoding = "UTF-8-BOM")
+#iddoc <- read.csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/games_data/regular_season/reg_games_2019.csv", fileEncoding = "UTF-8-BOM")
 database$gsis_id <- as.character(database$gsis_id)
 
 ids <- scrape_game_ids(2019, type = "reg") #, weeks = c(6:6)) %>%
@@ -33,7 +34,7 @@ for (i in id)
 }
 
 dfcombined <- rbind(ytd19, dfnew) %>%
-  filter(game_id != '2019102712') %>%
+  #filter(game_id != '2019102712') %>%
   distinct()
 
 # temp <- dfcombined %>%
@@ -43,7 +44,7 @@ dfcombined <- rbind(ytd19, dfnew) %>%
 
 write.csv(dfcombined, file = "reg_pbp_2019.csv")
 
-ids$game_id <- as.character(ids$game_id)
+ids$game_id <- as.numeric(ids$game_id)
 
 dfcombined <- dfcombined %>%
   inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
