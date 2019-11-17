@@ -19,6 +19,7 @@ ui <- dashboardPage(
                   titleWidth = 250)},
   {dashboardSidebar(width = 250,
                    sidebarMenu(
+                     id='maintabs',
                      menuItem('Database', tabName = 'ep_table', icon = icon('table')),
                      menuItem('Weekly Breakdowns', tabName = 'ep_week', icon = icon('chart-line')),
                      menuItem('Buy Lows: Tan', tabName = 'buylows_tan',icon=icon('money-check-alt')),
@@ -26,11 +27,11 @@ ui <- dashboardPage(
                      ),
                    sidebarMenu(
                      menuItem('Inputs:',startExpanded = TRUE,
-                     selectInput("selectTeam",
+                     selectizeInput("selectTeam",
                                  "Select Team:",
                                  choices = c("All", as.character(sort(unique(df2019$posteam)))),
                                  selected = "KC"),
-                     selectInput("selectPos",
+                     selectizeInput("selectPos",
                                  "Select Position:",
                                  choices = c("All", "QB", "RB", "WR", "TE"),
                                  selected = "All"),
@@ -365,11 +366,18 @@ server <- shinyServer(function(input, output, session) {
       formatRound(columns=c(4:ncol(filter2())), digits = if (input$selectCol == "Rate Stats") {2} else {1})
   })
   
+  observeEvent(input$maintabs=='ep_weekly',{
+    updateRadioButtons(session,'weeklyRadio',selected='Weekly')
+  })
+  
+  
   output$pivotGraph <- renderPlot({
     plotdf <- filter2()
     plotdf[is.na(plotdf)]<-NaN
-    plotdf<-plotdf #%>% 
+#    plotdf<-plotdf #%>% 
       #filter(!is.na(input$selectVar))
+    
+    
     ggplot(plotdf,
            aes_string(x = plotdf$week, y = input$selectVar, color = plotdf$mergename)) +
       geom_point(size = 3) +
