@@ -1,8 +1,7 @@
 rsconnect
-.Rhistory
-.csv
+*.Rhistory
 .Rproj.user
-logs/
+logs/*
 *.json
 calculator/www/
 crystalball/www/
