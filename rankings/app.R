@@ -20,26 +20,65 @@ server <- function(input, output, session) {
   rb<-fantasypros %>% 
     filter(Pos == 'RB') %>% 
     arrange(dpECR) %>%
-    filter(!is.na(dpECR)) %>% 
-    # mutate_all(as.character) %>% 
-    # rowid_to_column(var='YourRank') %>%
-    select(Player,Team,Pos,dpECR) %>% 
+    filter(!is.na(dpECR)) %>%
+    rowid_to_column(var='Your Rank') %>%
+    mutate(`Your Rank`=as.numeric(`Your Rank`),
+           z = (`Your Rank`-dpECR)/dpSD) %>% 
+    select(Player,Team,Pos,`Your Rank`,dpECR,dpSD,z) %>% 
     reactiveVal()
-
+  
+  num_rb<-fantasypros %>% 
+    filter(Pos == 'RB',!is.na(dpECR)) %>% 
+    nrow()
+  
   output$rb<-renderDT(server=F,{
+    
     datatable(
       rb(),
-      colnames = c(`Your Rank` = 1),
-      rownames = TRUE,
+      rownames = F,
       extensions = 'RowReorder',
       selection = 'none',
       options = list(rowReorder = list(selector = 'tr'),
-                     order = list(c(0, 'asc'))),
-      callback = JS("table.on('row-reorder',function(e, details, changes){Shiny.onInputChange('table_row_reorder', details);});")
-      )
+                     order = list(c(3, 'asc'))),
+      callback = JS("table.on('row-reorder',function(e, details, all){Shiny.onInputChange('table_row_reorder', JSON.stringify(details));});")
+      ) %>% 
+      formatRound('z',1)
   })
   
-  observe(print(input$table_row_reorder))
+  table_order<-reactiveVal(seq(1,num_rb))
+  
+  observeEvent(input$table_row_reorder,{
+    
+    info<-input$table_row_reorder
+    
+    if (is.null(info)|class(info) !='character'){return()}
+    
+    info<-read_yaml(text=info)
+    s<<-tibble(info)
+
+    if(length(info)==0){return()}
+    
+    .order<-seq(1,num_rb)
+    .new_order<-.order
+    
+    for (i in 1:length(info)){
+      j<- info[[i]]
+      .new_order[(j$oldPosition+1)]<-.order[(j$newPosition+1)]
+    }
+    
+    table_order(.new_order)
+    
+    df<-rb() %>%
+      select(-`Your Rank`) %>% 
+      mutate(`Your Rank`=table_order(),
+             z = (`Your Rank`-dpECR)/dpSD) %>% 
+      arrange(`Your Rank`) %>% 
+      select(Player,Team,Pos,`Your Rank`,dpECR,dpSD,z)
+    
+    rb(df)
+    
+  })
+  
   
   
 
