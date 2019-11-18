@@ -10,8 +10,9 @@ fantasypros<-list.files(path='/srv/data/files/fantasypros',full.names = T) %>%
   read.csv() %>% 
   select(Player,Team,Pos,starts_with('do'),starts_with('dp')) %>% 
   filter(Pos %in% c('QB','RB','WR','TE')) %>% 
-  mutate(dpSD=case_when(is.null(dpSD)~0.5,
-                        dpSD==0~0.5,
+  mutate(dpSD=case_when(is.null(dpSD)~dpECR^0.6,
+                        dpSD==0~dpECR^0.6,
+                        dpECR>32~dpECR^0.6,
                         TRUE~dpSD))
 
 fp_date<-list.files(path='/srv/data/files/fantasypros',full.names = T) %>% 
@@ -23,7 +24,8 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Custom Rankings App
                     dashboardHeader(title = a(href="https://dynastyprocess.com",img(src = "logo-horizontal.png",width='100%')),titleWidth = 250),
                     dashboardSidebar(width = 250, # sidebar ----
                                      sidebarMenu(
-                                       menuItem("Rankings", tabName = "rank", icon = icon("chart-line"))
+                                       menuItem("Rankings", tabName = "rank", icon = icon("chart-line")),
+                                       menuItem("Summary",tabName = 'summary', icon=icon('quidditch'))
                                        )),
                     dashboardBody(tags$head( # CSS ----
                                              tags$link(rel = "stylesheet", type = "text/css", href = "www/flatly.css"),
@@ -87,15 +89,28 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Custom Rankings App
                               fluidRow(column(9,p('Understanding how you rank a player relative to the market helps you make strategic decisions! Drag and drop to reorder ranks.'),
                               br(),
                               p('FP Ranks last updated: ',fp_date)),
-                                       column(3,downloadButton('download','Download!'))),
+                                       column(3,
+                                              downloadButton('download','Download!'),
+                                              actionButton('savedialog','Save to DP Database!')
+                                              )),
+                              br(),
                               fluidRow(tabBox(width=12,selected = 'RB', title = 'Dynasty Positional Ranks',side = 'left',
                                               tabPanel(title = 'QB',DTOutput('qb')),
                                               tabPanel(title = 'RB',DTOutput('rb')),
                                               tabPanel(title = 'WR',DTOutput('wr')),
                                               tabPanel(title = 'TE',DTOutput('te'))
-                              ))
-                        
-                      )))
+                                              ))
+                              ),
+                      tabItem(tabName='summary',
+                              titlePanel('Custom Ranks: Summary'),
+                              fluidRow(column(12,p("Now that you've done the work of ranking each position, here's a few things that your data suggests!"))),
+                              br(),
+                              fluidRow(tabBox(width=12,side='left',
+                                              tabPanel(title='Love',DTOutput('loves')),
+                                              tabPanel(title='Hate',DTOutput('hates')))),
+                              fluidRow(box(width=12,title = 'Overall'))
+                              )
+                      ))
 ) # end of UI ----
 
 
@@ -127,16 +142,16 @@ server <- function(input, output, session) {
       selection = 'none',
       options = list(rowReorder = list(selector = 'tr'),
                      order = list(c(3, 'asc')),
-                     paging=FALSE,
-                     scrollY=600,
-                     #pageLength=25,
+                     #paging=FALSE,
+                     #scrollY=600,
+                     pageLength=100,
                      searching=FALSE,
                      #pagingType='simple_numbers',
                      scrollX=TRUE),
       callback = JS("table.on('row-reorder',function(e, details, all){Shiny.onInputChange('qb_row_reorder', JSON.stringify(details));});")
     ) %>% 
-      formatRound('z',1) %>% 
-      formatStyle('z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
+      formatRound(c('z','dpSD'),1) %>% 
+      formatStyle(1:7,'z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
     
   })
   
@@ -199,16 +214,16 @@ server <- function(input, output, session) {
       selection = 'none',
       options = list(rowReorder = list(selector = 'tr'),
                      order = list(c(3, 'asc')),
-                     paging=FALSE,
-                     scrollY=600,
-                     #pageLength=25,
+                     #paging=FALSE,
+                     #scrollY=600,
+                     pageLength=100,
                      searching=FALSE,
                      #pagingType='simple_numbers',
                      scrollX=TRUE),
       callback = JS("table.on('row-reorder',function(e, details, all){Shiny.onInputChange('rb_row_reorder', JSON.stringify(details));});")
       ) %>% 
-      formatRound('z',1) %>% 
-      formatStyle('z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
+      formatRound(c('z','dpSD'),1) %>% 
+      formatStyle(1:7,'z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
       
   })
   
@@ -271,16 +286,16 @@ server <- function(input, output, session) {
       selection = 'none',
       options = list(rowReorder = list(selector = 'tr'),
                      order = list(c(3, 'asc')),
-                     paging=FALSE,
-                     scrollY=600,
-                     #pageLength=25,
+                     #paging=FALSE,
+                     #scrollY=600,
+                     pageLength=100,
                      searching=FALSE,
                      #pagingType='simple_numbers',
                      scrollX=TRUE),
       callback = JS("table.on('row-reorder',function(e, details, all){Shiny.onInputChange('wr_row_reorder', JSON.stringify(details));});")
     ) %>% 
-      formatRound('z',1) %>% 
-      formatStyle('z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
+      formatRound(c('z','dpSD'),1) %>% 
+      formatStyle(1:7,'z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
     
   })
   
@@ -345,16 +360,16 @@ server <- function(input, output, session) {
       selection = 'none',
       options = list(rowReorder = list(selector = 'tr'),
                      order = list(c(3, 'asc')),
-                     paging=FALSE,
-                     scrollY=600,
-                     #pageLength=25,
+                     #paging=FALSE,
+                     #scrollY=600,
+                     pageLength=100,
                      searching=FALSE,
                      #pagingType='simple_numbers',
                      scrollX=TRUE),
       callback = JS("table.on('row-reorder',function(e, details, all){Shiny.onInputChange('te_row_reorder', JSON.stringify(details));});")
     ) %>% 
-      formatRound('z',1) %>% 
-      formatStyle('z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
+      formatRound(c('z','dpSD'),1) %>% 
+      formatStyle(1:7,'z',backgroundColor=styleInterval(quantile(range(-3,3),probs=seq(0.05,0.95,0.05),na.rm=TRUE),colourlist(20)))
     
   })
   
@@ -396,14 +411,60 @@ server <- function(input, output, session) {
   
   
   
+  # Append ----
+  
+  df_allpos<-reactive({bind_rows(qb(),rb(),wr(),te())})
+  
+  # Love/Hates ----
+  
+  output$loves<-renderDT({
+    df_allpos() %>% 
+      filter(z>1.5) %>%
+      mutate(scaling=z*10/dpECR) %>% 
+      arrange(desc(scaling)) %>%
+   #   select(-scaling) %>% 
+      datatable(rownames=F,options(pageLength=10,scrollX=TRUE)) %>% 
+      formatRound('z',1)
+  })
+  
+  output$hates<-renderDT({
+    df_allpos() %>% 
+      filter(z<(-1.5)) %>%
+      mutate(scaling=z*10/dpECR) %>% 
+      arrange(scaling) %>%
+     # select(-scaling) %>% 
+      datatable(rownames=F,options(pageLength=10,scrollX=TRUE)) %>% 
+      formatRound('z',1)
+  })
+
+  # save ranks to database ----
+  
+  observeEvent(input$savedialog,{
+    showModal(modalDialog(title = 'Save to DynastyProcess Database',
+                          fluidRow(column(12,
+                                          p('Save your ranks to the DynastyProcess database!')
+                                          )),
+                          fluidRow(column(4,textInput('username',label = 'Name')),
+                                   #column(8,textInput('notes',label = 'Notes'))
+                                   ),
+                          footer = list(actionButton('save','Save',icon=icon('save')),modalButton('Dismiss'))
+                          ))
+  })
+  
+  observeEvent(input$save,{
+    saveRDS(object = df_allpos(),file = paste0('savedranks/',input$username,"_",format.Date(Sys.time(),"%Y%m%d-%H%M%S"),'.rds'))
+    
+    showModal(modalDialog(title='Saved!'))
+    Sys.sleep(3)
+    removeModal()
+    
+  })
+  
   # DownloadHandler ----
-  
-  df_download<-reactive({bind_rows(qb(),rb(),wr(),te())})
-  
   output$download<-
     downloadHandler(
       filename = function(){paste0('customdynastyranks_',format.Date(Sys.Date(),'%Y%m%d'),'.csv')},
-      content = function(file){write.csv(df_download(),file,row.names = F)}
+      content = function(file){write.csv(df_allpos(),file,row.names = F)}
     )
 } # end of server segment ----
 
