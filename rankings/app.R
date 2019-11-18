@@ -1,6 +1,8 @@
 library(tidyverse)
 library(shiny)
 library(DT)
+library(yaml)
+
 
 ui <- fluidPage(
   fluidRow(column(4,
@@ -24,17 +26,23 @@ server <- function(input, output, session) {
     select(Player,Team,Pos,dpECR) %>% 
     reactiveVal()
 
-  output$rb<-renderDT(server=FALSE,{
-    datatable(rb(),
-              colnames = c(`Your Rank`=1,Player=2,Team=3,Pos=4,dpECR=5),
-              rownames=TRUE,
-              extensions = 'RowReorder',
-              selection='none',
-              options=list(
-                rowReorder=list(selector='tr'),
-                order=list(c(0,'asc'))
-              ))
+  output$rb<-renderDT(server=F,{
+    datatable(
+      rb(),
+      colnames = c(`Your Rank` = 1),
+      rownames = TRUE,
+      extensions = 'RowReorder',
+      selection = 'none',
+      options = list(rowReorder = list(selector = 'tr'),
+                     order = list(c(0, 'asc'))),
+      callback = JS("table.on('row-reorder',function(e, details, changes){Shiny.onInputChange('table_row_reorder', details);});")
+      )
   })
+  
+  observe(print(input$table_row_reorder))
+  
+  
+
     
 }
 
