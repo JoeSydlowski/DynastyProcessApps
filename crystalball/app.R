@@ -423,7 +423,7 @@ server <- function(input, output, session) {
       mutate(losses=weeks-wins,allplaypct=round(allplaywins/allplaygms,digits=3),allplaylosses=allplaygms-allplaywins,roster_id=as.character(roster_id))})
     
     s_fullschedule<- eventReactive(input$s_select_button,{s_schedule() %>%
-      filter(is.na(points)) %>% 
+      filter(!is.na(points)) %>% 
       select(roster_id,week,opp)%>%
       mutate(roster_id=as.character(roster_id)) %>% 
       nest_join(s_standings(),by='roster_id',name='teaminfo') %>%

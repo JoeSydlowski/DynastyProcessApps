@@ -4,7 +4,7 @@ library(tidyverse)
 library(DT)
 library(RColorBrewer)
 
-leagueID<-467841245645893632
+leagueID<-386236959468675072
 #leagueID<-425023252880957440
 
 playoffweekstart<-fromJSON(paste0("https://api.sleeper.app/v1/league/",as.character(leagueID)))$settings$playoff_week_start-1
@@ -69,7 +69,7 @@ standings<-schedule %>%
   mutate(losses=weeks-wins,allplaypct=round(allplaywins/allplaygms,digits=3),allplaylosses=allplaygms-allplaywins,roster_id=as.character(roster_id))
 
 fullschedule<- schedule %>%
-  filter(is.na(points)) %>% 
+  filter(!is.na(points)) %>% 
   select(roster_id,week,opp)%>%
   mutate(roster_id=as.character(roster_id)) %>% 
   nest_join(standings,by='roster_id',name='teaminfo') %>%
