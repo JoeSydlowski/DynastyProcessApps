@@ -5,14 +5,19 @@ library(DT)
 library(yaml)
 library(RColorBrewer)
 
+options(shiny.reactlog=TRUE)
+
+
+
 fantasypros<-list.files(path='/srv/data/files/fantasypros',full.names = T) %>% 
   .[length(.)] %>%
   read.csv() %>% 
   select(Player,Team,Pos,starts_with('do'),starts_with('dp')) %>% 
   filter(Pos %in% c('QB','RB','WR','TE')) %>% 
-  mutate(dpSD=case_when(is.null(dpSD)~dpECR^0.6,
-                        dpSD==0~dpECR^0.6,
-                        dpECR>32~dpECR^0.6,
+  mutate(dpSD=case_when(is.null(dpSD)~dpECR^0.5,
+                        dpSD==0~dpECR^0.5,
+                        dpECR>24 & Pos %in% c('QB','TE')~dpECR^0.5,
+                        dpECR>48 & Pos %in% c('RB','WR')~dpECR^0.5,
                         TRUE~dpSD))
 
 fp_date<-list.files(path='/srv/data/files/fantasypros',full.names = T) %>% 
@@ -422,9 +427,9 @@ server <- function(input, output, session) {
       filter(z>1.5) %>%
       mutate(scaling=z*10/dpECR) %>% 
       arrange(desc(scaling)) %>%
-   #   select(-scaling) %>% 
+      select(-scaling) %>% 
       datatable(rownames=F,options(pageLength=10,scrollX=TRUE)) %>% 
-      formatRound('z',1)
+      formatRound(c('z','dpSD'),1)
   })
   
   output$hates<-renderDT({
@@ -432,9 +437,9 @@ server <- function(input, output, session) {
       filter(z<(-1.5)) %>%
       mutate(scaling=z*10/dpECR) %>% 
       arrange(scaling) %>%
-     # select(-scaling) %>% 
+      select(-scaling) %>% 
       datatable(rownames=F,options(pageLength=10,scrollX=TRUE)) %>% 
-      formatRound('z',1)
+      formatRound(c('z','dpSD'),1)
   })
 
   # save ranks to database ----
@@ -444,7 +449,8 @@ server <- function(input, output, session) {
                           fluidRow(column(12,
                                           p('Save your ranks to the DynastyProcess database!')
                                           )),
-                          fluidRow(column(4,textInput('username',label = 'Name')),
+                          fluidRow(column(4,textInput('username',label = 'Name (required)')),
+                                   column(4,textInput('tag',label='Tag'))
                                    #column(8,textInput('notes',label = 'Notes'))
                                    ),
                           footer = list(actionButton('save','Save',icon=icon('save')),modalButton('Dismiss'))
@@ -452,7 +458,10 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$save,{
-    saveRDS(object = df_allpos(),file = paste0('savedranks/',input$username,"_",format.Date(Sys.time(),"%Y%m%d-%H%M%S"),'.rds'))
+    
+    req(input$username)
+    
+    saveRDS(object = df_allpos(),file = paste0('savedranks/',input$username,"_",input$tag,"_",format.Date(Sys.time(),"%Y%m%d-%H%M%S"),'.rds'))
     
     showModal(modalDialog(title='Saved!'))
     Sys.sleep(3)

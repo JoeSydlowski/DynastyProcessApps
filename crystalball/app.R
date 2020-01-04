@@ -143,6 +143,7 @@ ui <- dashboardPage(skin="blue", title="DynastyProcess Apps: Crystal Ball", # da
               box(status='success',
                 title = "Season Projections",
                 width = 12,
+                p('KNOWN TO BE BROKEN BECAUSE MOST REGULAR SEASONS ARE OVER. SHOWING DOUBLE THE ROS WINS NOW UNTIL I ADD PROPER LOGIC FOR IT'),
                 DTOutput('sleepersummarytbl'),
                 br(),
                 downloadButton('sleeperdownloadsummary', label = "Download")

@@ -8,7 +8,9 @@ library(here)
 library(shinyWidgets)
 library(ggplot2)
 
-df2019 <- read.csv("data2019cleaned2.csv")
+options(shiny.reactlog=TRUE)
+
+df2019 <- read.csv("data2019cleaned.csv")
 
 ui <- dashboardPage(
   skin="blue",
@@ -27,17 +29,32 @@ ui <- dashboardPage(
                      ),
                    sidebarMenu(
                      menuItem('Inputs:',startExpanded = TRUE,
-                     selectizeInput("selectTeam",
+                     pickerInput("selectTeam",
                                  "Select Team:",
                                  choices = c("All", as.character(sort(unique(df2019$posteam)))),
+                                 options= list(
+                                   `liveSearch`=TRUE,
+                                   `actions-box`=TRUE,
+                                   `virtualScroll`=TRUE,
+                                   size = 5,
+                                   `selected-text-format` = "count > 3"
+                                   
+                                 ),
                                  selected = "KC"),
-                     selectizeInput("selectPos",
+                     pickerInput("selectPos",
                                  "Select Position:",
                                  choices = c("All", "QB", "RB", "WR", "TE"),
                                  selected = "All"),
-                     selectizeInput("selectPlayers",
+                     pickerInput("selectPlayers",
                                     "Select Players:",
                                     choices = c("All"),
+                                 options= list(
+                                   `live-search`=TRUE,
+                                   `actions-box`=TRUE,
+                                   `virtual-scroll`=TRUE,
+                                   `size` = 5,
+                                   `selected-text-format` = "count > 3"
+                                 ),
                                     selected = "All",
                                     multiple = TRUE),
                      radioButtons("weeklyRadio",
@@ -333,7 +350,7 @@ server <- shinyServer(function(input, output, session) {
       if("All" %in% currentPlayer & currentPlayer[1] != "All")
       {currentPlayer <- c("All")}
       
-      updateSelectizeInput(session, 'selectPlayers',
+      updatePickerInput(session, 'selectPlayers',
                            choices = c("All", as.character(sort(unique(filter1()$mergename)))),
                            selected = currentPlayer
       )
@@ -347,7 +364,7 @@ server <- shinyServer(function(input, output, session) {
       if("All" %in% currentWeeks & currentWeeks[1] != "All")
       {currentWeeks <- c("All")}
       
-      updateSelectizeInput(session, 'selectWeeks',
+      updatePickerInput(session, 'selectWeeks',
                            choices = c("All", sort(unique(df2019$week))),
                            selected = currentWeeks
       )
@@ -357,6 +374,7 @@ server <- shinyServer(function(input, output, session) {
     #print(colnames(filter2()))
     datatable(selCols(),
               rownames=T,
+              #filter = 'top',
               #filter=if(input$datatable_filters){'top'} else {'none'},
               options(
                 scrollX=TRUE,

@@ -68,8 +68,8 @@ standings<-schedule %>%
   ungroup() %>% 
   mutate(losses=weeks-wins,allplaypct=round(allplaywins/allplaygms,digits=3),allplaylosses=allplaygms-allplaywins,roster_id=as.character(roster_id))
 
-fullschedule<- schedule %>%
-  filter(!is.na(points)) %>% 
+fullschedule<- if(nrow(filter(schedule,is.na(points)))>0){
+  schedule %>% 
   select(roster_id,week,opp)%>%
   mutate(roster_id=as.character(roster_id)) %>% 
   nest_join(standings,by='roster_id',name='teaminfo') %>%
@@ -77,7 +77,7 @@ fullschedule<- schedule %>%
   hoist(teaminfo,team_pct='allplaypct')%>%
   hoist(oppinfo,opp_pct='allplaypct')%>%
   mutate(win_prob=round(team_pct/(team_pct+opp_pct),digits=3)) %>%
-  select(roster_id,week,opp,team_pct,opp_pct,win_prob)
+  select(roster_id,week,opp,team_pct,opp_pct,win_prob)} else {standings %>% select(roster_id,wins,losses)}
 
 summary<-fullschedule %>% 
   group_by(roster_id) %>% 

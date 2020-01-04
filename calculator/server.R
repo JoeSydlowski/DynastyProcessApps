@@ -13,7 +13,7 @@ pickDB <- read.csv(curl("https://raw.githubusercontent.com/tanho63/dynastyproces
 
 shinyServer(function(input, output, session) {
   
-  track_usage(storage_mode = store_json(path = "logs/"))
+  track_usage(storage_mode = store_sqlite(path = "logs/"))
   
   observeEvent(input$timeOut, { 
     print(paste0("Session (", session$token, ") timed out at: ", Sys.time()))

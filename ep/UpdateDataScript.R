@@ -1,16 +1,18 @@
+start_time <- Sys.time()
 library(dplyr)
 library(nflscrapR)
 library(here)
 
-
-setwd(here())
+#setwd(here())
 
 # setwd('C:/Users/syd23/OneDrive/Documents/DynastyProcess/ep')
-# setwd("/srv/shiny-server/DynastyProcessApps/ep")
+setwd("/srv/shiny-server/DynastyProcessApps/ep")
 
 load("models.rda")
-ytd19 <- read.csv("reg_pbp_2019.csv")
+ytd19 <- read.csv("EP_reg_pbp_2019.csv")
 ytd19$X <- NULL
+
+#ytd19 <- ytd19 %>% filter(!(game_id %in% c('2019111710','2019111709','2019111708')))
 
 completedID <- ytd19 %>%
   filter(desc == "END GAME") %>%
@@ -21,7 +23,7 @@ database <- read.csv("https://raw.githubusercontent.com/tanho63/dynastyprocess/m
 #iddoc <- read.csv("https://raw.githubusercontent.com/ryurko/nflscrapR-data/master/games_data/regular_season/reg_games_2019.csv", fileEncoding = "UTF-8-BOM")
 database$gsis_id <- as.character(database$gsis_id)
 
-ids <- scrape_game_ids(2019, type = "reg") #, weeks = c(6:6)) %>%
+ids <- scrape_game_ids(2019, type = "reg")
 
 newids <- filter(ids, !(game_id %in% completedID$game_id))
 id <- newids %>% pull(game_id)
@@ -33,21 +35,19 @@ for (i in id)
   dfnew <- bind_rows(dfnew,df)}, error=function(e){print(paste("Game", i, "Unavailable"))})
 }
 
+ids$game_id <- as.character(ids$game_id)
+
+dfnew <- dfnew %>%
+  select(game_id, play_id, desc, posteam, td_team, play_type, two_point_attempt, two_point_conv_result,
+         rush_touchdown, yards_gained, fumble_lost, first_down_rush, yardline_100, run_gap, down,
+         shotgun, pass_touchdown, complete_pass, first_down_pass, air_yards, rusher_player_id,
+         receiver_player_id, pass_location, ydstogo, sack, rush_attempt, pass_attempt) %>%
+  inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
+
 dfcombined <- rbind(ytd19, dfnew) %>%
-  #filter(game_id != '2019102712') %>%
   distinct()
 
-# temp <- dfcombined %>%
-#   filter(desc == "END GAME") %>%
-#   group_by(game_id) %>%
-#   summarise(n())
-
-write.csv(dfcombined, file = "reg_pbp_2019.csv")
-
-ids$game_id <- as.numeric(ids$game_id)
-
-dfcombined <- dfcombined %>%
-  inner_join(dplyr::select(ids, game_id, week), by = c("game_id"="game_id"))
+write.csv(dfcombined, file = "EP_reg_pbp_2019.csv")
 
 dfcombined$posteam <- as.character(dfcombined$posteam)
 dfcombined$td_team <- as.character(dfcombined$td_team)
@@ -181,7 +181,12 @@ dfnewmerged <- full_join(weeklyRushDF, weeklyRecDF, by = c("rusher_player_id" = 
     Games = max(RushGames, RecGames, na.rm = TRUE)
   ) 
 
-write.csv(dfnewmerged, file = "data2019cleaned2.csv")
+write.csv(dfnewmerged, file = "data2019cleaned.csv")
+
+system("sudo systemctl restart shiny-server")
+end_time <- Sys.time()
+
+print(end_time - start_time)
 
 # temp <- rushdf %>%
 #   filter(game_id == "2019101700" & posteam == "KC" & grepl("Dam.Williams", desc))
